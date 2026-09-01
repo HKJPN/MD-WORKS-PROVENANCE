@@ -1,4 +1,4 @@
-# MD//WORKS Provenance
+# MD//WORKS PROVENANCE
 
 **Don’t guess whether a paper was written by AI. Preserve how it was written.**
 
@@ -7,12 +7,12 @@
 [![Local-first](https://img.shields.io/badge/design-local--first-4c8bf5.svg)](#privacy-and-trust-boundaries)
 [![No analytics](https://img.shields.io/badge/analytics-none-2ea44f.svg)](#privacy-and-trust-boundaries)
 
-**MD//WORKS Provenance** is a writing editor and verification toolkit designed to preserve a **tamper-evident record of the writing process**.
+**MD//WORKS PROVENANCE** is a writing editor and verification toolkit designed to preserve a **tamper-evident record of the writing process**.
 
 Instead of trying to infer authorship from the final text, it records what happened while the document was being written:
 
 - direct writing and editing activity
-- Copy / Cut → Paste provenance inside the same Report
+- Copy / Cut → Paste PROVENANCE inside the same Report
 - writing sessions and interaction-active time
 - a hash-chained event history
 - server anchors during writing
@@ -20,7 +20,7 @@ Instead of trying to infer authorship from the final text, it records what happe
 
 The result is a self-contained HTML Report that can be independently checked in a browser.
 
-> **MD//WORKS Provenance is not an AI detector, plagiarism detector, misconduct detector, or identity-proofing system.**  
+> **MD//WORKS PROVENANCE is not an AI detector, plagiarism detector, misconduct detector, or identity-proofing system.**  
 > It verifies the integrity of recorded evidence about the writing process.
 
 Writers work locally in the browser. A single Report can be shared with a supervisor, collaborator, editor, client, or other reviewer and checked with the **Report Verifier**. Institutions can review many Reports with the **Overview Verifier**. In either case, a Report does not need to be uploaded to a third-party verification service just to check its integrity.
@@ -43,7 +43,7 @@ Those questions can still be useful. But they do not answer a different question
 
 > **What writing process was actually recorded before this document was submitted?**
 
-MD//WORKS Provenance focuses on that missing layer.
+MD//WORKS PROVENANCE focuses on that missing layer.
 
 It does not claim to prove who physically typed every sentence. It does not try to classify prose as human or AI. Instead, it preserves a structured process record and makes later modification detectable.
 
@@ -66,10 +66,10 @@ Student
   │
   │ write / revise / copy / paste
   ▼
-MD//WORKS Provenance Editor
+MD//WORKS PROVENANCE Editor
   │
   ├─ Writing Events
-  ├─ Paste Provenance
+  ├─ Paste PROVENANCE
   ├─ Sessions / Active Time
   ├─ Event Hash Chain
   └─ Server Anchors
@@ -101,13 +101,13 @@ The ordinary writing workflow remains simple:
 
 ---
 
-## The core idea: provenance, not prediction
+## The core idea: PROVENANCE, not prediction
 
-MD//WORKS Provenance is built around **observable provenance**.
+MD//WORKS PROVENANCE is built around **observable PROVENANCE**.
 
 ### Verified Internal Paste
 
-If text is copied or cut inside the same Report and later pasted back into that Report, MD//WORKS Provenance can attempt to verify that transfer using recorded provenance metadata.
+If text is copied or cut inside the same Report and later pasted back into that Report, MD//WORKS PROVENANCE can attempt to verify that transfer using recorded PROVENANCE metadata.
 
 A successful match is recorded as:
 
@@ -128,10 +128,10 @@ This may include text pasted from:
 - a website
 - a PDF
 - Microsoft Word
-- another MD//WORKS Provenance Report
+- another MD//WORKS PROVENANCE Report
 - a note-taking app
 - a generative AI tool
-- a clipboard where provenance metadata was lost
+- a clipboard where PROVENANCE metadata was lost
 
 So:
 
@@ -146,7 +146,7 @@ It means only that the Paste could not be verified as a prior Copy/Cut from the 
 
 ## What can be verified — and what cannot
 
-| MD//WORKS Provenance can verify | MD//WORKS Provenance does not prove |
+| MD//WORKS PROVENANCE can verify | MD//WORKS PROVENANCE does not prove |
 | --- | --- |
 | Document Hash consistency | Who physically authored the text |
 | Event Log Hash consistency | Whether AI was used |
@@ -201,10 +201,10 @@ The student can reopen the Report later and continue in a new Session.
 
 `.docx` files can be converted locally and inserted at the current cursor position.
 
-Because MD//WORKS Provenance did not observe how the Word document itself was created, imported text is recorded as:
+Because MD//WORKS PROVENANCE did not observe how the Word document itself was created, imported text is recorded as:
 
 ```text
-provenance = unverified
+PROVENANCE = unverified
 inputSource = word-import
 ```
 
@@ -247,7 +247,7 @@ It is **not** the cryptographically verifiable Academic Report submission format
 
 ## Verification for individuals and institutions
 
-MD//WORKS Provenance provides two verification workflows built around the same integrity model.
+MD//WORKS PROVENANCE provides two verification workflows built around the same integrity model.
 
 ### Report Verifier — one Report
 
@@ -258,7 +258,7 @@ It is useful not only for instructors, but also for individuals who want to keep
 - a student sharing a thesis-writing record with a supervisor
 - a researcher documenting how a manuscript developed
 - an author or freelance writer showing process evidence to an editor or client
-- collaborators reviewing the provenance of a shared draft
+- collaborators reviewing the PROVENANCE of a shared draft
 - anyone who wants to preserve a portable, independently verifiable writing record
 
 The Report Verifier independently checks:
@@ -335,7 +335,7 @@ The goal is transparency: the process record should remain understandable to wri
 
 ## Tamper-evident, not tamper-proof
 
-MD//WORKS Provenance Reports are ordinary HTML files. They can be edited.
+MD//WORKS PROVENANCE Reports are ordinary HTML files. They can be edited.
 
 What matters is that unauthorized changes become detectable.
 
@@ -367,7 +367,7 @@ If an event is changed, the Event Hash Chain breaks.
 
 If the signed Manifest is changed, the Final Signature no longer verifies.
 
-This is why MD//WORKS Provenance describes its evidence as **tamper-evident** rather than immutable.
+This is why MD//WORKS PROVENANCE describes its evidence as **tamper-evident** rather than immutable.
 
 ---
 
@@ -401,7 +401,7 @@ This lets the Verifier determine whether the finalized Manifest still matches wh
 
 ## Privacy and trust boundaries
 
-MD//WORKS Provenance is designed to record the writing process without turning the Editor into a surveillance client.
+MD//WORKS PROVENANCE is designed to record the writing process without turning the Editor into a surveillance client.
 
 ### Not stored in the Academic Report
 
@@ -417,7 +417,7 @@ The Report does not intentionally store:
 - File System Access handles
 - Emergency Recovery text
 
-Editor/environment information is stored only as **coarse provenance metadata** such as platform and browser family.
+Editor/environment information is stored only as **coarse PROVENANCE metadata** such as platform and browser family.
 
 That metadata is evidence recorded by the application — it is **not runtime attestation**.
 
@@ -490,17 +490,17 @@ and load the Finalized Report(s).
 
 ## Where it fits
 
-MD//WORKS Provenance is not intended to replace similarity checking, AI-policy enforcement, or an LMS.
+MD//WORKS PROVENANCE is not intended to replace similarity checking, AI-policy enforcement, or an LMS.
 
 It addresses a different layer.
 
-| Approach | Primary focus | What MD//WORKS Provenance adds |
+| Approach | Primary focus | What MD//WORKS PROVENANCE adds |
 | --- | --- | --- |
 | Similarity checker | Similarity between final text and existing sources | Writing-process evidence |
-| AI classifier | Statistical characteristics of the final text | No AI probability; process provenance instead |
+| AI classifier | Statistical characteristics of the final text | No AI probability; process PROVENANCE instead |
 | Cloud revision history | Editing history inside one cloud platform | Portable evidence inside the submitted Report |
 | LMS submission | Identity / course workflow / file collection | Cryptographic integrity of the process record |
-| **MD//WORKS Provenance** | **Recorded Writing Process** | **Portable provenance + hash-chain + signature verification for one Report or many Reports** |
+| **MD//WORKS PROVENANCE** | **Recorded Writing Process** | **Portable PROVENANCE + hash-chain + signature verification for one Report or many Reports** |
 
 These systems can be complementary.
 
@@ -518,7 +518,7 @@ Suppose a 3,000-word report contains:
 - valid Event Chain
 - valid Final Signature
 
-MD//WORKS Provenance does **not** conclude:
+MD//WORKS PROVENANCE does **not** conclude:
 
 > “This paper is authentic.”
 
@@ -532,7 +532,7 @@ That difference matters.
 
 ## Beta status
 
-MD//WORKS Provenance is currently in beta and is being tested in real writing workflows.
+MD//WORKS PROVENANCE is currently in beta and is being tested in real writing workflows.
 
 ### Recommended environment
 
@@ -556,7 +556,7 @@ Other browsers may use fallback file-download behavior where File System Access 
 
 ### Academic edition
 
-Unless otherwise noted, the MD//WORKS Provenance code in this repository is licensed under:
+Unless otherwise noted, the MD//WORKS PROVENANCE code in this repository is licensed under:
 
 **GNU Affero General Public License v3.0 only (`AGPL-3.0-only`)**
 
@@ -567,7 +567,7 @@ See [`LICENSE`](./LICENSE) for the legally controlling terms.
 
 ### Why AGPL?
 
-In MD//WORKS Provenance, the verification logic is part of the academic trust model.
+In MD//WORKS PROVENANCE, the verification logic is part of the academic trust model.
 
 If an institution modifies the software, the important question should not become:
 
@@ -589,7 +589,7 @@ Publishing the Academic edition under AGPL does not revoke or alter rights alrea
 
 ### Third-party software
 
-MD//WORKS Provenance may bundle third-party libraries.
+MD//WORKS PROVENANCE may bundle third-party libraries.
 
 Those components remain subject to their own licenses and notices.
 
@@ -601,7 +601,7 @@ Do not remove their copyright or license notices.
 
 Students retain the copyright and other rights they hold in their own writing.
 
-The AGPL license on MD//WORKS Provenance does not transfer ownership of a student's essay, paper, thesis text, or research writing to the software author.
+The AGPL license on MD//WORKS PROVENANCE does not transfer ownership of a student's essay, paper, thesis text, or research writing to the software author.
 
 However, an Academic Report is a self-contained HTML container and may contain both:
 
@@ -622,13 +622,13 @@ Where that provision applies, users interacting with the modified version must b
 
 Distribution of modified copies can also trigger the AGPL's ordinary source-code obligations.
 
-If MD//WORKS Provenance is deployed through an LMS or institutional web service, provide a clear **Source / License** path in the user interface and follow the `LICENSE` terms for the actual deployment model.
+If MD//WORKS PROVENANCE is deployed through an LMS or institutional web service, provide a clear **Source / License** path in the user interface and follow the `LICENSE` terms for the actual deployment model.
 
 ---
 
 ## Institutional License
 
-For code for which the MD//WORKS Provenance copyright holder owns the necessary rights, an alternative **Institutional License** may be offered.
+For code for which the MD//WORKS PROVENANCE copyright holder owns the necessary rights, an alternative **Institutional License** may be offered.
 
 This is not a “commercial-use license” — AGPL already permits commercial use.
 
@@ -666,7 +666,7 @@ Before broadly accepting external code contributions, the project may publish a 
 ### Level 0 — current beta
 
 - Writing Process recording
-- Paste Provenance
+- Paste PROVENANCE
 - Server Anchor
 - Final Signature
 - Working / Finalized Reports
@@ -704,7 +704,7 @@ SSO can strengthen the account-to-submission link. It still does not prove who p
 
 ## Security and academic-integrity disclosure
 
-MD//WORKS Provenance does not guarantee:
+MD//WORKS PROVENANCE does not guarantee:
 
 - prevention of all cheating
 - proof of authorship
@@ -715,13 +715,13 @@ MD//WORKS Provenance does not guarantee:
 
 It is a system for preserving and verifying a **recorded writing process**.
 
-If you discover a security issue, signature-verification flaw, provenance bypass, or evidence-semantics problem, please use the repository's designated security contact rather than publishing detailed exploit instructions in a public Issue.
+If you discover a security issue, signature-verification flaw, PROVENANCE bypass, or evidence-semantics problem, please use the repository's designated security contact rather than publishing detailed exploit instructions in a public Issue.
 
 ---
 
 ## Design principle
 
-MD//WORKS Provenance is built around one idea:
+MD//WORKS PROVENANCE is built around one idea:
 
 > **Stop guessing from the final text. Preserve the process evidence.**
 
@@ -733,4 +733,4 @@ But:
 
 > “What writing process was recorded, and can we verify that the record has not been altered?”
 
-That is the problem MD//WORKS Provenance is trying to solve.
+That is the problem MD//WORKS PROVENANCE is trying to solve.
