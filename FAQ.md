@@ -1,122 +1,124 @@
-# MD//WORKS PROVENANCE — よくある質問
+# MD//WORKS PROVENANCE — FAQ
 
-MD//WORKS PROVENANCEはWriting Processを記録し、後から整合性を確認できる証拠として保持するためのツールです。著者、AI利用、剽窃、不正、本人性を自動判定・証明するものではありません。
+MD//WORKS PROVENANCE records a Writing Process and preserves evidence that can later be checked for integrity. It does not determine authorship, AI use, plagiarism, misconduct, or identity.
 
-操作方法は[取扱説明書](./Manual-ja.md)、製品全体の概要は[README](./README-ja.md)を参照してください。
+For operating instructions, see the [User Guide](./Manual.md). For the project overview, see the [README](./README.md).
 
-## 1. 「Unverified（未検証）」とは何ですか？
+## 1. What does “Unverified” mean?
 
-同じReport内で先に記録されたCopy/Cutイベントと照合できなかったPasteを指します。これはPaste Provenance上の分類であり、文章への評価ではありません。
+`Unverified` means that a Paste could not be matched to a prior Copy/Cut event recorded in the same Report.
 
-- Unverified ≠ 外部由来
-- Unverified ≠ AI
-- Unverified ≠ 剽窃
-- Unverified ≠ 不正
+It is a provenance classification, not a conclusion about the text:
 
-## 2. Unverifiedの割合が高いと、不正やAI利用を疑われますか？
+- Unverified does not mean external.
+- Unverified does not mean AI-generated.
+- Unverified does not mean plagiarism.
+- Unverified does not mean misconduct.
 
-割合だけでは判断できません。Non-internal paste shareは、記録された入力過程を説明するための指標です。AI確率、剽窃率、不正スコアではなく、授業・大学・研究・出版等の方針と文脈に沿って確認する必要があります。
+## 2. Does a high Unverified percentage mean I cheated or used AI?
 
-## 3. Verified Internal Pasteとは何ですか？
+No. Non-internal paste share is a descriptive process metric. It is not an AI probability, plagiarism percentage, or misconduct score. A reviewer must interpret the recorded process in context, including the course or institutional policy.
 
-同じReport内で記録された先行Copy/Cutと正常に照合できたPasteです。Report内での移動・再利用を示しますが、その文章を誰が書いたかまで証明するものではありません。
+## 3. What is Verified Internal Paste?
 
-## 4. Microsoft WordやGoogle Docsで先に書いてもよいですか？
+`Verified Internal` means that a Paste was successfully matched to a prior Copy/Cut recorded in the same Report. It describes an observed transfer within that Report. It does not prove who authored the text.
 
-技術的には可能です。ただし、外部で作成した文章をMD//WORKS PROVENANCEへ読み込んだり貼り付けたりすると、それ以前の執筆過程をEditorが観測していないため、通常はUnverifiedになります。許可される作業方法は授業・大学等のルールに従ってください。
+## 4. Can I write in Microsoft Word or Google Docs first?
 
-## 5. Word ImportがUnverifiedになるのはなぜですか？
+Technically, yes. However, text imported or pasted into MD//WORKS PROVENANCE will normally be `Unverified` because the Editor did not observe the earlier writing process. Your course or institution decides whether that workflow is allowed.
 
-MD//WORKS PROVENANCEはWord文書を読み込んだ操作自体は記録できますが、そのWord文書がどのように作成されたかは再構成できません。そのため、読み込まれた文章はUnverifiedとして扱われます。
+## 5. Why is Word Import marked Unverified?
 
-## 6. Non-internal paste shareとは何ですか？
+MD//WORKS PROVENANCE can record that an import occurred, but it cannot reconstruct how the Word document was created. Imported text is therefore treated as `Unverified` process input.
 
-概念上は次の割合です。
+## 6. What does “Non-internal paste share” mean?
+
+Conceptually, it is calculated as:
 
 ```text
 unverifiedPasteChars /
 (typedChars + replaceInsertedChars + unverifiedPasteChars)
 ```
 
-Verified Internal Pasteは分子・分母から除外されます。この値は、最終文章に占める外部文章の割合、AI生成率、剽窃率、不正確率ではありません。
+`Verified Internal` Paste is excluded. The result is not the percentage of final text taken from outside sources, the percentage that is AI-generated, a plagiarism percentage, or a probability of misconduct.
 
-## 7. どのファイルを提出すればよいですか？
+## 7. Which file should I submit?
 
-MD//WORKS PROVENANCE形式での提出を求められた場合は、通常は**Finalized Report（`.html`）**を提出します。PDFやMarkdownには同じ検証可能なWriting Process一式が含まれません。最終的には授業、指導者、投稿先等の指示を優先してください。
+When MD//WORKS PROVENANCE submission is required, you will normally submit the **Finalized Report (`.html`)**. PDF and Markdown exports do not carry the same verifiable Writing Process package. Always follow the instructions for your course, supervisor, publisher, or institution.
 
-## 8. Save ReportとSubmit Reportの違いは何ですか？
+## 8. What is the difference between Save Report and Submit Report?
 
-**Save Report**は、再度開いて編集を続けられる**Working Report**を保存します。**Submit Report**は、その時点の状態からFinal Signature付きの新しい**Finalized Report**を作成します。署名後の変更は検出できますが、HTMLそのものを変更不能にするわけではありません。
+**Save Report** creates or updates a **Working Report** that can be reopened and edited. **Submit Report** creates a fresh **Finalized Report** with a Final Signature. The signature makes later changes detectable; it does not make the HTML impossible to modify.
 
-## 9. Submitは複数回できますか？
+## 9. Can I Submit more than once?
 
-はい。再度Submitすると、その時点の内容に対して新しいfinalization記録とFinal Signatureが作成されます。
+Yes. Each later submission creates a fresh finalization record and Final Signature for the state being submitted.
 
-## 10. Submit後に編集するとどうなりますか？
+## 10. What happens if I edit after submitting?
 
-Editorで引き続き編集できます。その後に通常のSaveを行うと、現在の作業はWorking Report状態になります。新しい提出版が必要になったら、もう一度Submitしてください。
+The MD//WORKS PROVENANCE Editor remains usable. After further editing, an ordinary Save returns the current work to a Working Report state. Submit again when you need a new Finalized Report.
 
-## 11. Saveすると、どこまで履歴が残りますか？
+## 11. How much history is preserved when I Save?
 
-最後にSaveが正常完了した時点までのWriting ProcessがWorking Reportに保存されます。それ以後の未保存変更はそのファイルに含まれません。Emergency Recoveryは別機能であり、Writing Processのバックアップではありません。
+A saved Working Report preserves the Writing Process through the most recent successful Save. Changes made after that Save are not in that file. Emergency Recovery is separate and is not a Writing Process backup.
 
-## 12. Active timeとは何ですか？
+## 12. What is Active time?
 
-Editorが記録したinteraction-active timeです。参考値であり、勉強、思考、調査、読書、学習に費やした総時間を証明するものではありません。
+Active time is interaction-active time recorded in the Editor. It is a reference value and does not prove total study time, thinking time, research time, reading time, or learning time.
 
-## 13. レビュアーには何が見えますか？
+## 13. What can a reviewer see?
 
-Reportに応じて、Document、Sessions、Writing Process概要、Copy/Cut/PasteのPaste Provenance、Active time、Timeline、整合性検証、Server Anchor、Final Signature、Detailed Writing Logを確認できます。一部イベントには、変更内容を説明するための限定的なbefore/afterテキスト断片が含まれる場合があります。1キーごとのキーロギングは行いません。
+Depending on the Report, a reviewer can inspect the Document, Sessions, Writing Process summary, Copy/Cut/Paste provenance, Active time, timeline, integrity checks, Server Anchors, Final Signature, and Detailed Writing Log. Some recorded events may include limited before/after text snippets needed to explain a change. MD//WORKS PROVENANCE does not perform per-keystroke keylogging.
 
-## 14. 文書全体がサーバーへアップロードされますか？
+## 14. Does MD//WORKS PROVENANCE upload my whole document to a server?
 
-通常の編集と検証はlocal-firstです。ネットワーク通信はServer AnchorとFinal Signatureのために使用されます。整合性を検証するだけの目的で、Report全文を第三者の検証サービスへアップロードする必要はありません。
+Normal editing and verification are local-first. Network communication is used for Server Anchors and the Final Signature. A full Report does not need to be uploaded to a third-party verification service merely to verify it.
 
-Academic Reportには、IPアドレス、raw User-Agent、ハードウェア識別子、正確な位置情報、画面解像度、ローカルファイルパス、File System Access handle、1キーごとの入力ログ、Emergency Recovery本文を意図的に保存しません。ただし、通常のホスティングやネットワークのサーバーログは別の運用上の問題であり、運営者の方針に従います。
+The Academic Report does not intentionally store IP addresses, raw User-Agent strings, hardware identifiers, precise geolocation, screen resolution, local filesystem paths, File System Access handles, per-keystroke keylogging, or Emergency Recovery text. Ordinary hosting and network server logs are a separate deployment issue and should be governed by the operator's policy.
 
-## 15. オフラインで利用できますか？
+## 15. Can I work offline?
 
-編集、ローカルSave、Preview、Word Import、Print Preview、検証はローカルで動作できます。新しいServer Anchorの取得とSubmit / Final Signatureにはネットワーク接続が必要です。
+Editing, local Save, Preview, Word Import, Print Preview, and verification can operate locally. New Server Anchors and Submit / Final Signature require network access.
 
-有効なServer Anchorは、対象ハッシュが記録されたサーバー時刻以前にサーバーへ到達していたことを支持します。文章が書かれた正確な時刻を証明するものではありません。
+A valid Server Anchor can support that an anchored hash had reached the server no later than its recorded server timestamp. It does not prove the exact time the text was written.
 
-## 16. Emergency Recoveryとは何ですか？
+## 16. What is Emergency Recovery?
 
-ブラウザのsession storageに保持される、一時的なテキスト復旧用スナップショット1件です。中断時の文章救済だけを目的とします。
+Emergency Recovery is one temporary text-recovery snapshot stored in browser session storage. It is intended only for text salvage after an interruption.
 
-## 17. Emergency Recoveryはバックアップですか？
+## 17. Is Emergency Recovery a backup?
 
-いいえ。Events、Sessions、Event Chain、Manifest、Server Anchors、Final Signatureは復元しません。Working Reportを定期的にSaveしてください。
+No. It does not restore Events, Sessions, the Event Chain, Manifest, Server Anchors, or Final Signature. Save Working Reports regularly.
 
-## 18. 復旧したテキストをEditorへ貼り戻すとどうなりますか？
+## 18. What happens if I paste recovered text back into the Editor?
 
-通常のPasteとして処理されます。同じReport内の先行Copy/Cutと照合できなければ、通常はUnverifiedとして記録されます。
+Recovered text is handled as an ordinary Paste. If it cannot be matched to a prior Copy/Cut in the same Report, it will normally be recorded as `Unverified`.
 
-## 19. 別のPCやブラウザで作業を続けられますか？
+## 19. Can I continue on another computer or browser?
 
-はい。保存済みのWorking Reportを移動して開けば続行できます。Emergency Recoveryのデータは作成されたブラウザセッション内に留まり、Reportと一緒には移動しません。
+Yes. Move and open a saved Working Report to continue. Emergency Recovery data stays in the browser session where it was created and does not travel with the Report.
 
-## 20. Working ReportとFinalized Reportの両方を保管すべきですか？
+## 20. Should I keep both Working and Finalized Reports?
 
-はい。採点、指導、編集、研究レビュー等が終わるまではWorking Reportを保管し、実際に提出・共有したFinalized Reportもそのまま残すことを推奨します。
+Yes. Keep the Working Report until grading, editorial review, or research review is complete. Also retain the exact Finalized Report that you submitted or shared.
 
-## 21. 印刷物やPDFはAcademic Reportですか？
+## 21. Is a printed or PDF copy an Academic Report?
 
-それだけではAcademic Reportではありません。印刷・PDFは閲覧、校正、別途指定された提出に利用できますが、Academic Report HTMLと同じ検証可能なWriting Process一式は含みません。
+No, not by itself. Print and PDF output are useful for reading, proofreading, or separate submission requirements, but they do not contain the same verifiable process package as the Academic Report HTML.
 
-## 22. MD//WORKS PROVENANCEはAIを検出しますか？
+## 22. Does MD//WORKS PROVENANCE detect AI?
 
-いいえ。最終文章をAI／人間と分類するのではなく、記録されたWriting Processを提示します。AI利用の可否は授業、大学、研究、出版等の方針に従います。
+No. It records process evidence instead of classifying final text as AI-written or human-written. AI-use rules remain a matter for the relevant course, institution, publisher, or research policy.
 
-## 23. 有効なReportなら、誰が書いたか証明できますか？
+## 23. Does a valid Report prove who wrote it?
 
-できません。有効なEvent Chain、一致するHash、Server Anchor、Final Signatureは、記録された証拠の整合性を支持しますが、著者、本人性、公式Editorが実行された事実、学術的な適切性を証明しません。MD//WORKS PROVENANCEはtamper-evident（改変を検知可能）であり、tamper-proof（変更不能）ではありません。
+No. A valid Event Chain, matching hashes, Server Anchors, and a valid Final Signature support integrity claims about the recorded evidence. They do not prove authorship, identity, official-runtime execution, or academic conduct. The system is tamper-evident, not tamper-proof.
 
-## 24. Report VerifierとOverview Verifierはどう使い分けますか？
+## 24. What is the difference between Report Verifier and Overview Verifier?
 
-**Report Verifier**は、単一Reportの検証・提示に使います。学生から指導者、研究者から共同研究者、著者から編集者・依頼者、個人から第三者レビュアーへの提示や、教員による提出物1件の詳細確認に適しています。
+The **Report Verifier** is a portable interface for one Report. It is useful when a student presents a Report to a supervisor, a researcher to a collaborator, an author to an editor or client, an individual to a third-party reviewer, or an instructor examines one submission.
 
-**Overview Verifier**は、複数Reportの一覧確認・詳細検証に使います。授業、コース、大学等での一括読込、first-pass review、一覧から選んだReportの詳細確認に適しています。
+The **Overview Verifier** is for many Reports. It supports class, course, and institutional workflows, batch review, first-pass screening, and selection of individual Reports for detailed review.
 
-Overview Verifierは同じ詳細検証機能を含み得ますが、Report Verifierには単一Reportをシンプルに持ち運び、提示・検証する独立した用途があります。
+The Overview Verifier may contain the same detailed Teacher View and Technical View functions, but the Report Verifier remains useful as a simple one-Report verification and presentation interface.
 
