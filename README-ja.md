@@ -1,4 +1,4 @@
-# MD//WORKS Provenance
+# MD//WORKS PROVENANCE
 
 **自分のWriting Processを、自分で保持し、必要なときに第三者へ検証可能な記録として示せる。監視ではなく、透明性のためのMarkdownエディタ。**
 
@@ -11,7 +11,7 @@
 
 生成AI、コピペ、Wordからの移行が当たり前になった今、「どうやって書かれたか」をどう証明しますか？
 
-MD//WORKS ProvenanceはAIを検出しようとしません。執筆過程そのものを記録し、その記録を改ざん検知可能にします。
+MD//WORKS PROVENANCEはAIを検出しようとしません。執筆過程そのものを記録し、その記録を改ざん検知可能にします。
 
 学生・研究者・執筆者はブラウザだけで動くEditorでWriting Processを記録し、必要に応じて暗号署名付きHTML Reportを作成できます。単一Reportは **Report Verifier** で第三者に提示・検証でき、大学等では **Overview Verifier** で多数のReportをまとめて確認できます。検証のためにReportを外部の検証サービスへアップロードする必要はありません。
 
@@ -23,15 +23,15 @@ MD//WORKS ProvenanceはAIを検出しようとしません。執筆過程その�
 
 ## 他のツールと何が違うのか？ - AI検出器ではなく、過程の検証器
 
-多くのツールが「最終提出物」を主に判定するのに対し、MD//WORKS Provenanceは「記録された執筆過程と、その記録の整合性」を検証対象にします。
+多くのツールが「最終提出物」を主に判定するのに対し、MD//WORKS PROVENANCEは「記録された執筆過程と、その記録の整合性」を検証対象にします。
 
-| アプローチ | 主な対象 | MD//WORKS Provenanceが追加するもの |
+| アプローチ | 主な対象 | MD//WORKS PROVENANCEが追加するもの |
 | :--- | :--- | :--- |
 | 類似度チェック | 最終文章と既存資料の類似 | 記録されたWriting Process |
-| AI分類 | 最終文章の統計的特徴 | AI確率ではなくprocess provenance |
+| AI分類 | 最終文章の統計的特徴 | AI確率ではなくprocess PROVENANCE |
 | クラウド編集履歴 | 特定サービス内の編集履歴 | 提出HTML内に保持される可搬な証拠 |
 | LMS提出 | 本人・授業・ファイル収集の運用 | process recordの暗号学的整合性 |
-| **MD//WORKS Provenance** | **記録されたWriting Process** | **単一または複数Reportのprovenance・hash chain・署名検証** |
+| **MD//WORKS PROVENANCE** | **記録されたWriting Process** | **単一または複数ReportのPROVENANCE・hash chain・署名検証** |
 
 これらは代替関係とは限らず、目的に応じて補完的に利用できます。
 
@@ -41,7 +41,7 @@ MD//WORKS ProvenanceはAIを検出しようとしません。執筆過程その�
 
 **Editor (学生向け)**
 - **Writing Record**: `Active 24m | Unverified 22% | Anchors: 14` を常時表示。クリックで詳細パネル
-- **Paste Provenance**: 同一Report内のCopy/Cutに `transferId / sourceHash` で照合。一致すれば `Verified Internal`、しなければ `Unverified`。そして重要: `Unverified ≠ 不正 ≠ AI ≠ 剽窃`
+- **Paste PROVENANCE**: 同一Report内のCopy/Cutに `transferId / sourceHash` で照合。一致すれば `Verified Internal`、しなければ `Unverified`。そして重要: `Unverified ≠ 不正 ≠ AI ≠ 剽窃`
 - **Server Anchor & Final Signature**: 提出時にEd25519署名を付与。SHA-256はハッシュ、Ed25519は署名と役割分離
 - **学術特化**: ローカル画像のBase64埋め込み禁止、Word (.docx) はカーソル位置へ挿入してUnverified記録、Emergency Recoveryは一時的なテキスト救済のみ
 
@@ -82,7 +82,7 @@ report-verifier.html にFinalized Reportを読み込む
 overview-verifier.html に提出HTMLをまとめてドラッグ＆ドロップ
 ```
 
-Active timeはEditorが記録したinteraction-active timeであり、思考・調査・読書・学習に費やした総時間を証明するものではありません。MD//WORKS Provenanceは **tamper-evident（改変を検知可能）であり、tamper-proof（変更不能）ではありません。** Print/PDFは閲覧・校正には利用できますが、検証可能なAcademic Report HTMLと同じ提出形式ではありません。
+Active timeはEditorが記録したinteraction-active timeであり、思考・調査・読書・学習に費やした総時間を証明するものではありません。MD//WORKS PROVENANCEは **tamper-evident（改変を検知可能）であり、tamper-proof（変更不能）ではありません。** Print/PDFは閲覧・校正には利用できますが、検証可能なAcademic Report HTMLと同じ提出形式ではありません。
 
 ---
 
@@ -91,7 +91,7 @@ Active timeはEditorが記録したinteraction-active timeであり、思考・�
 <details>
 <summary>クリックで詳細な機能比較表を展開</summary>
 
-| 項目 | MD//WORKS Provenance | 類似度チェック | AI分類 | クラウド編集履歴 |
+| 項目 | MD//WORKS PROVENANCE | 類似度チェック | AI分類 | クラウド編集履歴 |
 | :--- | :--- | :--- | :--- | :--- |
 | **目的** | 執筆過程の透明化 | 既存資料との類似確認 | 最終文章の統計的分類 | 編集の可視化 |
 | **Unverifiedの定義** | 同一Report内の先行Copy/Cutと照合できなかったPaste。明記: `Unverified ≠ 不正 ≠ AI ≠ 剽窃` | 類似度% | AIらしさ% | なし |
@@ -100,7 +100,7 @@ Active timeはEditorが記録したinteraction-active timeであり、思考・�
 | **プライバシー** | ReportにIPアドレス、raw User-Agent、1キーごとの入力ログ等を意図的に保存しない。検証はブラウザ内で実行 | 各サービスの運用に依存 | 各サービスの運用に依存 | 各サービスの運用に依存 |
 | **オフライン** | ローカルSave等はオフライン可。新規Server AnchorとSubmitはオンライン | 各サービスに依存 | 各サービスに依存 | 各サービスに依存 |
 | **AIへの立場** | AIを検出・判定しない。利用可否は授業等の方針に委ねる | 主目的ではない | AIらしさを分類 | 主目的ではない |
-| **ライセンス** | **AGPL-3.0-only**。検証・provenanceロジックは公開されたソースで確認可能。代替Institutional Licenseが提供される場合がある | 各サービスの条件に依存 | 各サービスの条件に依存 | 各サービスの条件に依存 |
+| **ライセンス** | **AGPL-3.0-only**。検証・PROVENANCEロジックは公開されたソースで確認可能。代替Institutional Licenseが提供される場合がある | 各サービスの条件に依存 | 各サービスの条件に依存 | 各サービスの条件に依存 |
 | **主な境界** | Editorで観測したprocess evidenceのみを扱い、AI・著者・本人性・不正を判定しない | 執筆過程は主対象ではない | 執筆過程は主対象ではない | 可搬な署名付きReportとは目的が異なる |
 
 </details>
@@ -111,18 +111,18 @@ Active timeはEditorが記録したinteraction-active timeであり、思考・�
 
 ### Academic版
 
-特記がない限り、MD//WORKS Provenanceのコードは **GNU Affero General Public License v3.0 only（`AGPL-3.0-only`）** で提供されます。正確な法的条件は[`LICENSE`](./LICENSE)が規定します。
+特記がない限り、MD//WORKS PROVENANCEのコードは **GNU Affero General Public License v3.0 only（`AGPL-3.0-only`）** で提供されます。正確な法的条件は[`LICENSE`](./LICENSE)が規定します。
 
 AGPLは商用利用を禁止するライセンスではありません。商用利用、改変、再配布は、ライセンス条件に従う限り可能です。
 
 ### 学生・利用者が書いた文章
 
-執筆者は、自分のレポート、論文、研究文章、原稿等について、自らが有する著作権その他の権利を保持します。MD//WORKS Provenanceが、その文章の所有権をソフトウェア作者へ移転することはありません。
+執筆者は、自分のレポート、論文、研究文章、原稿等について、自らが有する著作権その他の権利を保持します。MD//WORKS PROVENANCEが、その文章の所有権をソフトウェア作者へ移転することはありません。
 
 ただし、自己完結型のAcademic Report HTMLには、次の異なる層が同じコンテナ内に含まれる場合があります。
 
 1. 利用者が執筆した内容
-2. AGPLの対象となるMD//WORKS Provenanceのアプリケーション／コード部分
+2. AGPLの対象となるMD//WORKS PROVENANCEのアプリケーション／コード部分
 
 Reportコンテナを再配布する場合は、ソフトウェア部分や同梱された第三者コンポーネントに適用されるライセンス表示を削除しないでください。
 
@@ -130,7 +130,7 @@ Reportコンテナを再配布する場合は、ソフトウェア部分や同�
 
 AGPL-3.0 Section 13は、ネットワーク越しの遠隔操作に対応するProgramの改変版を扱います。その規定が適用される場合、改変版と遠隔で対話する利用者には、その版の対応ソースを受け取る機会を提供する必要があります。改変コピーの配布・伝達については、通常のAGPLソース提供義務が別途生じる場合もあります。
 
-MD//WORKS ProvenanceをLMSや大学等のWebサービスで提供する場合は、UIに明確な **Source / License** 導線を設け、実際の運用形態に応じて`LICENSE`の条件に従ってください。このREADMEは法律上の助言ではなく、正確な条件は`LICENSE`が規定します。
+MD//WORKS PROVENANCEをLMSや大学等のWebサービスで提供する場合は、UIに明確な **Source / License** 導線を設け、実際の運用形態に応じて`LICENSE`の条件に従ってください。このREADMEは法律上の助言ではなく、正確な条件は`LICENSE`が規定します。
 
 ### Standard MD//WORKSと第三者ソフトウェア
 
@@ -140,7 +140,7 @@ MD//WORKS ProvenanceをLMSや大学等のWebサービスで提供する場合は
 
 ### Institutional License
 
-MD//WORKS Provenanceの著作権者が必要な権利を保有するコードについては、代替の **Institutional License** が提供される場合があります。これは単なる「商用利用許可」ではありません。AGPL自体が商用利用を認めています。
+MD//WORKS PROVENANCEの著作権者が必要な権利を保有するコードについては、代替の **Institutional License** が提供される場合があります。これは単なる「商用利用許可」ではありません。AGPL自体が商用利用を認めています。
 
 Institutional Licenseは、たとえば次のような条件を必要とする組織向けです。
 
