@@ -17,7 +17,7 @@ MD//WORKS PROVENANCEはAIを検出しようとしません。執筆過程その�
 
 **これは監視ツールではありません。** Academic Reportには、IPアドレス、raw User-Agent、1キーごとの入力ログ等を意図的に保存しません。通常のホスティング／ネットワークのサーバーログはReport内容とは別の運用上の問題です。
 
-[マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ.md) | [ライセンス](./LICENSE)
+[マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ.md) | 
 
 ---
 
