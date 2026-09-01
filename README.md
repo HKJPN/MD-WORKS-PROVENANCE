@@ -1,5 +1,5 @@
 # MD//WORKS PROVENANCE
-
+**Languages:**  [🇯🇵 日本語](Readme-ja.md) or [🇺🇸 English](Readme.md) <br>
 **Don’t guess whether a paper was written by AI. Preserve how it was written.**
 
 [![License: AGPL-3.0-only](https://img.shields.io/badge/License-AGPL--3.0--only-blue.svg)](./LICENSE)
