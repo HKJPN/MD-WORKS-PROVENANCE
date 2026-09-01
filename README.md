@@ -25,7 +25,7 @@ The result is a self-contained HTML Report that can be independently checked in 
 
 Writers work locally in the browser. A single Report can be shared with a supervisor, collaborator, editor, client, or other reviewer and checked with the **Report Verifier**. Institutions can review many Reports with the **Overview Verifier**. In either case, a Report does not need to be uploaded to a third-party verification service just to check its integrity.
 
-[Documentation](./Manual.md) · [Student FAQ](./FAQ-en.md)
+[Documentation](./Manual.md) · [Student FAQ](./FAQ.md)
 
 ---
 
