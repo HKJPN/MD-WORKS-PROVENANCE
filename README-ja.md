@@ -12,7 +12,7 @@
 生成AI、コピペ、Wordからの移行が当たり前になった今、「どうやって書かれたか」をどう証明しますか？
 
 MD//WORKS PROVENANCEはAIを検出しようとしません。執筆過程そのものを記録し、その記録を改ざん検知可能にします。
-
+<img src="./images/Readme1-ja.png" alt="Readme1-ja.png" width="100%"><br>
 学生・研究者・執筆者はブラウザだけで動くEditorでWriting Processを記録し、必要に応じて暗号署名付きHTML Reportを作成できます。単一Reportは **Report Verifier** で第三者に提示・検証でき、大学等では **Overview Verifier** で多数のReportをまとめて確認できます。検証のためにReportを外部の検証サービスへアップロードする必要はありません。
 
 **これは監視ツールではありません。** Academic Reportには、IPアドレス、raw User-Agent、1キーごとの入力ログ等を意図的に保存しません。通常のホスティング／ネットワークのサーバーログはReport内容とは別の運用上の問題です。
