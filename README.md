@@ -398,6 +398,8 @@ At submission, the final Manifest is signed with Ed25519.
 
 This lets the Verifier determine whether the finalized Manifest still matches what was signed.
 
+<img src="./images/Readme2.png" alt="Readme2.png" width="100%"><br>
+
 ---
 
 ## Privacy and trust boundaries
