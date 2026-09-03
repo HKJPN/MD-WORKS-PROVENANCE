@@ -8,6 +8,7 @@
 [![No analytics](https://img.shields.io/badge/analytics-none-2ea44f.svg)](#privacy-and-trust-boundaries)
 
 **MD//WORKS PROVENANCE** is a writing editor and verification toolkit designed to preserve a **tamper-evident record of the writing process**.
+<img src="./images/Readme1.png" alt="Readme1.png" width="100%"><br>
 
 Instead of trying to infer authorship from the final text, it records what happened while the document was being written:
 
