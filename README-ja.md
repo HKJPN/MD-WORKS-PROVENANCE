@@ -104,6 +104,7 @@ Active timeはEditorが記録したinteraction-active timeであり、思考・�
 | **主な境界** | Editorで観測したprocess evidenceのみを扱い、AI・著者・本人性・不正を判定しない | 執筆過程は主対象ではない | 執筆過程は主対象ではない | 可搬な署名付きReportとは目的が異なる |
 
 </details>
+<img src="./images/Readme2-ja.png" alt="Readme2-ja.png" width="100%"><br>
 
 ---
 
