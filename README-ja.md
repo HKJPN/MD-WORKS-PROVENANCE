@@ -1,4 +1,5 @@
 # MD//WORKS PROVENANCE
+**言語選択:** or [🇺🇸 English](README.md) 又は[🇯🇵 日本語](README-ja.md)  <br>
 
 **自分のWriting Processを、自分で保持し、必要なときに第三者へ検証可能な記録として示せる。監視ではなく、透明性のためのMarkdownエディタ。**
 
