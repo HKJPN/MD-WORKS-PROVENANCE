@@ -1,4 +1,5 @@
 # MD//WORKS PROVENANCE
+**Languages:**  [🇯🇵 日本語](README-ja.md) or [🇺🇸 English](README.md) <br>
 
 **Don’t guess whether a paper was written by AI. Preserve how it was written.**
 
