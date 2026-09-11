@@ -30,7 +30,7 @@ Input Process Metricsについても、1キーごとの入力時刻列やIME変�
 
 通常のホスティング／ネットワークのサーバーログはReport内容とは別の運用上の問題です。
 
-[マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ.md)
+[マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ-ja.md)
 
 ---
 
