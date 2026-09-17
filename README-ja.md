@@ -10,7 +10,7 @@
 
 > **通常版MD//WORKSは別プロジェクトとしてMIT、MD//WORKS PROVENANCEのコードは特記がない限りAGPL-3.0-onlyです。**  
 
-生成AI、コピペ、Wordからの移行が当たり前になった今、最終文章だけを見て「誰が、どう書いたか」を推測することは難しくなっています。 MD//WORKS PROVENANCEは、AIらしさを判定するのではなく、 **文章がどのように編集されたかという執筆過程そのものを記録し、その記録が後から変更されていないかを検証できるようにするツールです。** 
+生成AI、コピペ、Wordでの編集が当たり前になった今、最終文章だけを見て「誰が、どう書いたか」を推測することは難しくなっています。 MD//WORKS PROVENANCEは、AIらしさを判定するのではなく、 **文章がどのように編集されたかという執筆過程そのものを記録し、その記録が後から変更されていないかを検証できるようにするツールです。** 
 
 <img src="./images/Readme1-ja.png" alt="MD//WORKS PROVENANCEの概要" width="100%"><br>
 
@@ -42,11 +42,12 @@
 Experimental機能として、Direct Edit、削除、IME Composition、
 Typing Chunk、Pause等のInput Process Metricsも記録されます。これは、執筆者独特のタイピングを記録しAIや自動入力ソフトと区別するためです。
 
-提出時には「ファイル→レポートを提出」からFinal Signatureを付与したFinalized Reportを作成できます。もし、執筆過程や最終文書を1文字でも改ざんすると、[この3番目のサンプルファイル](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)のように、評価者からは見えるようになります。
+提出時には「ファイル→レポートを提出」からFinal Signatureを付与したFinalized Reportがローカルに作成されます。作成されたファイルは、別途指定された方法で評価者に提出します。MD//WORKS PROVENANCEはオフラインでも編集でき執筆過程も記録されますが、「レポートを提出」時にはインターネットへ接続している必要があります。これは、提出時の記録に対して、サーバーから改ざん検知用の電子署名（Final Signature）を取得してファイルに付与するためです。もし、執筆過程や最終文書を改ざんしたり、ファイルが破損すると、[この3番目のサンプルファイル](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)のように、評価者からは見えるようになります。
 
-こうした機能で、あなたのWriting Processを「監視する」のではなく、**「必要なときに、自分の執筆過程を説明できる形で残す**」ことができきます。
+こうした仕組みで、あなたのWriting Processは「監視される」のではなく、**「必要なときに、自分の執筆過程を説明できる形**」で残すことができきます。
 
-> 
+| [学生向けFAQ](./FAQ-ja.md) | 
+
 ---
 
 ## 👨‍🏫 評価者・先生方へ
@@ -65,6 +66,7 @@ Verifierでは、Document Hash、Event Log、Event Chain、Final Signature、Pas
 
 現β版ではReview Priorityの自動判定は有効化されておらず、通常 **Not assessed** と表示されます。
 
+以下は、情報科学の専門家や導入を検討される大学や企業様向けの情報で、若干専門的になります。
 ---
 
 ## ⚙️ コアアイデア：AI検出器ではなく、過程の検証器
