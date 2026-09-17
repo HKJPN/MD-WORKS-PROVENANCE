@@ -1,6 +1,6 @@
 # Academic MD//WORKS Sample Reports
 
-日本語訳が英語の文末に続きます。  
+日本語訳が[英語の文末]()に続きます。  
 The Japanese translation follows the English text.
 
 These synthetic sample Reports are provided for evaluation and demonstration.
