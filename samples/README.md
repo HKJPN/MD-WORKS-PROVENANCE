@@ -38,7 +38,7 @@ It means that the current Report does not match the integrity information record
 
 A normally finalized Academic Report.
 
-## Expected result
+## Inspection result
 
 - **Active time:** 14 min
 - **Non-internal paste share:** 0%
@@ -59,7 +59,7 @@ The writing process was recorded, the current document matches the integrity inf
 
 A valid Finalized Report containing a high proportion of Unverified Paste.
 
-## Expected result
+## Inspection result
 
 - **Active time:** 3 min
 - **Non-internal paste share:** 85%
@@ -101,7 +101,7 @@ A Finalized Report that was intentionally modified after finalization.
 
 The document text inside the Report was changed after the Final Signature had already been created.
 
-## Expected result
+## Inspection result
 
 - **Active time:** 5 min
 - **Non-internal paste share:** 0%
