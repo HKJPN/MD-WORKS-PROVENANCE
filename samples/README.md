@@ -5,8 +5,6 @@ The Japanese translation follows the English text.
 
 [These synthetic sample Reports](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples) are provided for evaluation and demonstration.
 
-They contain no real student information.
-
 ---
 
 ## What these three samples show
@@ -203,8 +201,6 @@ It does **not** by itself prove authorship, determine AI use, or determine acade
 # MD//WORKS PROVENANCE サンプルレポート
 
 [これらのサンプルレポート](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples)は、評価およびデモを目的として作成されたダミーデータです。
-
-実際の学生の情報は一切含まれていません。
 
 ---
 
