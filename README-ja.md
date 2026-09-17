@@ -30,22 +30,27 @@
 
 ---
 
-## 👨‍🎓 学生・執筆者へ
+## 👨‍🎓 執筆者・学生の皆様へ
 
-普段どおり文章を書き、**Save Report**で執筆記録を含むHTML Reportを保存します。同じReport内でのCopy / Cut → Pasteは照合可能な場合に **Verified Internal** として記録され、その方法では確認できなかったPasteは **Unverified** として記録されます。
+普段どおり文章を書き、**Save Report**で執筆記録を含むHTML Reportを保存します。同じReport内でのCopy / Cut → Pasteは照合され **Verified Internal** として記録され、同じReport内と確認できなかったPasteは **Unverified** として記録されます。
 
+ペーストの**Unverified**　は
 > **Unverified ≠ 外部由来 ≠ AI ≠ 剽窃 ≠ 不正**
+ですが、外部からのペースト割合は一定割合以下に抑え、MD//WORKS PROVENANCE内でできるだけ多く編集することが推奨されます。もし外部からのペーストの割合が多い場合は [この2番目のサンプルファイルのように](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md) 、評価者からは見えるようになります。
 
-さらにExperimental機能として、Direct Edit、削除、IME Composition、
-Typing Chunk、Pause等のInput Process Metricsも記録できます。MD//WORKS PROVENANCEは1キーごとの入力ログを保存するキーロガーではありません。提出時にはFinal Signatureを付与したFinalized Reportを作成できます。
+Experimental機能として、Direct Edit、削除、IME Composition、
+Typing Chunk、Pause等のInput Process Metricsも記録されます。これは、執筆者独特のタイピングを記録しAIや自動入力ソフトと区別するためです。
 
-これはあなたのWriting Processを「監視する」のではなく、**必要なときに、自分の執筆過程を説明できる形で残すためのツールです。**
+提出時には「ファイル→レポートを提出」からFinal Signatureを付与したFinalized Reportを作成できます。もし、執筆過程や最終文書を1文字でも改ざんすると、[この3番目のサンプルファイル](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)のように、評価者からは見えるようになります。
 
+こうした機能で、あなたのWriting Processを「監視する」のではなく、**「必要なときに、自分の執筆過程を説明できる形で残す**」ことができきます。
+
+> 
 ---
 
 ## 👨‍🏫 教員・評価者へ
 
-Reportの検証は、**Reportを外部の検証サービスへアップロードすることなく、ブラウザ内でローカルに実行できます。**
+提出されたReportの検証は、**Reportを外部の検証サービスへアップロードすることなく、ブラウザ内でローカルに実行できます。**
 
 **1件を詳しく確認する場合**  
 → **Report Verifier**
@@ -55,16 +60,7 @@ Reportの検証は、**Reportを外部の検証サービスへアップロード
 
 Verifierでは、Document Hash、Event Log、Event Chain、Final Signature、Paste Provenance、Writing Timeline、Input Process Metrics等を確認できます。
 
-ただし、これらを単純な「不正スコア」に変換することはしません。
-
-**Integrity**
-は記録の整合性、
-
-**Capture Quality**
-は入力過程をどの程度観測できたか、
-
-**Review Priority**
-は人による確認を支援するための別の概念です。
+これらが何を意味し、不正や改ざんをどのように評価すべきかは、[３つのサンプルファイル例](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)をご覧ください。
 
 現β版ではReview Priorityの自動判定は有効化されておらず、通常 **Not assessed** と表示されます。
 
