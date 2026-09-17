@@ -40,6 +40,7 @@ A normally finalized Academic Report.
 
 ## Expected result
 
+- **Active time:** 14 min
 - **Non-internal paste share:** 0%
 - **Process:** Recorded
 - **Integrity:** Verified
