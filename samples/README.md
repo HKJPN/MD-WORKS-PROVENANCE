@@ -72,13 +72,13 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 - 執筆記録: 記録あり
 - 整合性: 検証済み
 - 最終署名: 検証済み
-- Verification attention: -
+- 検証上の確認: -
 
-通常の検証ワークフローが正しく動作するかを確認するために、このファイルを使用してください。
+通常の検証ワークフローが正しく動作するかを確認するために、このファイルを例として使用してください。
 
 ## 02-high-unverified-report.html
 
-「非内部貼り付け割合（Unverified Paste）」の割合が高い、有効な最終化済みレポートです。
+「非内部貼り付け（Unverified Paste）」の割合が高い、有効な最終化済みレポートです。
 
 期待される結果：
 
@@ -86,12 +86,12 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 - 執筆記録: 記録あり
 - 整合性: 検証済み
 - 最終署名: 検証済み
-- Verification attention: -
+- 検証上の確認: -
 
 
 これは、以下の重要な事実を示すためのものです：
 
-**「非内部貼り付け」は、AIによる生成、盗用、不正行為、または完全性が損なわれていることを必ずしも意味するものではありません。**　しかしながら、この場合はなぜこれほど非内部貼り付けの割合が高いのか、執筆者への確認等の対応が必要と考えられます。
+**「非内部貼り付け」は、AIによる生成、盗用、不正行為、または整合性が損なわれていることを必ずしも意味するものではありません。**　しかしながら、この場合はなぜこれほど非内部貼り付けの割合が高いのか、執筆者への確認等の対応が必要と考えられます。
 
 ## 03-integrity-broken-report.html
 
@@ -103,6 +103,6 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 - 執筆記録: 記録あり
 - 整合性: **整合性不一致**
 - 最終署名: 検証済み
-- Verification attention: **確認が必要**
+- 検証上の確認: **確認が必要**
 
 「整合性不一致」「確認が必要」という結果自体は、ファイルが変更された理由や、学業上の不正行為があったかどうかを断定するものでは **必ずしも** ありません。ただし、意図しないファイルの破損や改ざんの可能性も含め、変更が加えられた理由の確認は必要となります。
