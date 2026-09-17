@@ -103,6 +103,7 @@ The document text inside the Report was changed after the Final Signature had al
 
 ## Expected result
 
+- **Active time:** 5 min
 - **Non-internal paste share:** 0%
 - **Process:** Recorded
 - **Integrity:** Broken
