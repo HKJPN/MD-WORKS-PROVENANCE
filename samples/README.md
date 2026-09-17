@@ -217,8 +217,8 @@ MD//WORKS PROVENANCEでは、
 | サンプル                              | 一言でいうと                                     | 主な確認ポイント                        |
 | --------------------------------- | ------------------------------------------ | ------------------------------- |
 | `01-normal-finalized-report.html` | 正常に最終化されたReport                            | 執筆記録、整合性、最終署名が正常                |
-| `02-high-unverified-report.html`  | このReport内と照合できない **Copy/Pasteが多い** Report | Pasteが多くても、AI利用、盗用、不正行為とは限らない。<br>図中赤枠のVerifierの技術表示タブから詳細執筆過程を確認可能 |
-| `03-integrity-broken-report.html` | **最終化後に本文が変更** されたReport                        | 図中赤枠のVerifierの技術表示タブから詳細を確認可能       |
+| `02-high-unverified-report.html`  | このReport内と照合できない **Copy/Pasteが多い** Report | Pasteが多くても、必ずしもAI利用、盗用、不正行為とは限らないため、図中赤枠のVerifierの技術表示タブから詳細執筆過程を確認 |
+| `03-integrity-broken-report.html` | **最終化後に本文が変更** されたReport                        | 図中赤枠のVerifierの技術表示タブから詳細を確認       |
 
 <img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicJ.jpg" alt="SamplePicJ.jpg" width="100%"><br>
 
