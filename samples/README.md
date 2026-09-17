@@ -56,7 +56,7 @@ Integrity Broken does not by itself determine why the file changed or whether ac
 # Academic MD//WORKS サンプルレポート
 
 これらのサンプルレポートは、評価およびデモを目的として作成されたダミーデータです。実際の学生の情報は一切含まれていません。
-<img src="./images/SamplePicJ.jpg" alt="SamplePicJ.jpg" width="100%"><br>ion.
+<img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicJ.jpg" alt="SamplePicJ.jpg" width="100%"><br>ion.
 
 
 ## 01-normal-finalized-report.html
