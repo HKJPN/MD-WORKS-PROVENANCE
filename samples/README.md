@@ -18,8 +18,8 @@ These are separate questions.
 | Sample | In plain language | Main point |
 |---|---|---|
 | `01-normal-finalized-report.html` | A normal finalized Report | Writing record and integrity verification are normal |
-| `02-high-unverified-report.html` | A Report containing a large amount of Paste that could not be matched to an earlier Copy/Cut in the same Report | A high amount of Unverified Paste does **not** mean that the file integrity is broken |
-| `03-integrity-broken-report.html` | A finalized Report whose document text was modified after finalization | The current document no longer matches the document recorded at finalization |
+| `02-high-unverified-report.html` | A Report containing **a large amount of Paste** that could not be matched to an earlier Copy/Cut in the same Report | A high amount of Unverified Paste does **not** mean that the file integrity is broken |
+| `03-integrity-broken-report.html` | A finalized Report whose document text **was modified after finalization** | The current document no longer matches the document recorded at finalization |
 
 <img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicE.jpg" alt="SamplePicE.jpg" width="100%"><br>
 
@@ -222,8 +222,8 @@ MD//WORKS PROVENANCEでは、
 | サンプル                              | 一言でいうと                                     | 主な確認ポイント                        |
 | --------------------------------- | ------------------------------------------ | ------------------------------- |
 | `01-normal-finalized-report.html` | 正常に最終化されたReport                            | 執筆記録、整合性、最終署名が正常                |
-| `02-high-unverified-report.html`  | このReport内と照合できないCopy/Pasteが多いReport | Pasteが多くても、AI利用、盗用、不正行為とは限らない |
-| `03-integrity-broken-report.html` | 最終化後に本文が変更されたReport                        | 現在の本文が、最終化時に記録された本文と一致しない       |
+| `02-high-unverified-report.html`  | このReport内と照合できない **Copy/Pasteが多い** Report | Pasteが多くても、AI利用、盗用、不正行為とは限らない |
+| `03-integrity-broken-report.html` | **最終化後に本文が変更** されたReport                        | 現在の本文が、最終化時に記録された本文と一致しない       |
 
 <img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicJ.jpg" alt="SamplePicJ.jpg" width="100%"><br>
 
