@@ -158,7 +158,11 @@ It does **not** by itself prove authorship, determine AI use, or determine acade
 
 # MD//WORKS PROVENANCE サンプルレポート
 
-[これらのサンプルレポート](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples)は、評価およびデモを目的として実際にMD//WORKS PROVENANCEで作成されたファイルです。
+[これらのサンプルレポート](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples)は、以下のケースを示す目的で、実際にMD//WORKS PROVENANCEを用いて作成されたものです。
+
+- 通常の手順で執筆されたレポート
+- 主にコピー＆ペーストによって作成されたレポート
+- 最終化（ファイナライズ）後に意図的な改ざんが加えられたレポート
 
 ---
 
