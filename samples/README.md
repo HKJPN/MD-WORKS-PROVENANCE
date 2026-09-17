@@ -199,7 +199,7 @@ It does **not** by itself prove authorship, determine AI use, or determine acade
 
 # MD//WORKS PROVENANCE サンプルレポート
 
-[これらのサンプルレポート](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples)は、評価およびデモを目的として作成されたダミーデータです。
+[これらのサンプルレポート](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples)は、評価およびデモを目的として実際にMD//WORKS PROVENANCEで作成されたファイルです。
 
 ---
 
