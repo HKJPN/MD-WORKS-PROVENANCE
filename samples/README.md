@@ -78,7 +78,7 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 
 ## 02-high-unverified-report.html
 
-「未検証の貼り付け（Unverified Paste）」の割合が高い、有効な最終化済みレポートです。
+「非内部貼り付け割合（Unverified Paste）」の割合が高い、有効な最終化済みレポートです。
 
 期待される結果：
 
@@ -91,9 +91,7 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 
 これは、以下の重要な事実を示すためのものです：
 
-**「未検証」であることは、AIによる生成、盗用、不正行為、または完全性が損なわれていることを意味するものではありません。**
-
-単に、同じレポート内での事前の「コピー」や「切り取り」の履歴と照合できなかった貼り付け（ペースト）であることを意味しているに過ぎません。
+**「非内部貼り付け」は、AIによる生成、盗用、不正行為、または完全性が損なわれていることを必ずしも意味するものではありません。**　
 
 ## 03-integrity-broken-report.html
 
