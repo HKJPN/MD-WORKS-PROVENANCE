@@ -61,6 +61,7 @@ A valid Finalized Report containing a high proportion of Unverified Paste.
 
 ## Expected result
 
+- **Active time:** 3 min
 - **Non-internal paste share:** 85%
 - **Process:** Recorded
 - **Integrity:** Verified
