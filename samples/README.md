@@ -14,8 +14,8 @@ MD//WORKS PROVENANCE records information about the writing process and also chec
 | Sample | In plain language | Main point |
 |---|---|---|
 | `01-normal-finalized-report.html` | A normal finalized Report | Writing record and integrity verification are normal. However, It does not guarantee original authorship or that it wasn't ghostwritten. |
-| `02-high-unverified-report.html` | A Report containing **a large amount of Paste** that could not be matched to an earlier Copy/Cut in the same Report | Need for further inspection |
-| `03-integrity-broken-report.html` | A finalized Report whose document text **was modified after finalization** | Need for further inspection |
+| `02-high-unverified-report.html` | A Report containing **a large amount of Paste** that could not be matched to an earlier Copy/Cut in the same Report | **Need for further inspection** |
+| `03-integrity-broken-report.html` | A finalized Report whose document text **was modified after finalization** | **Need for further inspection** |
 
 <img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicE.jpg" alt="SamplePicE.jpg" width="100%"><br>
 Figure 1. Three sample files were verified by the `overview-verifier.html`.
