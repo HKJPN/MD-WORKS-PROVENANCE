@@ -11,8 +11,6 @@ The Japanese translation follows the English text.
 
 MD//WORKS PROVENANCE records information about the writing process and also checks whether the submitted Report is still consistent with the record created at finalization.
 
-These are separate questions.
-
 | Sample | In plain language | Main point |
 |---|---|---|
 | `01-normal-finalized-report.html` | A normal finalized Report | Writing record and integrity verification are normal |
