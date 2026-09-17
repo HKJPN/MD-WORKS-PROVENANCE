@@ -38,7 +38,7 @@ Expected result:
 
 This demonstrates an important distinction:
 
-**Non-internal paste does not mean AI, plagiarism, misconduct, or broken integrity.** It only means that the Paste could not be verified against a prior Copy/Cut event in the same Report.
+**Non-internal paste does not mean AI, plagiarism, misconduct, or broken integrity.** It only means that the Paste could not be verified against a prior Copy/Cut event in the same Report. However, further follow-up with the author is recommended to determine the reason for such a high proportion of non-internal paste.
 
 ## 03-integrity-broken-report.html
 
@@ -52,7 +52,7 @@ Expected result:
 - Signature: Verified
 - Verification attention: **Attention**
 
-This file is provided only to demonstrate tamper detection. Integrity Broken does not by itself determine why the file changed or whether academic misconduct occurred.
+This file is provided only to demonstrate tamper detection. Integrity Broken does not by itself determine why the file changed or whether academic misconduct occurred. Nevertheless, the reason for the modification must be confirmed, as it could indicate either unintentional file corruption or deliberate tampering.
 
 ---
 
