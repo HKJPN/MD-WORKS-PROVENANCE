@@ -1,6 +1,3 @@
-# English Manual
-
-````markdown
 # MD//WORKS PROVENANCE
 ## User Guide — Beta
 
