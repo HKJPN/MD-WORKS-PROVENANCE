@@ -67,10 +67,11 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 
 期待される結果：
 
-* 記録の完全性 (Record integrity): 検証済み
-* 最終署名 (Final Signature): 署名検証済み
-* イベントチェーン (Event Chain): 有効
-* サマリー (Summary): 一致
+- 非内部貼り付け割合: 0%
+- 執筆記録: 記録あり
+- 整合性: 検証済み
+- 最終署名: 検証済み
+- Verification attention: -
 
 通常の検証ワークフローが正しく動作するかを確認するために、このファイルを使用してください。
 
@@ -80,9 +81,12 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 
 期待される結果：
 
-* 記録の完全性: 検証済み
-* 最終署名: 署名検証済み
-* 外部からの貼り付け割合が高い (High Non-internal paste share)
+- 非内部貼り付け割合: **85%**
+- 執筆記録: 記録あり
+- 整合性: 検証済み
+- 最終署名: 検証済み
+- Verification attention: -
+
 
 これは、以下の重要な事実を示すためのものです：
 
@@ -96,9 +100,12 @@ This file is provided only to demonstrate tamper detection. Integrity Broken doe
 
 期待される結果：
 
-* 完全性 (Integrity): 破損（Broken）
-* 1つ以上のハッシュ/署名チェックに警告が表示される
+- 非内部貼り付け割合: 0%
+- 執筆記録: 記録あり
+- 整合性: **整合性不一致**
+- 最終署名: 検証済み
+- Verification attention: **確認が必要**
 
 このファイルは、改ざん検知機能のデモンストレーションのみを目的として提供されています。
 
-「完全性が破損している」という結果自体は、ファイルが変更された理由や、学業上の不正行為があったかどうかを断定するものではありません。
+「完全性が破損している」という結果自体は、ファイルが変更された理由や、学業上の不正行為があったかどうかを断定するものでは **必ずしも** ありません。
