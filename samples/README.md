@@ -20,6 +20,7 @@ These are separate questions.
 | `03-integrity-broken-report.html` | A finalized Report whose document text **was modified after finalization** | The current document no longer matches the document recorded at finalization |
 
 <img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicE.jpg" alt="SamplePicE.jpg" width="100%"><br>
+Figure 1. Three sample files were verified by the `overview-verifier.html`.
 
 ### Two important distinctions
 
