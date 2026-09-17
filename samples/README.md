@@ -37,9 +37,7 @@ Expected result:
 
 This demonstrates an important distinction:
 
-**Unverified does not mean AI, plagiarism, misconduct, or broken integrity.**
-
-It only means that the Paste could not be verified against a prior Copy/Cut event in the same Report.
+**Non-internal paste does not mean AI, plagiarism, misconduct, or broken integrity.** It only means that the Paste could not be verified against a prior Copy/Cut event in the same Report.
 
 ## 03-integrity-broken-report.html
 
@@ -53,9 +51,7 @@ Expected result:
 - Signature: Verified
 - Verification attention: **Attention**
 
-This file is provided only to demonstrate tamper detection.
-
-Integrity Broken does not by itself determine why the file changed or whether academic misconduct occurred.
+This file is provided only to demonstrate tamper detection. Integrity Broken does not by itself determine why the file changed or whether academic misconduct occurred.
 
 ---
 
