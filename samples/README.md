@@ -5,7 +5,7 @@ These synthetic sample Reports are provided for evaluation and demonstration.
 They contain no real student information.
 
 
-<img src="images/SamplePicE.jpg" alt="SamplePicE.jpg" width="100%"><br>
+<img src="./images/SamplePicE.jpg" alt="SamplePicE.jpg" width="100%"><br>
 
 
 
