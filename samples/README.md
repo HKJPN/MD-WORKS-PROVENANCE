@@ -25,7 +25,7 @@ These are separate questions.
 
 > **A high Non-internal paste share does not always mean AI use, plagiarism, or misconduct.**
 
-It means only that some pasted text could not be verified as originating from an earlier Copy/Cut event within the same Report. However, further follow-up with **the author is recommended to determine the reason for such a high proportion of non-internal paste.** For such purposes, more detailed information about the writing process can be viewed from the Technical View tab of the Verifier (Red frames indicated).
+It means only that some pasted text could not be verified as originating from an earlier Copy/Cut event within the same Report. However, further follow-up with **the author is recommended to determine the reason for such a high proportion of non-internal paste.** For such purposes, more detailed information about the writing process can be viewed from the Technical View tab of the Verifier (Red frames indicated in the Figure).
 
 Likewise:
 
