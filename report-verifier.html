@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MD//WORKS Provenance Report Verifier β</title>
+<style>
+:root{color-scheme:light dark;--bg:#090b11;--card:#111827;--card2:#151d2b;--border:#293246;--text:#eef2ff;--text2:#aab5d1;--text3:#6b7897;--accent:#8f82ff;--accent2:#d2cbff;--success:#5ad7a0;--warn:#ebb05b;--mono:ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+header{padding:16px 24px;background:var(--card);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+#drop{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;margin:16px;cursor:pointer}
+#drop.drag{background:var(--card2)}
+.view-tabs{display:flex;gap:4px;padding:0 16px;background:var(--card);border-bottom:1px solid var(--border);overflow:auto}
+.view-tab{padding:10px 16px;border:none;background:transparent;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-size:13px}
+.view-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.view-panel[hidden]{display:none}
+main{flex:1;overflow:auto;padding:16px;max-width:1100px;width:100%;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.stat{background:var(--card2);padding:12px;border-radius:8px}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase}
+.stat-val{font-size:20px;font-weight:700;color:var(--accent2);margin-top:4px}
+pre{white-space:pre-wrap;word-break:break-all;background:#000;border-radius:8px;padding:12px;font-size:12px;overflow:auto}
+.writing-timeline{background:var(--card2);border-radius:8px;overflow:hidden;margin-top:8px}
+.writing-day-row{display:grid;grid-template-columns:minmax(130px,1fr) minmax(180px,2fr) minmax(150px,auto) auto;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--border)}
+.writing-day-row:last-child{border-bottom:none}
+.writing-day-label{font-weight:700;color:var(--accent2)}
+.writing-bar-track{height:14px;background:rgba(107,120,151,.25);border-radius:999px;overflow:hidden}
+.writing-bar-fill{height:100%;background:var(--accent);border-radius:999px}
+.writing-bar-fill.active{min-width:4px}
+.writing-day-meta{font-size:12px;color:var(--text2);white-space:nowrap}
+.writing-submitted{font-size:12px;color:var(--success);font-weight:700;white-space:nowrap}
+.writing-inactive-row,.writing-gap-row{padding:9px 12px;text-align:center;color:var(--text3);font-size:12px;border-bottom:1px solid var(--border)}
+.writing-inactive-row{display:flex;justify-content:space-between;gap:12px}
+.writing-empty{padding:16px;color:var(--text3);text-align:center}
+@media(max-width:640px){.writing-day-row{grid-template-columns:1fr;gap:7px}.writing-day-meta,.writing-submitted{white-space:normal}.writing-inactive-row{align-items:flex-start;text-align:left;flex-direction:column;gap:2px}}
+.log-entry{border-bottom:1px solid var(--border);padding:8px 0;font-size:12px;font-family:var(--mono)}
+.log-entry .meta{color:var(--text3);font-size:11px}
+.log-entry .snippet{margin-top:4px;background:#000;padding:6px;border-radius:4px;max-height:120px;overflow:auto}
+.log-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}
+.log-filter{display:flex;align-items:center;gap:8px;flex:1 1 220px;min-width:0;font-size:12px;color:var(--text2)}
+.log-filter select{min-width:0;max-width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card2);color:var(--text)}
+.log-pager{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:1 1 260px;flex-wrap:wrap}
+.log-pager button{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card2);color:var(--text);cursor:pointer}
+.log-pager button:disabled{opacity:.45;cursor:not-allowed}
+.log-range{min-width:110px;text-align:center;font-size:12px;color:var(--text2)}
+.log-empty{padding:12px;color:var(--text3);font-size:13px}
+.summary-consistency{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--card2)}
+.summary-consistency.match{border-color:rgba(90,215,160,.45)}
+.summary-consistency.mismatch{border-color:rgba(235,176,91,.55)}
+.summary-consistency-title{font-weight:700}
+.summary-consistency.match .summary-consistency-title{color:var(--success)}
+.summary-consistency.mismatch .summary-consistency-title{color:var(--warn)}
+.summary-note{margin-top:4px;font-size:11px;color:var(--text3)}
+.summary-mismatch-table{width:100%;margin-top:10px;border-collapse:collapse;font-size:12px}
+.summary-mismatch-table th,.summary-mismatch-table td{padding:6px 8px;border-top:1px solid var(--border);text-align:left;vertical-align:top;word-break:break-word}
+.summary-mismatch-table th{color:var(--text2)}
+.verification-attention{margin-top:12px;padding:10px 12px;border:1px solid rgba(235,176,91,.55);border-radius:8px;background:rgba(235,176,91,.1);color:var(--warn);font-weight:700}
+.review-note{margin-top:12px;font-size:11px;color:var(--text3)}
+.section-note{margin:4px 0 12px;font-size:11px;color:var(--text3)}
+.process-review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.process-review-item{min-width:0;padding:14px;border:1px solid var(--border);border-radius:8px;background:var(--card2)}
+.process-review-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.02em}
+.process-review-value{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:18px;font-weight:700;color:var(--accent2);overflow-wrap:anywhere}
+.process-review-value::before{content:'●';font-size:12px;color:var(--text3)}
+.process-review-value.capture-good::before,.process-review-value.integrity-verified::before{content:'✓';color:var(--success)}
+.process-review-value.integrity-anchored::before{content:'✓';color:var(--accent)}
+.process-review-value.integrity-unsigned::before{content:'●';color:var(--text3)}
+.process-review-value.integrity-invalid::before{content:'✕';color:#ff7777}
+.process-review-value.capture-limited::before{color:var(--warn)}
+.process-review-explanation{margin-top:6px;font-size:12px;line-height:1.5;color:var(--text2)}
+.process-review-reasons{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.process-review-reasons h4{font-size:13px;color:var(--text2)}
+.process-review-reasons ul{margin:7px 0 0 20px;color:var(--text2);font-size:12px;line-height:1.6}
+.process-review-actions{margin-top:12px}
+.technical-link{padding:7px 11px;border:1px solid var(--border);border-radius:7px;background:var(--card2);color:var(--accent2);font:inherit;font-size:12px;cursor:pointer}
+.technical-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.badge{display:inline-block;margin-left:5px;padding:2px 7px;border-radius:999px;background:rgba(143,130,255,.16);color:var(--accent2);font-size:10px;font-weight:700;vertical-align:middle}
+@media(max-width:620px){.process-review-grid{grid-template-columns:1fr}.process-review-item{padding:12px}}
+.technical-intro{margin-bottom:12px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card2);font-size:11px;line-height:1.5;color:var(--text3)}
+.technical-intro p+p{margin-top:6px}
+.session-provenance{margin-top:7px;padding-left:10px;border-left:2px solid var(--border);font-size:11px;line-height:1.5;color:var(--text3)}
+.session-provenance strong{color:var(--text2)}
+.technical-details{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.technical-details>summary{font-weight:700}
+.technical-details pre{margin-top:12px;cursor:text}
+details{cursor:pointer} details summary{color:var(--accent2)}
+</style>
+</head>
+<body>
+<header>
+<div><h1>MD//WORKS Provenance Report Verifier β</h1><div id="file-info" style="font-size:12px;color:var(--text3)">ファイル未選択</div></div>
+<div>
+<button id="open-file-btn" style="padding:6px 12px;border-radius:6px;background:var(--accent);color:#fff;border:none;cursor:pointer">Open Report</button>
+<input type="file" id="file-input" accept=".html,.htm" style="display:none">
+</div>
+</header>
+<div id="drop">ここに assignment-submitted.html をドロップ、またはクリックして選択<br><span style="font-size:12px;color:var(--text3)">Reportを読み込むとTeacher Viewに概要を表示します。</span></div>
+<div class="view-tabs" role="tablist" aria-label="Verifier views">
+<button id="teacher-view-tab" class="view-tab active" type="button" role="tab" data-view="teacher" aria-controls="view-teacher" aria-selected="true">Teacher View</button>
+<button id="technical-view-tab" class="view-tab" type="button" role="tab" data-view="technical" aria-controls="view-technical" aria-selected="false">Technical View</button>
+</div>
+<main>
+<div id="view-teacher" class="view-panel" role="tabpanel" aria-labelledby="teacher-view-tab">
+<div class="card"><h3>Verification</h3><div id="teacher-verification" class="grid"></div><div id="verification-attention" class="verification-attention" hidden></div><p class="review-note">These checks describe record integrity and recorded activity. They do not determine academic misconduct.</p></div>
+<section class="card" aria-labelledby="process-review-heading"><h3 id="process-review-heading">Process Review <span class="badge">Experimental</span></h3><div id="process-review" aria-live="polite"></div></section>
+<div class="card"><h3>Writing Process</h3><div id="teacher-process-grid" class="grid"></div><p class="review-note">Unverified does not mean improper or necessarily external. It means that this paste could not be verified as originating from a prior Copy/Cut event in the same Report.</p><p class="review-note">Interaction-active time is a reference value and does not prove time spent thinking or learning.</p></div>
+<div class="card"><h3>Writing Timeline</h3><div id="timeline-view" class="writing-timeline"></div><p style="font-size:11px;color:var(--text3);margin-top:8px">Active writing time is interaction-active time from each session. It is a reference value and does not prove time spent thinking or determine academic misconduct.</p></div>
+<div class="card"><h3>Document</h3><pre id="doc-preview"></pre></div>
+</div>
+<div id="view-technical" class="view-panel" role="tabpanel" aria-labelledby="technical-view-tab" hidden>
+<div class="technical-intro"><p>Technical View shows independently recomputed integrity checks and recorded technical metadata. Recorded editor and environment information is protected by the Report event chain, but does not prove that an unmodified editor binary was executed.</p><p>Time information: Client time is recorded from the user's device. Server time is recorded by the MD//WORKS Provenance server when an Anchor or Final Signature is issued. The two timestamps have different sources and should not be interpreted as equivalent evidence.</p></div>
+<div class="card"><h3>Detailed verification</h3><p class="section-note">Integrity Status - independently computed</p><div id="integrity-details"></div></div>
+<div id="input-process-card" class="card"><h3 id="input-process-heading">Input Process Metrics <span class="badge">Experimental</span></h3><div id="input-process-grid" class="grid"></div><div id="input-process-details"></div><p class="review-note"><strong>About Input Process Metrics</strong><br>These values describe editing activity observed by the Editor, including direct edits, composition activity, and input pauses. They do not by themselves prove human authorship or determine AI use or misconduct.</p></div>
+<div class="card"><h3>Writing Process Summary</h3><div id="summary-consistency"></div><div id="summary-grid" class="grid"></div><p style="margin-top:12px;font-size:11px;color:var(--text3)">Interaction-active timeは参考値であり、執筆を考えていた時間を証明するものではありません（仕様10章）</p></div>
+<div class="card"><h3>Session History - Client/Server時刻区別</h3><div id="sessions-list"></div></div>
+<div class="card"><h3>Detailed Writing Log - デフォルト折りたたみ</h3><div id="detailed-log-controls"></div><div id="detailed-log"></div></div>
+</div>
+</main>
+<script>
+/* ========================================================================== 
+   Presentation i18n (English canonical; automatic browser language only)
+   ========================================================================== */
+function detectUiLanguage(languages = null) {
+  const candidates = Array.isArray(languages) && languages.length
+    ? languages
+    : (Array.isArray(navigator.languages) && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || 'en']);
+  for (const value of candidates) {
+    const lang = String(value || '').toLowerCase();
+    if (lang === 'ja' || lang.startsWith('ja-')) return 'ja';
+    if (lang === 'en' || lang.startsWith('en-')) return 'en';
+  }
+  return 'en';
+}
+
+const I18N_EN = Object.freeze({
+  'document.title': 'MD//WORKS Provenance Report Verifier β',
+  'header.title': 'MD//WORKS Provenance Report Verifier β',
+  'action.openReport': 'Open Report', 'file.none': 'No file selected',
+  'file.drop': 'Drop assignment-submitted.html here, or click to choose.',
+  'file.dropHint': 'Load a Report to display its summary in Teacher View.',
+  'file.loaded': '{filename} | {events} events | {sessions} sessions',
+  'view.aria': 'Verifier views', 'view.teacher': 'Teacher View', 'view.technical': 'Technical View',
+  'section.verification': 'Verification', 'section.processReview': 'Process Review',
+  'section.experimental': 'Experimental', 'section.writingProcess': 'Writing Process',
+  'section.timeline': 'Writing Timeline', 'section.document': 'Document',
+  'section.detailedVerification': 'Detailed verification', 'section.integrityComputed': 'Integrity Status - independently computed',
+  'section.inputProcess': 'Input Process Metrics', 'section.writingSummary': 'Writing Process Summary',
+  'section.sessionHistory': 'Session History - Client/Server time distinction',
+  'section.detailedLog': 'Detailed Writing Log - collapsed by default',
+  'verification.disclaimer': 'These checks describe record integrity and recorded activity. They do not determine academic misconduct.',
+  'verification.attention': '⚠ Verification attention required — Some verification checks require attention.',
+  'technical.intro': 'Technical View shows independently recomputed integrity checks and recorded technical metadata. Recorded editor and environment information is protected by the Report event chain, but does not prove that an unmodified editor binary was executed.',
+  'technical.time': "Time information: Client time is recorded from the user's device. Server time is recorded by the MD//WORKS Provenance server when an Anchor or Final Signature is issued. The two timestamps have different sources and should not be interpreted as equivalent evidence.",
+  'input.aboutHeading': 'About Input Process Metrics',
+  'input.about': 'These values describe editing activity observed by the Editor, including direct edits, composition activity, and input pauses. They do not by themselves prove human authorship or determine AI use or misconduct.',
+  'summary.activeDisclaimer': 'Interaction-active time is a reference value and does not prove time spent thinking about the writing.',
+  'writing.unverifiedDisclaimer': 'Unverified does not mean improper or necessarily external. It means that this paste could not be verified as originating from a prior Copy/Cut event in the same Report.',
+  'writing.activeDisclaimer': 'Interaction-active time is a reference value and does not prove time spent thinking or learning.',
+  'timeline.disclaimer': 'Active writing time is interaction-active time from each session. It is a reference value and does not prove time spent thinking or determine academic misconduct.',
+  'integrity.verified': 'Verified', 'integrity.anchored': 'Anchored', 'integrity.unsigned': 'Unsigned', 'integrity.invalid': 'Invalid',
+  'integrity.broken': 'Broken', 'integrity.recordIntegrity': 'Record integrity', 'integrity.finalSignature': 'Final signature',
+  'integrity.writingProcess': 'Writing process', 'integrity.recorded': 'Recorded', 'integrity.notRecorded': 'Not recorded',
+  'integrity.documentHash': 'Document hash', 'integrity.eventLogHash': 'Event log hash',
+  'integrity.eventChain': 'Event chain', 'integrity.finalChainHash': 'Final chain hash',
+  'integrity.serverAnchors': 'Server anchors', 'integrity.anchorVerification': 'Anchor verification',
+  'integrity.computedStatus': 'Computed status', 'integrity.claimedStatus': 'Claimed status',
+  'integrity.notClaimed': 'Not claimed',
+  'integrity.summaryConsistency': 'Summary consistency', 'integrity.match': 'Match', 'integrity.mismatch': 'Mismatch',
+  'integrity.valid': 'Valid', 'integrity.present': '{count} present',
+  'verification.state.notPresent': 'Not present', 'verification.state.allAnchors': 'All anchors verified',
+  'verification.state.partialAnchors': 'Partial anchors verified',
+  'verification.state.anchorsInvalid': 'Present but all signatures invalid',
+  'verification.state.signatureVerified': 'Signature verified', 'verification.state.signatureInvalid': 'Signature invalid',
+  'verification.state.signatureUnverifiable': 'Present but signature unverifiable',
+  'verification.state.error': 'Verification error',
+  'process.integrity': 'Integrity', 'process.captureQuality': 'Capture Quality',
+  'process.reviewPriority': 'Review Priority', 'process.notAssessed': 'Not assessed',
+  'capture.good': 'Good', 'capture.limited': 'Limited', 'capture.insufficient': 'Insufficient data',
+  'capture.unsupported': 'Unsupported',
+  'process.integrityVerified': 'Report integrity and the Final Signature were verified.',
+  'process.integrityAnchored': 'Report integrity and a server Anchor were verified.',
+  'process.integrityUnsigned': 'Report integrity was verified; no verified Final Signature or Anchor is present.',
+  'process.integrityInvalid': 'Report integrity could not be verified.',
+  'process.captureDefault': 'The recorded Input Process data cannot be interpreted safely.',
+  'process.captureGood': 'Complete Input Process data passed semantic validation.',
+  'process.captureLimited': 'Recorded Input Process data is interpretable, but capture is partial.',
+  'process.captureUnsupported': 'This Input Process schema version is not supported by this verifier.',
+  'process.captureInvalid': 'Input Process data failed semantic validation.',
+  'process.captureLegacy': 'Input Process Metrics were not recorded for this Report.',
+  'process.captureUnavailable': 'Input Process capture was unavailable for this Report.',
+  'process.reviewIntegrityInvalid': 'Process interpretation is not assessed because report integrity could not be verified.',
+  'process.reviewExperimental': 'Interpretation thresholds are not enabled in this experimental version.',
+  'process.observedReasons': 'Observed reasons', 'process.reasonLimited': 'Input Process capture is partial.',
+  'process.reasonMixedThresholds': 'Session thresholds vary across this Report.',
+  'process.reasonInvalid': 'Input Process data failed semantic validation.',
+  'process.reasonLegacy': 'Input Process Metrics were not recorded for this Report.',
+  'process.reasonUnavailable': 'Input Process capture was unavailable for this Report.',
+  'process.reasonInsufficient': 'Input Process data is insufficient for interpretation.',
+  'process.disclaimer': 'Process Review summarizes recorded evidence for human review. This is a review aid. It does not determine AI use, authorship, or misconduct.',
+  'process.technicalDetails': 'Technical details',
+  'process.showTechnical': 'Show technical details',
+  'process.showTechnicalAria': 'Show Input Process Metrics in Technical View',
+  'writing.activeTime': 'Active writing time', 'writing.sessions': 'Sessions',
+  'writing.pastedTotal': 'Pasted text — Total', 'writing.pasteProvenance': 'Paste provenance',
+  'writing.legacyUnavailable': 'Unavailable for this legacy report',
+  'writing.verifiedInternal': 'Verified internal', 'writing.unverified': 'Unverified',
+  'writing.legacyUnknown': 'Legacy unknown', 'writing.nonInternalShare': 'Non-internal paste share',
+  'unit.chars': '{count} chars', 'unit.events': '{count} events',
+  'unit.zeroMinutes': '0 min', 'unit.minutes': '{count} min', 'unit.hours': '{count} hr',
+  'unit.hoursMinutes': '{hours} hr {minutes} min',
+  'writing.pastedValue': '{chars} chars · {events} {eventLabel}',
+  'summary.titleValue': 'Summary consistency: {value}',
+  'summary.note': "Stored Summary compared with values recomputed from this report's Document, Events, and Sessions. This is separate from cryptographic integrity.",
+  'summary.field': 'Field', 'summary.stored': 'Stored', 'summary.recomputed': 'Recomputed',
+  'summary.missing': 'missing', 'summary.malformed': 'malformed: {value}',
+  'summary.total': 'Total', 'summary.active': 'Active', 'summary.inactive': 'Inactive',
+  'summary.finalChars': 'Final chars', 'summary.typed': 'Typed', 'summary.pasted': 'Pasted',
+  'summary.verifiedPaste': 'Verified internal paste', 'summary.unverifiedPaste': 'Unverified paste',
+  'summary.legacyPaste': 'Legacy unknown paste', 'summary.largeDeletions': 'Large deletions',
+  'summary.undoRedo': 'Undo/Redo', 'summary.replace': 'Replace', 'summary.markdownExports': 'Markdown exports',
+  'timeline.none': 'No recorded writing sessions', 'timeline.gap': '… {count} inactive days …',
+  'timeline.day': 'Day {number} · {date}', 'timeline.noSession': 'Inactive',
+  'timeline.session': 'session', 'timeline.sessions': 'sessions', 'timeline.submitted': '● Submitted',
+  'log.eventType': 'Event type', 'log.allEvents': 'All events', 'log.previous': 'Previous', 'log.next': 'Next',
+  'log.eventCount': '{count} events', 'log.range': '{start}–{end} of {total}',
+  'log.noMatching': 'No matching events', 'log.showText': '[Show {type} text - before {before} / after {after} chars]',
+  'log.before': 'Before', 'log.after': 'After',
+  'input.notAvailable': 'Not available', 'input.recordedOnly': '{value} (recorded sessions only)',
+  'input.availability.complete': 'Complete', 'input.availability.partial': 'Partial',
+  'input.availability.unavailable': 'Unavailable', 'input.availability.legacy': 'Legacy – not recorded',
+  'input.availability.unsupported': 'Unsupported version', 'input.schema': 'Schema',
+  'input.availability': 'Availability', 'input.semanticValidation': 'Semantic validation',
+  'input.characterUnit': 'Character unit', 'input.chunkThreshold': 'Chunk threshold',
+  'input.longPauseThreshold': 'Long-pause threshold', 'input.variesBySession': 'Varies by session',
+  'input.typingChunks': 'Typing chunks', 'input.directInserted': 'Directly inserted chars',
+  'input.directDeleted': 'Directly deleted chars', 'input.deletionOperations': 'Deletion operations',
+  'input.compositions': 'IME compositions', 'input.committedChars': 'IME committed chars',
+  'input.compositionDuration': 'IME composition duration', 'input.pauses': 'Input pauses',
+  'input.longPauses': 'Long pauses', 'input.pauseSubtotal': 'Observed pause subtotal',
+  'input.foregroundPauses': 'Foreground pauses', 'input.backgroundObserved': 'Background observed',
+  'input.unknownVisibility': 'Unknown visibility', 'input.unknownDuration': 'Unknown-duration pauses',
+  'input.legacyNote': 'This Report was created before Input Process Metrics were introduced. No conclusion should be drawn from the absence of these values.',
+  'input.coverage': '{supported} of {total} sessions contain supported Input Process Metrics.',
+  'input.captureNotes': 'Capture notes', 'input.semanticErrors': 'Semantic validation errors ({count})',
+  'input.issueCount': '{code}: {count} {eventLabel}',
+  'input.title': 'Input Process', 'input.schemaLegacy': 'Schema: Legacy – not recorded',
+  'input.schemaUnsupported': 'Schema: Unsupported version ({version})',
+  'input.captureDisabled': 'Capture: Unavailable (disabled)',
+  'input.schemaCapture': 'Schema: v{version} · Capture: {status}',
+  'input.thresholds': 'Chunk threshold: {chunk}ms · Long-pause threshold: {pause}ms',
+  'input.sessionCounts': 'Chunks: {chunks} · Pauses: {pauses} · IME sessions: {ime}',
+  'input.capabilities': 'Capabilities: beforeinput {beforeInput}, input {input}, composition {composition}, visibility {visibility}, monotonic clock {clock}',
+  'input.available': 'Available', 'input.unavailableValue': 'Unavailable', 'input.notRecorded': 'Not recorded',
+  'input.semanticValid': '✓ Valid', 'input.semanticInvalid': '✗ Invalid',
+  'session.recordedEnvironment': 'Recorded Editor Environment',
+  'session.legacyEnvironment': 'Recorded Editor Environment: Unavailable for this legacy session',
+  'session.ambiguousEnvironment': 'Recorded Editor Environment: Ambiguous session-start records',
+  'session.malformedEnvironment': 'Recorded Editor Environment: Malformed / unavailable',
+  'session.editor': 'Editor: {name} {version} · Build {build}',
+  'session.sourceRevision': 'Source revision: {value}', 'session.environment': 'Environment: {value}',
+  'session.unknown': 'Unknown', 'session.title': 'Session {number} - {id}',
+  'session.client': 'Client: {start} → {end} | Duration {duration}m | Active {active}m | Inactive {inactive}m | Events {events}',
+  'session.ongoing': 'ongoing', 'session.server': 'Server: {value}',
+  'session.serverUnavailable': 'Server: unavailable (valid even when Unsigned)', 'session.none': 'No sessions',
+  'error.load': 'Failed to load the file: {message}', 'error.invalidHtml': 'Invalid HTML',
+  'error.payloadMissing': 'Not an Academic Report: payload is missing',
+  'error.payloadJson': 'Report payload JSON is malformed', 'error.unsupportedFormat': 'Unsupported Report format: {value}',
+  'error.unsupportedVersion': 'Unsupported Report version: {value}',
+  'error.payloadObject': 'Report payload object is malformed', 'error.requiredFields': 'Required Report fields are missing'
+});
+
+const I18N_JA = Object.freeze({
+  ...I18N_EN,
+  'document.title': 'MD//WORKS Provenance レポート検証ツール β',
+  'header.title': 'MD//WORKS Provenance レポート検証ツール β',
+  'action.openReport': 'レポートを開く', 'file.none': 'ファイルが選択されていません',
+  'file.drop': 'assignment-submitted.html をここにドロップするか、クリックして選択してください。',
+  'file.dropHint': 'Reportを読み込むと教員向け表示に概要を表示します。',
+  'file.loaded': '{filename} | {events}イベント | {sessions}セッション',
+  'view.aria': '検証ツールの表示切替', 'view.teacher': '教員向け表示', 'view.technical': '技術表示',
+  'section.verification': '検証', 'section.processReview': 'プロセス確認', 'section.experimental': '実験的',
+  'section.writingProcess': '執筆過程', 'section.timeline': '執筆タイムライン', 'section.document': '文書',
+  'section.detailedVerification': '詳細な検証', 'section.integrityComputed': '整合性状態 - 独立再計算',
+  'section.inputProcess': '入力プロセス指標', 'section.writingSummary': '執筆過程の概要',
+  'section.sessionHistory': 'セッション履歴 - クライアント／サーバー時刻の区別',
+  'section.detailedLog': '詳細な執筆ログ - 初期状態では折りたたみ',
+  'verification.disclaimer': 'これらの確認項目は、記録の整合性と記録された活動を示すものです。学術的不正を判定するものではありません。',
+  'verification.attention': '⚠ 検証上の確認が必要です — 一部の検証項目を確認してください。',
+  'technical.intro': '技術表示では、独立して再計算した整合性検証と、記録された技術メタデータを表示します。記録されたEditorおよび実行環境情報はReportのEvent Chainによって保護されていますが、変更されていないEditor binaryが実行されたことを証明するものではありません。',
+  'technical.time': '時刻情報: Client timeは利用者の端末で記録されます。Server timeは、アンカーまたは最終署名の発行時にMD//WORKS Provenanceサーバーで記録されます。この2つのtimestampは出所が異なり、同等のEvidenceとして解釈すべきではありません。',
+  'input.aboutHeading': '入力プロセス指標について',
+  'input.about': 'これらの値は、直接編集、Composition操作、入力間隔など、Editorが観測した編集活動を示します。それだけで人による著者性を証明したり、AI利用や不正を判定したりするものではありません。',
+  'summary.activeDisclaimer': 'Interaction-active timeは参考値であり、執筆について考えていた時間を証明するものではありません。',
+  'writing.unverifiedDisclaimer': '未検証は、不適切な貼り付けや、必ずしも外部由来であることを意味しません。同一Report内の先行するコピー／切り取りイベントに由来する貼り付けとして検証できなかったことを意味します。',
+  'writing.activeDisclaimer': 'Interaction-active timeは参考値であり、考えたり学習したりしていた時間を証明するものではありません。',
+  'timeline.disclaimer': 'Active writing timeは各Sessionのinteraction-active timeです。参考値であり、考えていた時間を証明したり、学術的不正を判定したりするものではありません。',
+  'integrity.verified': '検証済み', 'integrity.anchored': 'アンカー済み', 'integrity.unsigned': '未署名',
+  'integrity.invalid': '整合性不一致', 'integrity.broken': '整合性不一致', 'integrity.recordIntegrity': '記録の整合性',
+  'integrity.finalSignature': '最終署名', 'integrity.writingProcess': '執筆過程',
+  'integrity.recorded': '記録済み', 'integrity.notRecorded': '記録なし',
+  'integrity.documentHash': '文書ハッシュ', 'integrity.eventLogHash': 'イベントログハッシュ',
+  'integrity.eventChain': 'イベントチェーン', 'integrity.finalChainHash': '最終チェーンハッシュ',
+  'integrity.serverAnchors': 'サーバーアンカー', 'integrity.anchorVerification': 'アンカー検証',
+  'integrity.computedStatus': '計算された状態', 'integrity.claimedStatus': '記録された状態',
+  'integrity.notClaimed': '記録なし',
+  'integrity.summaryConsistency': 'Summary整合性', 'integrity.match': '一致', 'integrity.mismatch': '不一致',
+  'integrity.valid': '有効', 'integrity.present': '{count}件',
+  'verification.state.notPresent': 'なし', 'verification.state.allAnchors': 'すべてのアンカーを検証済み',
+  'verification.state.partialAnchors': '一部のアンカーを検証済み',
+  'verification.state.anchorsInvalid': '存在しますが、すべての署名が無効です',
+  'verification.state.signatureVerified': '署名を検証済み', 'verification.state.signatureInvalid': '署名が無効です',
+  'verification.state.signatureUnverifiable': '署名は存在しますが検証できません',
+  'verification.state.error': '検証エラー',
+  'process.integrity': '整合性', 'process.captureQuality': '記録取得品質',
+  'process.reviewPriority': '確認優先度', 'process.notAssessed': '未評価',
+  'capture.good': '良好', 'capture.limited': '限定的', 'capture.insufficient': 'データ不足', 'capture.unsupported': '非対応',
+  'process.integrityVerified': 'Reportの整合性と最終署名を検証しました。',
+  'process.integrityAnchored': 'Reportの整合性とサーバーアンカーを検証しました。',
+  'process.integrityUnsigned': 'Reportの整合性は検証済みですが、検証済みの最終署名またはアンカーはありません。',
+  'process.integrityInvalid': 'Reportの整合性を検証できませんでした。',
+  'process.captureDefault': '記録されたInput Processデータを安全に解釈できません。',
+  'process.captureGood': '完全なInput Processデータが意味的検証を通過しました。',
+  'process.captureLimited': '記録されたInput Processデータは解釈可能ですが、取得は一部に限られています。',
+  'process.captureUnsupported': 'このInput Process schema versionは、この検証ツールではサポートされていません。',
+  'process.captureInvalid': 'Input Processデータが意味的検証を通過しませんでした。',
+  'process.captureLegacy': 'このReportにはInput Process Metricsが記録されていません。',
+  'process.captureUnavailable': 'このReportではInput Processの取得を利用できませんでした。',
+  'process.reviewIntegrityInvalid': 'Reportの整合性を検証できないため、プロセスの解釈は評価していません。',
+  'process.reviewExperimental': 'この実験版では、解釈のための閾値判定は有効化されていません。',
+  'process.observedReasons': '観測された理由', 'process.reasonLimited': 'Input Processの取得は一部に限られています。',
+  'process.reasonMixedThresholds': 'このReport内ではSessionごとに閾値設定が異なります。',
+  'process.reasonInvalid': 'Input Processデータが意味的検証を通過しませんでした。',
+  'process.reasonLegacy': 'このReportにはInput Process Metricsが記録されていません。',
+  'process.reasonUnavailable': 'このReportではInput Processの取得を利用できませんでした。',
+  'process.reasonInsufficient': 'Input Processデータは解釈するには不十分です。',
+  'process.disclaimer': 'プロセス確認は、記録されたEvidenceを人が確認するために要約したものです。これは確認を補助する情報です。AI利用、著者性、不正の有無を判定するものではありません。',
+  'process.technicalDetails': '技術詳細', 'process.showTechnical': '技術詳細を見る',
+  'process.showTechnicalAria': '技術表示で入力プロセス指標を表示',
+  'writing.activeTime': 'アクティブ執筆時間', 'writing.sessions': 'セッション',
+  'writing.pastedTotal': '貼り付けテキスト — 合計', 'writing.pasteProvenance': '貼り付け来歴',
+  'writing.legacyUnavailable': 'この旧形式Reportでは利用できません',
+  'writing.verifiedInternal': '検証済み内部', 'writing.unverified': '未検証',
+  'writing.legacyUnknown': '旧形式・不明', 'writing.nonInternalShare': '非内部貼り付け割合',
+  'unit.chars': '{count}文字', 'unit.events': '{count}イベント',
+  'unit.zeroMinutes': '0分', 'unit.minutes': '{count}分', 'unit.hours': '{count}時間',
+  'unit.hoursMinutes': '{hours}時間{minutes}分',
+  'writing.pastedValue': '{chars}文字 · {events}イベント',
+  'summary.titleValue': 'Summary整合性: {value}',
+  'summary.note': '保存されたSummaryと、このReportのDocument、Events、Sessionsから再計算した値を比較します。これは暗号学的な整合性とは別の確認です。',
+  'summary.field': '項目', 'summary.stored': '保存値', 'summary.recomputed': '再計算値',
+  'summary.missing': 'なし', 'summary.malformed': '形式不正: {value}',
+  'summary.total': '合計', 'summary.active': 'アクティブ', 'summary.inactive': '非アクティブ',
+  'summary.finalChars': '最終文字数', 'summary.typed': '直接入力', 'summary.pasted': '貼り付け',
+  'summary.verifiedPaste': '検証済み内部貼り付け', 'summary.unverifiedPaste': '未検証の貼り付け',
+  'summary.legacyPaste': '旧形式・不明の貼り付け', 'summary.largeDeletions': '大規模削除',
+  'summary.undoRedo': '元に戻す／やり直す', 'summary.replace': '置換', 'summary.markdownExports': 'Markdown書き出し',
+  'timeline.none': '記録された執筆Sessionがありません', 'timeline.gap': '… {count}日間非アクティブ …',
+  'timeline.day': '{number}日目 · {date}', 'timeline.noSession': '非アクティブ',
+  'timeline.session': 'セッション', 'timeline.sessions': 'セッション', 'timeline.submitted': '● 提出',
+  'log.eventType': 'イベント種別', 'log.allEvents': 'すべてのイベント', 'log.previous': '前へ', 'log.next': '次へ',
+  'log.eventCount': '{count}イベント', 'log.range': '{total}件中 {start}–{end}',
+  'log.noMatching': '条件に一致するイベントがありません',
+  'log.showText': '[{type}テキストを表示 - 前 {before}文字 / 後 {after}文字]',
+  'log.before': '前', 'log.after': '後',
+  'input.notAvailable': '利用不可', 'input.recordedOnly': '{value}（記録済みSessionのみ）',
+  'input.availability.complete': '完全', 'input.availability.partial': '一部',
+  'input.availability.unavailable': '利用不可', 'input.availability.legacy': '旧形式 – 記録なし',
+  'input.availability.unsupported': '非対応version', 'input.schema': 'Schema',
+  'input.availability': '記録状況', 'input.semanticValidation': '意味的検証',
+  'input.characterUnit': '文字単位', 'input.chunkThreshold': 'チャンク閾値',
+  'input.longPauseThreshold': '長時間入力間隔の閾値', 'input.variesBySession': 'Sessionごとに異なります',
+  'input.typingChunks': '入力チャンク', 'input.directInserted': '直接挿入文字数',
+  'input.directDeleted': '直接削除文字数', 'input.deletionOperations': '削除操作',
+  'input.compositions': 'Composition回数', 'input.committedChars': 'IME確定文字数',
+  'input.compositionDuration': 'IME Composition時間', 'input.pauses': '入力間隔',
+  'input.longPauses': '長時間入力間隔', 'input.pauseSubtotal': '観測された入力間隔の小計',
+  'input.foregroundPauses': 'フォアグラウンドの入力間隔', 'input.backgroundObserved': 'バックグラウンド観測',
+  'input.unknownVisibility': '表示状態不明', 'input.unknownDuration': '継続時間不明の入力間隔',
+  'input.legacyNote': 'このReportはInput Process Metrics導入前に作成されました。これらの値がないことから結論を導くべきではありません。',
+  'input.coverage': '{total}Session中{supported}Sessionに、対応するInput Process Metricsがあります。',
+  'input.captureNotes': '取得に関する注記', 'input.semanticErrors': '意味的検証エラー（{count}件）',
+  'input.issueCount': '{code}: {count}イベント',
+  'input.title': 'Input Process', 'input.schemaLegacy': 'Schema: 旧形式 – 記録なし',
+  'input.schemaUnsupported': 'Schema: 非対応version（{version}）',
+  'input.captureDisabled': '取得: 利用不可（無効）',
+  'input.schemaCapture': 'Schema: v{version} · 取得: {status}',
+  'input.thresholds': 'チャンク閾値: {chunk}ms · 長時間入力間隔の閾値: {pause}ms',
+  'input.sessionCounts': 'チャンク: {chunks} · 入力間隔: {pauses} · IMEセッション: {ime}',
+  'input.capabilities': '機能: beforeinput {beforeInput}、input {input}、composition {composition}、visibility {visibility}、monotonic clock {clock}',
+  'input.available': '利用可能', 'input.unavailableValue': '利用不可', 'input.notRecorded': '記録なし',
+  'input.semanticValid': '✓ 有効', 'input.semanticInvalid': '✗ 無効',
+  'session.recordedEnvironment': '記録されたEditor環境',
+  'session.legacyEnvironment': '記録されたEditor環境: この旧形式Sessionでは利用できません',
+  'session.ambiguousEnvironment': '記録されたEditor環境: session-start記録が一意に定まりません',
+  'session.malformedEnvironment': '記録されたEditor環境: 形式不正 / 利用不可',
+  'session.editor': 'Editor: {name} {version} · Build {build}',
+  'session.sourceRevision': 'Source revision: {value}', 'session.environment': '実行環境: {value}',
+  'session.unknown': '不明', 'session.title': 'セッション {number} - {id}',
+  'session.client': 'Client: {start} → {end} | 継続時間 {duration}m | アクティブ {active}m | 非アクティブ {inactive}m | イベント {events}',
+  'session.ongoing': '進行中', 'session.server': 'Server: {value}',
+  'session.serverUnavailable': 'Server: 利用不可（未署名でも有効）', 'session.none': 'セッションがありません',
+  'error.load': 'ファイルの読み込みに失敗しました: {message}', 'error.invalidHtml': 'HTMLが正しくありません',
+  'error.payloadMissing': 'Academic Reportではありません: payloadがありません',
+  'error.payloadJson': 'Report payload JSONの形式が正しくありません',
+  'error.unsupportedFormat': '対応していないReport形式です: {value}',
+  'error.unsupportedVersion': '対応していないReport versionです: {value}',
+  'error.payloadObject': 'Report payload objectの形式が正しくありません',
+  'error.requiredFields': 'Reportに必要な項目がありません'
+});
+
+const I18N = Object.freeze({ en: I18N_EN, ja: I18N_JA });
+const UI_LANG = detectUiLanguage();
+
+function t(key, params = {}) {
+  const template = I18N[UI_LANG]?.[key] ?? I18N.en?.[key] ?? key;
+  return String(template).replace(/\{(\w+)\}/g, (_, name) =>
+    Object.prototype.hasOwnProperty.call(params, name) ? String(params[name]) : `{${name}}`
+  );
+}
+
+const VERIFICATION_STATE_I18N = Object.freeze({
+  'Not present': 'verification.state.notPresent',
+  'All anchors verified': 'verification.state.allAnchors',
+  'Partial anchors verified': 'verification.state.partialAnchors',
+  'Present but all signatures invalid': 'verification.state.anchorsInvalid',
+  'Signature verified': 'verification.state.signatureVerified',
+  'Signature invalid': 'verification.state.signatureInvalid',
+  'Present but signature unverifiable': 'verification.state.signatureUnverifiable',
+  'Verification error': 'verification.state.error'
+});
+
+function displayVerificationState(state) {
+  const key = VERIFICATION_STATE_I18N[state];
+  return key ? t(key) : String(state ?? '');
+}
+
+function displayIntegrityStatus(status) {
+  if (status === 'not claimed') return t('integrity.notClaimed');
+  const key = ['verified', 'anchored', 'unsigned', 'invalid'].includes(status) ? `integrity.${status}` : null;
+  return key ? t(key) : String(status ?? '');
+}
+
+function localizeVerifierError(error) {
+  const message = String(error?.message || error || '');
+  if (message === 'Invalid HTML') return t('error.invalidHtml');
+  if (message === 'Not Academic Report: payload missing') return t('error.payloadMissing');
+  if (message === 'Malformed payload JSON') return t('error.payloadJson');
+  if (message === 'Malformed payload object') return t('error.payloadObject');
+  if (message === 'Missing required fields') return t('error.requiredFields');
+  let match = message.match(/^Unsupported format (.*)$/);
+  if (match) return t('error.unsupportedFormat', { value: match[1] });
+  match = message.match(/^Unsupported version (.*)$/);
+  if (match) return t('error.unsupportedVersion', { value: match[1] });
+  return message;
+}
+
+function applyStaticI18n() {
+  const textBindings = [
+    ['header h1', 'header.title'], ['#file-info', 'file.none'], ['#open-file-btn', 'action.openReport'],
+    ['#drop > span', 'file.dropHint'], ['#teacher-view-tab', 'view.teacher'], ['#technical-view-tab', 'view.technical'],
+    ['#view-teacher > .card:nth-child(1) > h3', 'section.verification'],
+    ['#process-review-heading', 'section.processReview', 'headingBadge'],
+    ['#view-teacher > .card:nth-child(3) > h3', 'section.writingProcess'],
+    ['#view-teacher > .card:nth-child(4) > h3', 'section.timeline'],
+    ['#view-teacher > .card:nth-child(5) > h3', 'section.document'],
+    ['#view-teacher > .card:nth-child(1) .review-note', 'verification.disclaimer'],
+    ['#view-teacher > .card:nth-child(3) .review-note:nth-of-type(1)', 'writing.unverifiedDisclaimer'],
+    ['#view-teacher > .card:nth-child(3) .review-note:nth-of-type(2)', 'writing.activeDisclaimer'],
+    ['#view-teacher > .card:nth-child(4) > p', 'timeline.disclaimer'],
+    ['#view-technical > .card:nth-child(2) > h3', 'section.detailedVerification'],
+    ['#view-technical > .card:nth-child(2) .section-note', 'section.integrityComputed'],
+    ['#input-process-heading', 'section.inputProcess', 'headingBadge'],
+    ['#input-process-card .review-note strong', 'input.aboutHeading'],
+    ['#input-process-card .review-note', 'input.about', 'strongPrefix'],
+    ['#view-technical > .card:nth-child(4) > h3', 'section.writingSummary'],
+    ['#view-technical > .card:nth-child(4) > p', 'summary.activeDisclaimer'],
+    ['#view-technical > .card:nth-child(5) > h3', 'section.sessionHistory'],
+    ['#view-technical > .card:nth-child(6) > h3', 'section.detailedLog'],
+    ['#view-technical .technical-intro p:nth-child(1)', 'technical.intro'],
+    ['#view-technical .technical-intro p:nth-child(2)', 'technical.time']
+  ];
+  textBindings.forEach(([selector, key, mode]) => {
+    document.querySelectorAll(selector).forEach(element => {
+      if (mode === 'headingBadge') {
+        const badge = element.querySelector('.badge');
+        element.replaceChildren(document.createTextNode(`${t(key)} `));
+        if (badge) { badge.textContent = t('section.experimental'); element.append(badge); }
+      } else if (mode === 'strongPrefix') {
+        const strong = element.querySelector('strong');
+        element.replaceChildren();
+        if (strong) { strong.textContent = t('input.aboutHeading'); element.append(strong, document.createElement('br')); }
+        element.append(document.createTextNode(t(key)));
+      } else element.textContent = t(key);
+    });
+  });
+  const drop = document.getElementById('drop');
+  const dropText = Array.from(drop.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+  if (dropText) dropText.nodeValue = t('file.drop');
+  document.querySelector('.view-tabs').setAttribute('aria-label', t('view.aria'));
+  document.documentElement.lang = UI_LANG;
+  document.title = t('document.title');
+}
+
+document.documentElement.lang = UI_LANG;
+document.title = t('document.title');
+applyStaticI18n();
+window.MDWorksVerifierI18n = Object.freeze({ I18N, UI_LANG, detectUiLanguage, t, applyStaticI18n, displayVerificationState, displayIntegrityStatus, localizeVerifierError });
+
+const INITIAL_PREVIOUS_HASH = "0".repeat(64);
+const INPUT_PROCESS_VERSION = 1;
+const DEFAULT_CHUNK_PAUSE_THRESHOLD_MS = 2000;
+const DEFAULT_LONG_PAUSE_THRESHOLD_MS = 60000;
+const INPUT_PROCESS_ISSUE_CODES = Object.freeze([
+  'capture-disabled', 'clock-discontinuity', 'composition-interrupted',
+  'composition-settlement-uncertain', 'input-without-beforeinput', 'metrics-exception',
+  'observation-gap', 'operation-classification-uncertain', 'timing-unavailable', 'unclassified-change'
+]);
+const INPUT_PROCESS_ISSUE_CODE_SET = new Set(INPUT_PROCESS_ISSUE_CODES);
+const INPUT_PROCESS_CLOSED_BY = new Set([
+  'inactivity', 'max-duration', 'explicit-operation', 'visibility', 'window-blur',
+  'save', 'session-end', 'document-switch', 'finalization', 'capture-change'
+]);
+const INPUT_PROCESS_ENDED_BY = new Set([
+  'direct-edit', 'composition-start', 'paste', 'copy', 'cut', 'undo', 'redo',
+  'explicit-operation', 'session-end', 'document-switch', 'finalization', 'unknown'
+]);
+
+function canonicalize(data) {
+  if (data === null) return 'null';
+  const t = typeof data;
+  if (t === 'boolean') return data ? 'true' : 'false';
+  if (t === 'number') {
+    if (!Number.isFinite(data)) throw new TypeError('Non-finite number');
+    if (Object.is(data, -0)) return '0';
+    return JSON.stringify(data);
+  }
+  if (t === 'string') return JSON.stringify(data);
+  if (Array.isArray(data)) {
+    const parts = [];
+    for (const v of data) {
+      if (v === undefined) parts.push('null');
+      else {
+        const c = canonicalize(v);
+        parts.push(c === undefined ? 'null' : c);
+      }
+    }
+    return '[' + parts.join(',') + ']';
+  }
+  if (t === 'object') {
+    const keys = Object.keys(data).sort();
+    const parts = [];
+    for (const k of keys) {
+      const v = data[k];
+      if (v === undefined) continue;
+      const cv = canonicalize(v);
+      if (cv === undefined) continue;
+      parts.push(JSON.stringify(k) + ':' + cv);
+    }
+    return '{' + parts.join(',') + '}';
+  }
+  return undefined;
+}
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  const arr = new Uint8Array(buf);
+  let hex = '';
+  for (const b of arr) hex += b.toString(16).padStart(2,'0');
+  return hex;
+}
+
+function normalizeTransferId(value) {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(trimmed)
+    ? trimmed.toLowerCase() : null;
+}
+
+function classifyPasteProvenance(events) {
+  const classifications = new Map();
+  const priorSources = new Map();
+  const counts = {
+    verifiedInternalPasteChars: 0, verifiedInternalPasteEvents: 0,
+    unverifiedPasteChars: 0, unverifiedPasteEvents: 0,
+    legacyUnknownPasteChars: 0, legacyUnknownPasteEvents: 0
+  };
+  for (const eventValue of Array.isArray(events) ? events : []) {
+    const event = eventValue && typeof eventValue === 'object' && !Array.isArray(eventValue) ? eventValue : {};
+    const meta = event.meta && typeof event.meta === 'object' && !Array.isArray(event.meta) ? event.meta : {};
+    if (event.type === 'paste') {
+      const pastedCharacters = typeof meta.pastedCharacters === 'number' && Number.isFinite(meta.pastedCharacters)
+        ? Math.max(0, meta.pastedCharacters) : Math.max(0, typeof event.charDelta === 'number' && Number.isFinite(event.charDelta) ? event.charDelta : 0);
+      let provenance = 'unverified';
+      let sourceEvent = null;
+      if (!Object.prototype.hasOwnProperty.call(meta, 'provenance')) {
+        provenance = 'legacy-unknown';
+      } else {
+        const transferId = normalizeTransferId(meta.transferId);
+        const candidates = transferId ? (priorSources.get(transferId) || []) : [];
+        if (candidates.length === 1) {
+          const candidate = candidates[0];
+          const sourceMeta = candidate.meta && typeof candidate.meta === 'object' && !Array.isArray(candidate.meta) ? candidate.meta : {};
+          if (typeof meta.pastedHash === 'string' && /^[0-9a-f]{64}$/i.test(meta.pastedHash) &&
+              sourceMeta.sourceHash === meta.pastedHash && meta.sourceEventId === candidate.id &&
+              meta.transferOperation === candidate.type) {
+            provenance = 'verified-internal';
+            sourceEvent = candidate;
+          }
+        }
+      }
+      classifications.set(eventValue, { provenance, sourceEvent, pastedCharacters });
+      const prefix = provenance === 'verified-internal' ? 'verifiedInternal'
+        : provenance === 'legacy-unknown' ? 'legacyUnknown' : 'unverified';
+      counts[`${prefix}PasteChars`] += pastedCharacters;
+      counts[`${prefix}PasteEvents`] += 1;
+    }
+    if (event.type === 'copy' || event.type === 'cut') {
+      const transferId = normalizeTransferId(meta.transferId);
+      if (transferId) {
+        const sources = priorSources.get(transferId) || [];
+        sources.push(event);
+        priorSources.set(transferId, sources);
+      }
+    }
+  }
+  return { classifications, counts };
+}
+
+async function verifyEventChain(events, startHash = INITIAL_PREVIOUS_HASH) {
+  if (!Array.isArray(events)) return { ok:false, reason:'events is not an array' };
+  let prev = startHash;
+  for (let index = 0; index < events.length; index++) {
+    const ev = events[index];
+    if (!ev || typeof ev !== 'object' || Array.isArray(ev)) {
+      return { ok:false, reason:`invalid event at index ${index}` };
+    }
+    const { hash, ...rest } = ev;
+    const label = typeof ev.id === 'string' ? ev.id : `index ${index}`;
+    if (typeof hash !== 'string') return { ok:false, reason:`missing hash at ${label}`, event:ev };
+    if (rest.previousHash !== prev) return { ok:false, reason:`prev mismatch at ${label}`, event:ev };
+    let calc;
+    try { calc = await sha256Hex(canonicalize(rest)); }
+    catch { return { ok:false, reason:`unhashable event at ${label}`, event:ev }; }
+    if (calc !== hash) return { ok:false, reason:`hash mismatch at ${label}`, event:ev, expected:calc };
+    prev = hash;
+  }
+  return { ok:true, finalHash: prev };
+}
+
+class AcademicContainerIO {
+  static async parseContainer(htmlText) {
+    if (typeof htmlText !== 'string' || !htmlText) throw new Error('Invalid HTML');
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, 'text/html');
+    const el = doc.getElementById('mdworks-academic-payload');
+    if (!el) throw new Error('Not Academic Report: payload missing');
+    let payload;
+    try { payload = JSON.parse(el.textContent || '{}'); }
+    catch { throw new Error('Malformed payload JSON'); }
+    if (payload.format !== 'mdworks-academic-report') throw new Error(`Unsupported format ${payload.format}`);
+    if (payload.formatVersion !== 1) throw new Error(`Unsupported version ${payload.formatVersion}`);
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('Malformed payload object');
+    if (!payload.document || typeof payload.document.markdown !== 'string' || !Array.isArray(payload.events)) throw new Error('Missing required fields');
+    return payload;
+  }
+}
+
+// ============================================================================
+// Verification Logic & Cryptographic Parameters
+// ============================================================================
+
+// 検証に使用する信頼済み公開鍵
+const TRUSTED_PUBLIC_KEYS = Object.freeze({
+  "academic-key-2026-v2": {
+    kty: "OKP",
+    crv: "Ed25519",
+    x: "73fnGgmAVkLExOYoG0VGCQdh7MEHxyxwbUcb0JUjisA"
+  }
+});
+
+/**
+ * Base64URL(パディングなし)文字列を Uint8Array に変換する
+ */
+function base64UrlToBytes(base64Url) {
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = base64.length % 4;
+  const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
+  const binary = atob(padded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+/**
+ * Anchor（途中経過証明）の署名を検証する
+ */
+async function verifyAnchorSignatures(anchors) {
+  const present = Array.isArray(anchors) ? anchors.length : 0;
+  if (present === 0) return { present, validCount: 0, valid: false, state: 'Not present' };
+
+  let validCount = 0;
+  for (const anchor of anchors) {
+    if (!anchor || typeof anchor !== 'object') continue;
+
+    const keyId = anchor.publicKeyId;
+    if (!keyId || !TRUSTED_PUBLIC_KEYS[keyId]) continue;
+
+    try {
+      const key = await crypto.subtle.importKey("jwk", TRUSTED_PUBLIC_KEYS[keyId], { name: "Ed25519" }, false, ["verify"]);
+
+      const targetObj = {
+        eventHash: anchor.eventHash,
+        eventId: anchor.eventId,
+        timestampServer: anchor.timestampServer
+      };
+      const msgBytes = new TextEncoder().encode(canonicalize(targetObj));
+      const sigBytes = base64UrlToBytes(anchor.signature);
+
+      const isValid = await crypto.subtle.verify("Ed25519", key, sigBytes, msgBytes);
+      if (isValid) validCount++;
+    } catch (e) {}
+  }
+
+  if (validCount === 0) {
+    return { present, validCount, valid: false, state: 'Present but all signatures invalid', reason: 'No anchor signatures could be cryptographically verified.' };
+  }
+
+  return {
+    present,
+    validCount,
+    valid: validCount === present,
+    state: validCount === present ? 'All anchors verified' : 'Partial anchors verified',
+    reason: validCount === present ? null : 'Some anchors failed verification.'
+  };
+}
+
+/**
+ * Final Signature（最終提出証明）の署名を検証する
+ */
+async function verifyFinalSignature(payload) {
+  const present = typeof payload.finalSignature === 'string' && payload.finalSignature.length > 0;
+  if (!present) return { present: false, valid: false, state: 'Not present' };
+
+  const keyId = typeof payload.publicKeyId === 'string' ? payload.publicKeyId : null;
+  if (!keyId || !TRUSTED_PUBLIC_KEYS[keyId]) {
+    return {
+      present: true,
+      valid: false,
+      state: 'Present but signature unverifiable',
+      reason: `publicKeyId '${keyId}' does not resolve to a trusted public key.`
+    };
+  }
+
+  try {
+    const key = await crypto.subtle.importKey("jwk", TRUSTED_PUBLIC_KEYS[keyId], { name: "Ed25519" }, false, ["verify"]);
+
+    const manifestToVerify = payload.manifest && typeof payload.manifest === 'object' && !Array.isArray(payload.manifest) ? payload.manifest : {};
+    const msgBytes = new TextEncoder().encode(canonicalize(manifestToVerify));
+    const sigBytes = base64UrlToBytes(payload.finalSignature);
+
+    const isValid = await crypto.subtle.verify("Ed25519", key, sigBytes, msgBytes);
+
+    if (isValid) {
+      return { present: true, valid: true, state: 'Signature verified', reason: null };
+    } else {
+      return { present: true, valid: false, state: 'Signature invalid', reason: 'Cryptographic verification failed (signature does not match the manifest).' };
+    }
+  } catch (e) {
+    return {
+      present: true,
+      valid: false,
+      state: 'Verification error',
+      reason: `Error during cryptographic verification: ${e.message}`
+    };
+  }
+}
+
+async function computeIntegrityVerification(payload) {
+  const manifest = payload.manifest && typeof payload.manifest === 'object' && !Array.isArray(payload.manifest)
+    ? payload.manifest : {};
+  const documentHash = `sha256:${await sha256Hex(payload.document.markdown)}`;
+  const documentHashMatch = payload.document.hash === documentHash && manifest.documentHash === documentHash;
+
+  const eventLogHash = `sha256:${await sha256Hex(canonicalize(payload.events))}`;
+  const eventLogHashMatch = manifest.eventLogHash === eventLogHash;
+  const eventChain = await verifyEventChain(payload.events);
+  const finalChainHashMatch = eventChain.ok && manifest.finalChainHash === eventChain.finalHash;
+  const localIntegrityOk = documentHashMatch && eventLogHashMatch && eventChain.ok && finalChainHashMatch;
+
+  const anchorVerification = await verifyAnchorSignatures(payload.anchors);
+  const finalSignatureVerification = await verifyFinalSignature(payload);
+  const computedStatus = !localIntegrityOk ? 'invalid'
+    : finalSignatureVerification.valid ? 'verified'
+    : anchorVerification.valid ? 'anchored'
+    : 'unsigned';
+
+  return {
+    documentHash,
+    documentHashMatch,
+    eventLogHash,
+    eventLogHashMatch,
+    eventChain,
+    finalChainHashMatch,
+    localIntegrityOk,
+    anchorVerification,
+    finalSignatureVerification,
+    computedStatus,
+    claimedStatus: typeof manifest.integrityStatus === 'string' ? manifest.integrityStatus : 'not claimed'
+  };
+}
+
+function createElement(tag, text, className) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = String(text);
+  return element;
+}
+
+const RECORDED_EDITOR_PLATFORMS = new Set(['Windows', 'macOS', 'Linux', 'ChromeOS', 'iOS', 'Android', 'Unknown']);
+const RECORDED_BROWSER_FAMILIES = new Set(['Chrome', 'Firefox', 'Safari', 'Edge', 'Unknown']);
+
+function indexSessionStartEvents(events) {
+  const index = new Map();
+  for (const eventValue of Array.isArray(events) ? events : []) {
+    if (!eventValue || typeof eventValue !== 'object' || Array.isArray(eventValue) || eventValue.type !== 'session-start' || typeof eventValue.sessionId !== 'string') continue;
+    const records = index.get(eventValue.sessionId) || [];
+    records.push(eventValue);
+    index.set(eventValue.sessionId, records);
+  }
+  return index;
+}
+
+function inspectSessionEditorProvenance(sessionId, sessionStartIndex) {
+  const records = typeof sessionId === 'string' ? (sessionStartIndex.get(sessionId) || []) : [];
+  if (records.length === 0) return { status: 'legacy' };
+  if (records.length > 1) return { status: 'ambiguous' };
+  const meta = records[0].meta && typeof records[0].meta === 'object' && !Array.isArray(records[0].meta) ? records[0].meta : {};
+  const hasProvenanceData = Object.prototype.hasOwnProperty.call(meta, 'editorProvenanceVersion') ||
+    Object.prototype.hasOwnProperty.call(meta, 'editor') || Object.prototype.hasOwnProperty.call(meta, 'environment');
+  if (!hasProvenanceData) return { status: 'legacy' };
+  const editor = meta.editor && typeof meta.editor === 'object' && !Array.isArray(meta.editor) ? meta.editor : {};
+  const environment = meta.environment && typeof meta.environment === 'object' && !Array.isArray(meta.environment) ? meta.environment : {};
+  const nonEmptyString = value => typeof value === 'string' && value.trim().length > 0;
+  const majorVersionValid = environment.browserMajorVersion === null ||
+    (typeof environment.browserMajorVersion === 'string' && /^\d+$/.test(environment.browserMajorVersion));
+  const valid = meta.editorProvenanceVersion === 1 &&
+    nonEmptyString(editor.name) && nonEmptyString(editor.version) && nonEmptyString(editor.buildId) && nonEmptyString(editor.sourceRevision) &&
+    RECORDED_EDITOR_PLATFORMS.has(environment.platform) && RECORDED_BROWSER_FAMILIES.has(environment.browserFamily) && majorVersionValid;
+  return valid ? { status: 'recorded', editor, environment } : { status: 'malformed' };
+}
+
+function appendSessionEditorProvenance(container, provenance) {
+  const block = createElement('div', undefined, 'session-provenance');
+  if (provenance.status === 'legacy') {
+    block.append(createElement('div', t('session.legacyEnvironment')));
+  } else if (provenance.status === 'ambiguous') {
+    block.append(createElement('div', t('session.ambiguousEnvironment')));
+  } else if (provenance.status === 'malformed') {
+    block.append(createElement('div', t('session.malformedEnvironment')));
+  } else {
+    const browser = provenance.environment.browserFamily === 'Unknown' ? '' :
+      `${provenance.environment.browserFamily}${provenance.environment.browserMajorVersion === null ? '' : ` ${provenance.environment.browserMajorVersion}`}`;
+    const platform = provenance.environment.platform === 'Unknown' ? '' : provenance.environment.platform;
+    block.append(
+      createElement('strong', t('session.recordedEnvironment')),
+      createElement('div', t('session.editor', { name: provenance.editor.name, version: provenance.editor.version, build: provenance.editor.buildId })),
+      createElement('div', t('session.sourceRevision', { value: provenance.editor.sourceRevision })),
+      createElement('div', t('session.environment', { value: [browser, platform].filter(Boolean).join(' · ') || t('session.unknown') }))
+    );
+  }
+  container.append(block);
+}
+
+function appendStat(container, label, value, small = false) {
+  const stat = createElement('div', undefined, 'stat');
+  stat.append(createElement('div', label, 'stat-label'));
+  const valueElement = createElement('div', value, 'stat-val');
+  if (small) valueElement.style.fontSize = '11px';
+  stat.append(valueElement);
+  container.append(stat);
+}
+
+function finiteNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function hasOwn(object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+function isNonnegativeSafeIntegerOrNull(value) {
+  return value === null || (Number.isSafeInteger(value) && value >= 0);
+}
+
+function validateInputProcessEvent(event, sessionConfig = null) {
+  const errors = [];
+  const meta = event?.meta && typeof event.meta === 'object' && !Array.isArray(event.meta) ? event.meta : {};
+  const ip = meta.inputProcess && typeof meta.inputProcess === 'object' && !Array.isArray(meta.inputProcess) ? meta.inputProcess : null;
+  if (!ip) return { valid: true, errors };
+  const label = typeof event?.id === 'string' ? event.id : 'event';
+  const fail = message => errors.push(`${label}: ${message}`);
+  const captureValues = new Set(['full', 'degraded', 'unavailable']);
+  if (event.type === 'session-start') {
+    if (ip.version !== INPUT_PROCESS_VERSION) fail('unsupported Input Process version');
+    if (ip.characterUnit !== 'utf16-code-unit') fail('invalid characterUnit');
+    for (const key of ['chunkPauseThresholdMs', 'longPauseThresholdMs', 'maxChunkElapsedMs', 'compositionSettlementTimeoutMs', 'clockDiscontinuityToleranceMs']) {
+      if (!Number.isSafeInteger(ip[key]) || ip[key] < 0) fail(`invalid ${key}`);
+    }
+    if (typeof ip.enabled !== 'boolean') fail('invalid enabled flag');
+    if (!captureValues.has(ip.initialCaptureStatus)) fail('invalid initialCaptureStatus');
+    const initialIssues = ip.initialIssueCodes;
+    if (!Array.isArray(initialIssues) || initialIssues.length > 10 || initialIssues.some(value => !INPUT_PROCESS_ISSUE_CODE_SET.has(value)) ||
+        new Set(initialIssues || []).size !== (initialIssues || []).length || JSON.stringify(initialIssues || []) !== JSON.stringify([...(initialIssues || [])].sort())) fail('invalid initialIssueCodes');
+    const capabilityKeys = ['beforeInput', 'inputEvent', 'compositionEvents', 'visibilityState', 'monotonicClock'];
+    if (!ip.capabilities || capabilityKeys.some(key => typeof ip.capabilities[key] !== 'boolean')) fail('invalid capabilities');
+    return { valid: errors.length === 0, errors };
+  }
+  if (!captureValues.has(ip.captureStatus)) fail('invalid captureStatus');
+  const issues = ip.issueCodes;
+  if (!Array.isArray(issues) || issues.length > 10 || issues.some(value => !INPUT_PROCESS_ISSUE_CODE_SET.has(value)) ||
+      new Set(issues || []).size !== (issues || []).length || JSON.stringify(issues || []) !== JSON.stringify([...(issues || [])].sort())) fail('invalid issueCodes');
+  if (ip.captureStatus === 'full' && (issues || []).some(value =>
+      ['capture-disabled', 'timing-unavailable', 'observation-gap', 'metrics-exception'].includes(value))) fail('full capture conflicts with issueCodes');
+
+  if (event.type === 'typing') {
+    const required = [
+      'directInsertedCharacters', 'directDeletedCharacters', 'deletionOperationCount',
+      'compositionCount', 'compositionMsTotal', 'compositionCommittedCharacters', 'chunkElapsedMs',
+      'hasCommittedDirectEdit', 'closedBy', 'captureStatus', 'issueCodes'
+    ];
+    required.filter(key => !hasOwn(ip, key)).forEach(key => fail(`missing ${key}`));
+    required.slice(0, 7).forEach(key => {
+      if (hasOwn(ip, key) && !isNonnegativeSafeIntegerOrNull(ip[key])) fail(`invalid ${key}`);
+    });
+    if (typeof ip.hasCommittedDirectEdit !== 'boolean') fail('invalid hasCommittedDirectEdit');
+    if (!INPUT_PROCESS_CLOSED_BY.has(ip.closedBy)) fail('invalid closedBy');
+    if (ip.hasCommittedDirectEdit === false && ip.chunkElapsedMs !== null) fail('chunkElapsedMs must be null when no Direct Edit committed');
+    if (ip.captureStatus === 'full' && Number.isSafeInteger(ip.directInsertedCharacters) && Number.isSafeInteger(ip.directDeletedCharacters) &&
+        ip.directInsertedCharacters - ip.directDeletedCharacters !== event.charDelta) fail('Direct equation does not match charDelta');
+    if (Number.isSafeInteger(ip.compositionCommittedCharacters) && Number.isSafeInteger(ip.directInsertedCharacters) &&
+        ip.compositionCommittedCharacters > ip.directInsertedCharacters) fail('compositionCommittedCharacters exceeds Direct insert');
+    if (Number.isSafeInteger(ip.deletionOperationCount) && Number.isSafeInteger(ip.directDeletedCharacters) &&
+        (ip.deletionOperationCount > ip.directDeletedCharacters || (ip.directDeletedCharacters === 0 && ip.deletionOperationCount !== 0))) fail('deletion operation constraint failed');
+  } else if (event.type === 'pause') {
+    ['durationMs', 'pauseClass', 'visibility', 'endedBy', 'captureStatus', 'issueCodes']
+      .filter(key => !hasOwn(ip, key)).forEach(key => fail(`missing ${key}`));
+    if (event.charDelta !== 0 || event.beforeSnippet !== '' || event.afterSnippet !== '') fail('pause must not contain a document delta or snippets');
+    if (!isNonnegativeSafeIntegerOrNull(ip.durationMs)) fail('invalid durationMs');
+    if (!new Set(['normal', 'long', 'unknown']).has(ip.pauseClass)) fail('invalid pauseClass');
+    if (!new Set(['foreground', 'background', 'unknown']).has(ip.visibility)) fail('invalid visibility');
+    if (!INPUT_PROCESS_ENDED_BY.has(ip.endedBy)) fail('invalid endedBy');
+    const pauseThreshold = Number.isSafeInteger(sessionConfig?.chunkPauseThresholdMs) ? sessionConfig.chunkPauseThresholdMs : DEFAULT_CHUNK_PAUSE_THRESHOLD_MS;
+    const longThreshold = Number.isSafeInteger(sessionConfig?.longPauseThresholdMs) ? sessionConfig.longPauseThresholdMs : DEFAULT_LONG_PAUSE_THRESHOLD_MS;
+    if (ip.durationMs === null && ip.pauseClass !== 'unknown') fail('unknown duration requires unknown pauseClass');
+    if (ip.durationMs !== null) {
+      if (ip.durationMs < pauseThreshold) fail('pause is below the Session threshold');
+      if (ip.durationMs >= longThreshold && ip.pauseClass !== 'long') fail('long pause class mismatch');
+      if (ip.durationMs < longThreshold && ip.pauseClass !== 'normal') fail('normal pause class mismatch');
+    }
+  } else if (event.type === 'input-process-status') {
+    if (event.charDelta !== 0 || event.beforeSnippet !== '' || event.afterSnippet !== '') fail('status event must not contain a document delta or snippets');
+    if (Object.keys(ip).some(key => !new Set(['captureStatus', 'issueCodes']).has(key))) fail('status event contains metric fields');
+  } else if ((event.type === 'replace' || event.type === 'delete') && meta.owner === 'direct') {
+    ['directInsertedCharacters', 'directDeletedCharacters', 'deletionOperationCount'].forEach(key => {
+      if (!hasOwn(ip, key) || !isNonnegativeSafeIntegerOrNull(ip[key])) fail(`invalid ${key}`);
+    });
+    if (Number.isSafeInteger(ip.directInsertedCharacters) && Number.isSafeInteger(ip.directDeletedCharacters) && ip.captureStatus === 'full' &&
+        ip.directInsertedCharacters - ip.directDeletedCharacters !== event.charDelta) fail('Direct equation does not match charDelta');
+    if (Number.isSafeInteger(ip.deletionOperationCount) && Number.isSafeInteger(ip.directDeletedCharacters) &&
+        ip.deletionOperationCount > ip.directDeletedCharacters) fail('deletion operation constraint failed');
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+function analyzeInputProcess(payloadValue) {
+  const payload = payloadValue && typeof payloadValue === 'object' && !Array.isArray(payloadValue) ? payloadValue : {};
+  const events = Array.isArray(payload.events) ? payload.events : [];
+  const sessions = Array.isArray(payload.sessions) ? payload.sessions : [];
+  const startsBySession = new Map();
+  for (const event of events) {
+    if (event?.type !== 'session-start' || typeof event.sessionId !== 'string') continue;
+    const list = startsBySession.get(event.sessionId) || [];
+    list.push(event);
+    startsBySession.set(event.sessionId, list);
+  }
+  const sessionIds = new Set([
+    ...sessions.map(session => session?.id).filter(value => typeof value === 'string'),
+    ...events.map(event => event?.sessionId).filter(value => typeof value === 'string')
+  ]);
+  const sessionInfo = new Map();
+  let legacySessionCount = 0, unsupportedSessionCount = 0, disabledSessionCount = 0, supportedSessionCount = 0;
+  let degraded = false;
+  const chunkThresholds = new Set(), longThresholds = new Set();
+  for (const sessionId of sessionIds) {
+    const starts = startsBySession.get(sessionId) || [];
+    const ip = starts.length === 1 && starts[0].meta?.inputProcess && typeof starts[0].meta.inputProcess === 'object'
+      ? starts[0].meta.inputProcess : null;
+    const status = !ip ? 'legacy' : ip.version !== INPUT_PROCESS_VERSION ? 'unsupported' : ip.enabled === false ? 'disabled' : 'supported';
+    if (status === 'legacy') legacySessionCount++;
+    else if (status === 'unsupported') unsupportedSessionCount++;
+    else if (status === 'disabled') disabledSessionCount++;
+    else {
+      supportedSessionCount++;
+      chunkThresholds.add(ip.chunkPauseThresholdMs);
+      longThresholds.add(ip.longPauseThresholdMs);
+      if (ip.initialCaptureStatus !== 'full' || (ip.initialIssueCodes || []).length > 0) degraded = true;
+    }
+    sessionInfo.set(sessionId, { status, config: ip });
+  }
+
+  const observed = {
+    chunkCount: 0, directInsertedCharacters: 0, directDeletedCharacters: 0, deletionOperationCount: 0,
+    compositionCount: 0, compositionMsTotal: 0, compositionCommittedCharacters: 0,
+    pauseCount: 0, pauseDurationMsTotal: 0, longPauseCount: 0, unknownDurationPauseCount: 0,
+    foregroundPauseCount: 0, backgroundPauseCount: 0, unknownVisibilityPauseCount: 0
+  };
+  const unknownMetrics = new Set();
+  const issueCodeEventCounts = {};
+  const semanticErrors = [];
+  const sessionObserved = new Map();
+  const directNames = ['directInsertedCharacters', 'directDeletedCharacters', 'deletionOperationCount'];
+  const compositionNames = ['compositionCount', 'compositionMsTotal', 'compositionCommittedCharacters'];
+  const add = (name, value) => {
+    if (value === null || !Number.isSafeInteger(value) || value < 0) unknownMetrics.add(name);
+    else observed[name] += value;
+  };
+  for (const event of events) {
+    const info = sessionInfo.get(event?.sessionId) || { status: 'legacy', config: null };
+    if (info.status !== 'supported') continue;
+    const ip = event?.meta?.inputProcess;
+    if (!ip || typeof ip !== 'object' || Array.isArray(ip)) continue;
+    const validation = validateInputProcessEvent(event, info.config);
+    if (!validation.valid) {
+      semanticErrors.push(...validation.errors);
+      degraded = true;
+      continue;
+    }
+    if (event.type === 'session-start') continue;
+    if (ip.captureStatus !== 'full' || ip.issueCodes.length > 0) degraded = true;
+    for (const code of ip.issueCodes) issueCodeEventCounts[code] = (issueCodeEventCounts[code] || 0) + 1;
+    const session = sessionObserved.get(event.sessionId) || { chunks: 0, pauses: 0, compositions: 0, captureStatuses: new Set() };
+    session.captureStatuses.add(ip.captureStatus);
+    if (event.type === 'typing') {
+      observed.chunkCount++;
+      session.chunks++;
+      directNames.forEach(name => add(name, ip[name]));
+      compositionNames.forEach(name => add(name, ip[name]));
+      if (Number.isSafeInteger(ip.compositionCount)) session.compositions += ip.compositionCount;
+    } else if ((event.type === 'replace' || event.type === 'delete') && event.meta?.owner === 'direct') {
+      directNames.forEach(name => add(name, ip[name]));
+      compositionNames.forEach(name => { if (hasOwn(ip, name)) add(name, ip[name]); });
+      if (Number.isSafeInteger(ip.compositionCount)) session.compositions += ip.compositionCount;
+    } else if (event.type === 'pause') {
+      session.pauses++;
+      if (ip.durationMs === null) observed.unknownDurationPauseCount++;
+      else {
+        observed.pauseCount++;
+        observed.pauseDurationMsTotal += ip.durationMs;
+        if (ip.pauseClass === 'long') observed.longPauseCount++;
+      }
+      if (ip.visibility === 'foreground') observed.foregroundPauseCount++;
+      else if (ip.visibility === 'background') observed.backgroundPauseCount++;
+      else observed.unknownVisibilityPauseCount++;
+    }
+    sessionObserved.set(event.sessionId, session);
+  }
+  const hasSupported = supportedSessionCount > 0;
+  let availability;
+  if (!hasSupported && unsupportedSessionCount > 0 && legacySessionCount === 0) availability = 'unsupported';
+  else if (!hasSupported && disabledSessionCount > 0 && legacySessionCount === 0) availability = 'unavailable';
+  else if (!hasSupported) availability = 'legacy-not-recorded';
+  else if (legacySessionCount || unsupportedSessionCount || disabledSessionCount || degraded || semanticErrors.length) availability = 'partial';
+  else availability = 'complete';
+  const complete = availability === 'complete';
+  const summary = {
+    version: INPUT_PROCESS_VERSION,
+    availability,
+    ...Object.fromEntries(Object.entries(observed).map(([name, value]) => [name, complete && !unknownMetrics.has(name) ? value : null])),
+    observedTotals: { ...observed },
+    issueCodeEventCounts,
+    coverage: { legacySessionCount, unsupportedSessionCount, disabledSessionCount, supportedSessionCount, sessionCount: sessionIds.size },
+    thresholds: {
+      chunkPauseThresholdMs: chunkThresholds.size === 1 ? [...chunkThresholds][0] : null,
+      longPauseThresholdMs: longThresholds.size === 1 ? [...longThresholds][0] : null,
+      variesBySession: chunkThresholds.size > 1 || longThresholds.size > 1
+    }
+  };
+  return { summary, semanticValidation: { valid: semanticErrors.length === 0, errors: semanticErrors }, sessions: sessionInfo, sessionObserved };
+}
+
+// Process Assessment v0.1 — pure derived logic start
+const PROCESS_ASSESSMENT_VERSION = 1;
+const PROCESS_RULE_SET_VERSION = '0.1-beta';
+
+function safeDerivedRatio(numerator, denominator, multiplier = 1) {
+  if (typeof numerator !== 'number' || !Number.isFinite(numerator) || numerator < 0 ||
+      typeof denominator !== 'number' || !Number.isFinite(denominator) || denominator <= 0) return null;
+  const result = numerator / denominator * multiplier;
+  return Number.isFinite(result) ? result : null;
+}
+
+function integrityStatusClass(integrity) {
+  if (integrity === 'verified') return 'integrity-verified';
+  if (integrity === 'anchored') return 'integrity-anchored';
+  if (integrity === 'unsigned') return 'integrity-unsigned';
+  return 'integrity-invalid';
+}
+
+function deriveProcessAssessment(integrityResult, inputProcessAnalysis, reportMetadata = {}) {
+  const integrity = ['verified', 'anchored', 'unsigned', 'invalid'].includes(integrityResult?.computedStatus)
+    ? integrityResult.computedStatus : 'invalid';
+  const summary = inputProcessAnalysis?.summary && typeof inputProcessAnalysis.summary === 'object'
+    ? inputProcessAnalysis.summary : {};
+  const availability = summary.availability;
+  const semanticValid = inputProcessAnalysis?.semanticValidation?.valid === true;
+  let captureQuality = 'insufficient';
+  if (availability === 'unsupported') captureQuality = 'unsupported';
+  else if (!semanticValid || availability === 'unavailable' || availability === 'legacy-not-recorded') captureQuality = 'insufficient';
+  else if (availability === 'partial') captureQuality = 'limited';
+  else if (availability === 'complete') captureQuality = 'good';
+
+  const reasonCodes = [];
+  if (captureQuality === 'limited') reasonCodes.push('capture-limited');
+  if (captureQuality === 'insufficient') reasonCodes.push('capture-insufficient');
+  if (summary.thresholds?.variesBySession === true) reasonCodes.push('mixed-session-thresholds');
+
+  const directInserted = summary.directInsertedCharacters;
+  const derivedMetrics = {
+    chunksPer1000DirectChars: safeDerivedRatio(summary.chunkCount, directInserted, 1000),
+    deletionRatio: safeDerivedRatio(summary.directDeletedCharacters, directInserted),
+    deletionOperationsPer1000DirectChars: safeDerivedRatio(summary.deletionOperationCount, directInserted, 1000),
+    pausesPer1000DirectChars: safeDerivedRatio(summary.pauseCount, directInserted, 1000),
+    imeCommittedShare: safeDerivedRatio(summary.compositionCommittedCharacters, directInserted)
+  };
+
+  return {
+    assessmentVersion: PROCESS_ASSESSMENT_VERSION,
+    ruleSetVersion: PROCESS_RULE_SET_VERSION,
+    integrity,
+    captureQuality,
+    processReview: 'not-assessed',
+    reasonCodes,
+    derivedMetrics
+  };
+}
+// Process Assessment v0.1 — pure derived logic end
+
+function processReviewExplanation(assessment, analysis) {
+  const availability = analysis.summary.availability;
+  const integrityExplanations = {
+    verified: t('process.integrityVerified'),
+    anchored: t('process.integrityAnchored'),
+    unsigned: t('process.integrityUnsigned'),
+    invalid: t('process.integrityInvalid')
+  };
+  let captureExplanation = t('process.captureDefault');
+  if (assessment.captureQuality === 'good') captureExplanation = t('process.captureGood');
+  else if (assessment.captureQuality === 'limited') captureExplanation = t('process.captureLimited');
+  else if (assessment.captureQuality === 'unsupported') captureExplanation = t('process.captureUnsupported');
+  else if (!analysis.semanticValidation.valid) captureExplanation = t('process.captureInvalid');
+  else if (availability === 'legacy-not-recorded') captureExplanation = t('process.captureLegacy');
+  else if (availability === 'unavailable') captureExplanation = t('process.captureUnavailable');
+  const reviewExplanation = assessment.integrity === 'invalid'
+    ? t('process.reviewIntegrityInvalid')
+    : t('process.reviewExperimental');
+  return { integrity: integrityExplanations[assessment.integrity], capture: captureExplanation, review: reviewExplanation };
+}
+
+function renderProcessReview(verification, analysis) {
+  const assessment = deriveProcessAssessment(verification, analysis);
+  const explanations = processReviewExplanation(assessment, analysis);
+  const container = document.getElementById('process-review');
+  container.replaceChildren();
+  const grid = createElement('div', undefined, 'process-review-grid');
+  const statusItem = (label, value, explanation, statusClass) => {
+    const item = createElement('div', undefined, 'process-review-item');
+    item.append(
+      createElement('div', label, 'process-review-label'),
+      createElement('div', value, `process-review-value ${statusClass}`),
+      createElement('p', explanation, 'process-review-explanation')
+    );
+    return item;
+  };
+  const integrityLabels = { verified: t('integrity.verified'), anchored: t('integrity.anchored'), unsigned: t('integrity.unsigned'), invalid: t('integrity.invalid') };
+  const captureLabels = { good: t('capture.good'), limited: t('capture.limited'), insufficient: t('capture.insufficient'), unsupported: t('capture.unsupported') };
+  const reviewPriorityItem = statusItem('Review Priority', 'Not assessed', explanations.review, 'review-not-assessed');
+  reviewPriorityItem.querySelector('.process-review-label').textContent = t('process.reviewPriority');
+  reviewPriorityItem.querySelector('.process-review-value').textContent = t('process.notAssessed');
+  grid.append(
+    statusItem(t('process.integrity'), integrityLabels[assessment.integrity], explanations.integrity, integrityStatusClass(assessment.integrity)),
+    statusItem(t('process.captureQuality'), captureLabels[assessment.captureQuality], explanations.capture, `capture-${assessment.captureQuality}`),
+    reviewPriorityItem
+  );
+  container.append(grid);
+
+  const reasonText = assessment.reasonCodes.map(code => {
+    if (code === 'capture-limited') return t('process.reasonLimited');
+    if (code === 'mixed-session-thresholds') return t('process.reasonMixedThresholds');
+    if (code === 'capture-insufficient' && !analysis.semanticValidation.valid) return t('process.reasonInvalid');
+    if (code === 'capture-insufficient' && analysis.summary.availability === 'legacy-not-recorded') return t('process.reasonLegacy');
+    if (code === 'capture-insufficient' && analysis.summary.availability === 'unavailable') return t('process.reasonUnavailable');
+    if (code === 'capture-insufficient') return t('process.reasonInsufficient');
+    return null;
+  }).filter(Boolean);
+  if (reasonText.length > 0) {
+    const reasons = createElement('section', undefined, 'process-review-reasons');
+    reasons.append(createElement('h4', t('process.observedReasons')));
+    const list = createElement('ul');
+    reasonText.forEach(reason => list.append(createElement('li', reason)));
+    reasons.append(list);
+    container.append(reasons);
+  }
+
+  container.append(createElement('p', t('process.disclaimer'), 'review-note'));
+  const actions = createElement('div', undefined, 'process-review-actions');
+  const technicalButton = createElement('button', 'Show technical details', 'technical-link');
+  technicalButton.textContent = t('process.showTechnical');
+  technicalButton.type = 'button';
+  technicalButton.setAttribute('aria-label', t('process.showTechnicalAria'));
+  technicalButton.addEventListener('click', () => {
+    setActiveView('technical');
+    const heading = document.getElementById('input-process-heading');
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+    document.getElementById('input-process-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  actions.append(technicalButton);
+  container.append(actions);
+  return assessment;
+}
+
+function displayInputMetric(analysis, name) {
+  const value = analysis.summary[name];
+  if (value !== null && value !== undefined) return Number(value).toLocaleString('en-US');
+  const observed = analysis.summary.observedTotals?.[name];
+  return observed === undefined ? t('input.notAvailable') : t('input.recordedOnly', { value: Number(observed).toLocaleString('en-US') });
+}
+
+function formatInputDuration(value) {
+  if (value === null || value === undefined) return t('input.notAvailable');
+  const milliseconds = Math.max(0, Number(value) || 0);
+  const seconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return minutes > 0 ? `${minutes}m ${String(remainder).padStart(2, '0')}s` : `${seconds}s`;
+}
+
+const RECOMPUTED_SUMMARY_FIELDS = Object.freeze([
+  'sessionCount',
+  'durationMs',
+  'interactionActiveMs',
+  'inactiveMs',
+  'finalChars',
+  'typedChars',
+  'pastedChars',
+  'pasteEvents',
+  'largeDeletions',
+  'undoCount',
+  'redoCount',
+  'replaceCount',
+  'exportMarkdownCount'
+]);
+
+const PROVENANCE_SUMMARY_FIELDS = Object.freeze([
+  'verifiedInternalPasteChars', 'verifiedInternalPasteEvents',
+  'unverifiedPasteChars', 'unverifiedPasteEvents',
+  'legacyUnknownPasteChars', 'legacyUnknownPasteEvents'
+]);
+const INPUT_PROCESS_SUMMARY_FIELDS = Object.freeze([
+  'version', 'availability', 'chunkCount', 'directInsertedCharacters', 'directDeletedCharacters',
+  'deletionOperationCount', 'compositionCount', 'compositionMsTotal', 'compositionCommittedCharacters',
+  'pauseCount', 'pauseDurationMsTotal', 'longPauseCount', 'unknownDurationPauseCount',
+  'foregroundPauseCount', 'backgroundPauseCount', 'unknownVisibilityPauseCount'
+]);
+
+function finiteSourceNumber(value) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
+function recomputeSummary(payload) {
+  const events = Array.isArray(payload.events) ? payload.events : [];
+  const sessions = Array.isArray(payload.sessions) ? payload.sessions : [];
+  let typedChars = 0;
+  let pastedChars = 0;
+  let pasteEvents = 0;
+  let largeDeletions = 0;
+  let undoCount = 0;
+  let redoCount = 0;
+  let replaceCount = 0;
+  let exportMarkdownCount = 0;
+  const provenanceAnalysis = classifyPasteProvenance(events);
+  const pasteProvenanceAvailable = payload.manifest?.pasteProvenanceVersion === 1 ||
+    events.some(eventValue => eventValue?.type === 'paste' && eventValue.meta && Object.prototype.hasOwnProperty.call(eventValue.meta, 'provenance'));
+
+  for (const eventValue of events) {
+    const event = eventValue && typeof eventValue === 'object' && !Array.isArray(eventValue) ? eventValue : {};
+    const meta = event.meta && typeof event.meta === 'object' && !Array.isArray(event.meta) ? event.meta : {};
+
+    if (event.type === 'typing') {
+      const insertedCharacters = meta.insertedCharacters ?? Math.max(0, finiteSourceNumber(event.charDelta));
+      typedChars += Math.max(0, finiteSourceNumber(insertedCharacters));
+    } else if (event.type === 'paste') {
+      const pastedCharacters = typeof meta.pastedCharacters === 'number' && Number.isFinite(meta.pastedCharacters)
+        ? meta.pastedCharacters
+        : Math.max(0, finiteSourceNumber(event.charDelta));
+      pastedChars += Math.max(0, pastedCharacters);
+      pasteEvents++;
+    } else if (event.type === 'delete') {
+      const deletedCharacters = meta.deletedCharacters ?? Math.max(0, -finiteSourceNumber(event.charDelta));
+      if (finiteSourceNumber(deletedCharacters) >= 100) largeDeletions++;
+    } else if (event.type === 'replace') {
+      replaceCount++;
+      if (meta.largeDeletion === true || finiteSourceNumber(meta.removedCharacters) >= 100) largeDeletions++;
+    } else if (event.type === 'undo') {
+      undoCount++;
+    } else if (event.type === 'redo') {
+      redoCount++;
+    } else if (event.type === 'export-markdown') {
+      exportMarkdownCount++;
+    }
+  }
+
+  const durationMs = sessions.reduce((total, sessionValue) => {
+    const session = sessionValue && typeof sessionValue === 'object' && !Array.isArray(sessionValue) ? sessionValue : {};
+    return total + finiteSourceNumber(session.durationMs);
+  }, 0);
+  const interactionActiveMs = sessions.reduce((total, sessionValue) => {
+    const session = sessionValue && typeof sessionValue === 'object' && !Array.isArray(sessionValue) ? sessionValue : {};
+    return total + finiteSourceNumber(session.interactionActiveMs);
+  }, 0);
+
+  return {
+    sessionCount: sessions.length,
+    durationMs,
+    interactionActiveMs,
+    inactiveMs: Math.max(0, durationMs - interactionActiveMs),
+    finalChars: typeof payload.document?.markdown === 'string' ? payload.document.markdown.length : 0,
+    typedChars,
+    pastedChars,
+    pasteEvents,
+    ...provenanceAnalysis.counts,
+    pasteProvenanceAvailable,
+    largeDeletions,
+    undoCount,
+    redoCount,
+    replaceCount,
+    exportMarkdownCount,
+    inputProcess: analyzeInputProcess(payload).summary
+  };
+}
+
+function compareSummary(storedSummaryValue, recomputedSummary) {
+  const storedSummary = storedSummaryValue && typeof storedSummaryValue === 'object' && !Array.isArray(storedSummaryValue)
+    ? storedSummaryValue : {};
+  const differences = [];
+
+  const fields = recomputedSummary.pasteProvenanceAvailable
+    ? [...RECOMPUTED_SUMMARY_FIELDS, ...PROVENANCE_SUMMARY_FIELDS] : RECOMPUTED_SUMMARY_FIELDS;
+  for (const field of fields) {
+    if (!Object.prototype.hasOwnProperty.call(storedSummary, field)) {
+      differences.push({ field, status: 'missing', stored: undefined, recomputed: recomputedSummary[field] });
+      continue;
+    }
+    const stored = storedSummary[field];
+    if (typeof stored !== 'number' || !Number.isFinite(stored)) {
+      differences.push({ field, status: 'malformed', stored, recomputed: recomputedSummary[field] });
+      continue;
+    }
+    if (stored !== recomputedSummary[field]) {
+      differences.push({ field, status: 'different', stored, recomputed: recomputedSummary[field] });
+    }
+  }
+
+  const shouldCompareInputProcess = storedSummary.inputProcess !== undefined ||
+    recomputedSummary.inputProcess.availability !== 'legacy-not-recorded';
+  if (shouldCompareInputProcess && recomputedSummary.inputProcess.availability !== 'legacy-not-recorded') {
+    const storedInputProcess = storedSummary.inputProcess && typeof storedSummary.inputProcess === 'object' && !Array.isArray(storedSummary.inputProcess)
+      ? storedSummary.inputProcess : {};
+    for (const field of INPUT_PROCESS_SUMMARY_FIELDS) {
+      if (!hasOwn(storedInputProcess, field)) {
+        differences.push({ field: `inputProcess.${field}`, status: 'missing', stored: undefined, recomputed: recomputedSummary.inputProcess[field] });
+      } else if (storedInputProcess[field] !== recomputedSummary.inputProcess[field]) {
+        differences.push({ field: `inputProcess.${field}`, status: 'different', stored: storedInputProcess[field], recomputed: recomputedSummary.inputProcess[field] });
+      }
+    }
+  }
+
+  return { match: differences.length === 0, differences };
+}
+
+function formatStoredSummaryValue(difference) {
+  if (difference.status === 'missing') return t('summary.missing');
+  if (difference.status === 'malformed') {
+    let value;
+    try { value = JSON.stringify(difference.stored); }
+    catch { value = String(difference.stored); }
+    return t('summary.malformed', { value: value === undefined ? String(difference.stored) : value });
+  }
+  return String(difference.stored);
+}
+
+function renderSummaryConsistency(container, comparison) {
+  container.replaceChildren();
+  container.className = `summary-consistency ${comparison.match ? 'match' : 'mismatch'}`;
+  container.append(createElement('div', t('summary.titleValue', { value: comparison.match ? `✓ ${t('integrity.match')}` : `⚠ ${t('integrity.mismatch')}` }), 'summary-consistency-title'));
+  container.append(createElement('div', t('summary.note'), 'summary-note'));
+  if (comparison.match) return;
+
+  const table = createElement('table', undefined, 'summary-mismatch-table');
+  const head = createElement('thead');
+  const headRow = createElement('tr');
+  for (const heading of [t('summary.field'), t('summary.stored'), t('summary.recomputed')]) headRow.append(createElement('th', heading));
+  head.append(headRow);
+  const body = createElement('tbody');
+  for (const difference of comparison.differences) {
+    const row = createElement('tr');
+    row.append(
+      createElement('td', difference.field),
+      createElement('td', formatStoredSummaryValue(difference)),
+      createElement('td', difference.recomputed)
+    );
+    body.append(row);
+  }
+  table.append(head, body);
+  container.append(table);
+}
+
+const TIMELINE_DAY_MS = 24 * 60 * 60 * 1000;
+const TIMELINE_DATE_FORMATTER = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+
+function parseTimelineDate(value) {
+  if (typeof value !== 'string' || value.trim() === '') return null;
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date : null;
+}
+
+function localCalendarDay(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  return {
+    serial: Math.floor(Date.UTC(year, month, day) / TIMELINE_DAY_MS),
+    date: new Date(year, month, day)
+  };
+}
+
+function calendarDateFromSerial(serial) {
+  const utcDate = new Date(serial * TIMELINE_DAY_MS);
+  return new Date(utcDate.getUTCFullYear(), utcDate.getUTCMonth(), utcDate.getUTCDate());
+}
+
+function selectSubmissionDate(payload) {
+  const manifest = payload.manifest && typeof payload.manifest === 'object' && !Array.isArray(payload.manifest)
+    ? payload.manifest : {};
+  return parseTimelineDate(manifest.submittedAtServer) || parseTimelineDate(manifest.submittedAt);
+}
+
+function buildWritingTimelineModel(payload) {
+  const sessions = Array.isArray(payload.sessions) ? payload.sessions : [];
+  const days = new Map();
+
+  for (const sessionValue of sessions) {
+    if (!sessionValue || typeof sessionValue !== 'object' || Array.isArray(sessionValue)) continue;
+    const startedAt = parseTimelineDate(sessionValue.startedAtClient);
+    if (!startedAt) continue;
+    const calendarDay = localCalendarDay(startedAt);
+    const activeMs = typeof sessionValue.interactionActiveMs === 'number' && Number.isFinite(sessionValue.interactionActiveMs)
+      ? Math.max(0, sessionValue.interactionActiveMs) : 0;
+    const existing = days.get(calendarDay.serial) || {
+      serial: calendarDay.serial,
+      date: calendarDay.date,
+      activeMs: 0,
+      sessionCount: 0,
+      submitted: false
+    };
+    existing.activeMs += activeMs;
+    existing.sessionCount++;
+    days.set(calendarDay.serial, existing);
+  }
+
+  if (days.size === 0) return { available: false, rows: [], maxActiveMs: 0 };
+
+  const firstSessionSerial = Math.min(...days.keys());
+  const submittedAt = selectSubmissionDate(payload);
+  if (submittedAt) {
+    const submittedDay = localCalendarDay(submittedAt);
+    const existing = days.get(submittedDay.serial) || {
+      serial: submittedDay.serial,
+      date: submittedDay.date,
+      activeMs: 0,
+      sessionCount: 0,
+      submitted: false
+    };
+    existing.submitted = true;
+    days.set(submittedDay.serial, existing);
+  }
+
+  const calendarDays = [...days.values()].sort((a, b) => a.serial - b.serial);
+  const rows = [];
+  let previousSerial = null;
+  for (const dayValue of calendarDays) {
+    if (previousSerial !== null) {
+      const inactiveDays = dayValue.serial - previousSerial - 1;
+      if (inactiveDays >= 3) {
+        rows.push({ kind: 'gap', inactiveDays });
+      } else {
+        for (let offset = 1; offset <= inactiveDays; offset++) {
+          const serial = previousSerial + offset;
+          const date = calendarDateFromSerial(serial);
+          rows.push({ kind: 'inactive', dayNumber: serial - firstSessionSerial + 1, date });
+        }
+      }
+    }
+    rows.push({
+      kind: 'day',
+      dayNumber: dayValue.serial - firstSessionSerial + 1,
+      date: dayValue.date,
+      activeMs: dayValue.activeMs,
+      sessionCount: dayValue.sessionCount,
+      submitted: dayValue.submitted
+    });
+    previousSerial = dayValue.serial;
+  }
+
+  return {
+    available: true,
+    rows,
+    maxActiveMs: Math.max(...calendarDays.map(day => day.activeMs), 0)
+  };
+}
+
+function formatActiveWritingTime(activeMs) {
+  if (activeMs <= 0) return t('unit.zeroMinutes');
+  const minutes = Math.max(1, Math.round(activeMs / 60000));
+  if (minutes < 60) return t('unit.minutes', { count: minutes });
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return remainder === 0
+    ? t('unit.hours', { count: hours })
+    : t('unit.hoursMinutes', { hours, minutes: remainder });
+}
+
+function formatTimelineDate(date) {
+  try { return TIMELINE_DATE_FORMATTER.format(date); }
+  catch { return ''; }
+}
+
+function renderWritingTimeline(container, model) {
+  container.replaceChildren();
+  if (!model.available) {
+    container.append(createElement('div', t('timeline.none'), 'writing-empty'));
+    return;
+  }
+
+  for (const rowValue of model.rows) {
+    if (rowValue.kind === 'gap') {
+      container.append(createElement('div', t('timeline.gap', { count: rowValue.inactiveDays }), 'writing-gap-row'));
+      continue;
+    }
+    if (rowValue.kind === 'inactive') {
+      const inactive = createElement('div', undefined, 'writing-inactive-row');
+      inactive.append(
+        createElement('span', t('timeline.day', { number: rowValue.dayNumber, date: formatTimelineDate(rowValue.date) })),
+        createElement('span', t('timeline.noSession'))
+      );
+      container.append(inactive);
+      continue;
+    }
+
+    const item = createElement('div', undefined, 'writing-day-row');
+    item.append(createElement('div', t('timeline.day', { number: rowValue.dayNumber, date: formatTimelineDate(rowValue.date) }), 'writing-day-label'));
+    const barTrack = createElement('div', undefined, 'writing-bar-track');
+    if (rowValue.sessionCount > 0) {
+      const bar = createElement('div', undefined, `writing-bar-fill${rowValue.activeMs > 0 ? ' active' : ''}`);
+      const percentage = model.maxActiveMs > 0 ? (rowValue.activeMs / model.maxActiveMs) * 100 : 0;
+      bar.style.width = `${Math.max(0, Math.min(100, percentage))}%`;
+      barTrack.append(bar);
+    }
+    item.append(barTrack);
+    const sessionLabel = `${rowValue.sessionCount} ${t(rowValue.sessionCount === 1 ? 'timeline.session' : 'timeline.sessions')}`;
+    item.append(createElement('div', rowValue.sessionCount > 0 ? `${formatActiveWritingTime(rowValue.activeMs)} · ${sessionLabel}` : '', 'writing-day-meta'));
+    item.append(createElement('div', rowValue.submitted ? t('timeline.submitted') : '', 'writing-submitted'));
+    container.append(item);
+  }
+}
+
+const DETAILED_LOG_PAGE_SIZE = 100;
+const detailedLogState = {
+  events: [],
+  provenanceClassifications: new Map(),
+  filteredEvents: [],
+  eventTypes: [],
+  filter: '',
+  page: 1,
+  pageSize: DETAILED_LOG_PAGE_SIZE,
+  rendered: false
+};
+
+function buildDetailedLogFilterOptions() {
+  const controls = document.getElementById('detailed-log-controls');
+  controls.replaceChildren();
+
+  const toolbar = createElement('div', undefined, 'log-controls');
+  const filterLabel = createElement('label', t('log.eventType'), 'log-filter');
+  filterLabel.htmlFor = 'detailed-log-filter';
+  const filterSelect = createElement('select');
+  filterSelect.id = 'detailed-log-filter';
+  const allOption = createElement('option', t('log.allEvents'));
+  allOption.value = '';
+  filterSelect.append(allOption);
+  detailedLogState.eventTypes.forEach(eventType => {
+    const option = createElement('option', eventType);
+    option.value = eventType;
+    filterSelect.append(option);
+  });
+  filterSelect.value = detailedLogState.filter;
+  filterSelect.addEventListener('change', () => {
+    detailedLogState.filter = filterSelect.value;
+    detailedLogState.page = 1;
+    updateDetailedLogFilter();
+    detailedLogState.rendered = true;
+    renderDetailedLogPage();
+  });
+  filterLabel.append(filterSelect);
+
+  const pager = createElement('div', undefined, 'log-pager');
+  const previousButton = createElement('button', t('log.previous'));
+  previousButton.id = 'detailed-log-previous';
+  previousButton.type = 'button';
+  previousButton.disabled = true;
+  previousButton.addEventListener('click', () => {
+    if (detailedLogState.page <= 1) return;
+    detailedLogState.page -= 1;
+    renderDetailedLogPage();
+  });
+  const range = createElement('span', t('log.eventCount', { count: detailedLogState.events.length }), 'log-range');
+  range.id = 'detailed-log-range';
+  const nextButton = createElement('button', t('log.next'));
+  nextButton.id = 'detailed-log-next';
+  nextButton.type = 'button';
+  nextButton.disabled = true;
+  nextButton.addEventListener('click', () => {
+    const pageCount = Math.max(1, Math.ceil(detailedLogState.filteredEvents.length / detailedLogState.pageSize));
+    if (detailedLogState.page >= pageCount) return;
+    detailedLogState.page += 1;
+    renderDetailedLogPage();
+  });
+  pager.append(previousButton, range, nextButton);
+  toolbar.append(filterLabel, pager);
+  controls.append(toolbar);
+}
+
+function updateDetailedLogFilter() {
+  detailedLogState.filteredEvents = detailedLogState.filter === ''
+    ? detailedLogState.events.slice()
+    : detailedLogState.events.filter(eventValue =>
+        eventValue && typeof eventValue === 'object' && eventValue.type === detailedLogState.filter
+      );
+}
+
+function resetDetailedLogState(events) {
+  detailedLogState.events = Array.isArray(events) ? events : [];
+  detailedLogState.provenanceClassifications = classifyPasteProvenance(detailedLogState.events).classifications;
+  detailedLogState.eventTypes = [];
+  const seenTypes = new Set();
+  detailedLogState.events.forEach(eventValue => {
+    if (!eventValue || typeof eventValue !== 'object' || typeof eventValue.type !== 'string' || eventValue.type.length === 0) return;
+    if (seenTypes.has(eventValue.type)) return;
+    seenTypes.add(eventValue.type);
+    detailedLogState.eventTypes.push(eventValue.type);
+  });
+  detailedLogState.filter = '';
+  detailedLogState.page = 1;
+  detailedLogState.rendered = false;
+  updateDetailedLogFilter();
+  document.getElementById('detailed-log').replaceChildren();
+  buildDetailedLogFilterOptions();
+}
+
+function createDetailedLogEntry(eventValue) {
+  const ev = eventValue && typeof eventValue === 'object' ? eventValue : {};
+  const beforeSnippet=String(ev.beforeSnippet || '').slice(0,500);
+  const afterSnippet=String(ev.afterSnippet || '').slice(0,500);
+  const snippet=afterSnippet || beforeSnippet;
+  const eventMeta = ev.meta && typeof ev.meta === 'object' ? ev.meta : {};
+  const isSensitive = ev.type==='delete' || ev.type==='paste' || ev.type==='replace' || ev.type==='replace-all' ||
+    ev.type==='undo' || ev.type==='redo' ||
+    eventMeta.largeDeletion === true || finiteNumber(eventMeta.deletedCharacters) > 0 || finiteNumber(eventMeta.removedCharacters) > 0 ||
+    beforeSnippet.length>=100 || afterSnippet.length>=100;
+  const entry = createElement('div', undefined, 'log-entry');
+  const heading = createElement('div');
+  const timestamp = createElement('strong', String(ev.timestampClient || '').slice(11,19));
+  const type = createElement('span', ` ${String(ev.type || '')} `);
+  type.style.color = 'var(--accent2)';
+  const editCounts = [];
+  if (eventMeta.removedCharacters !== undefined) editCounts.push(`removed:${finiteNumber(eventMeta.removedCharacters)}`);
+  if (eventMeta.insertedCharacters !== undefined) editCounts.push(`inserted:${finiteNumber(eventMeta.insertedCharacters)}`);
+  if (eventMeta.deletedCharacters !== undefined) editCounts.push(`deleted:${finiteNumber(eventMeta.deletedCharacters)}`);
+  if (eventMeta.largeDeletion === true) editCounts.push('largeDeletion:true');
+  const inputProcess = eventMeta.inputProcess && typeof eventMeta.inputProcess === 'object' && !Array.isArray(eventMeta.inputProcess)
+    ? eventMeta.inputProcess : null;
+  if (inputProcess) {
+    if (ev.type === 'typing') {
+      editCounts.push(
+        `direct:+${String(inputProcess.directInsertedCharacters)}/-${String(inputProcess.directDeletedCharacters)}`,
+        `deletionOps:${String(inputProcess.deletionOperationCount)}`,
+        `chunkElapsed:${inputProcess.chunkElapsedMs === null ? 'N/A' : `${inputProcess.chunkElapsedMs}ms`}`,
+        `IME:${String(inputProcess.compositionCount)}`,
+        `closedBy:${String(inputProcess.closedBy)}`
+      );
+    } else if (ev.type === 'pause') {
+      editCounts.push(
+        `duration:${inputProcess.durationMs === null ? 'unknown' : `${inputProcess.durationMs}ms`}`,
+        `class:${String(inputProcess.pauseClass)}`,
+        `visibility:${String(inputProcess.visibility)}`,
+        `endedBy:${String(inputProcess.endedBy)}`
+      );
+    }
+    editCounts.push(`capture:${String(inputProcess.captureStatus)}`);
+    if (Array.isArray(inputProcess.issueCodes) && inputProcess.issueCodes.length) editCounts.push(`issues:${inputProcess.issueCodes.join(',')}`);
+  }
+  if (ev.type === 'paste') {
+    const classification = detailedLogState.provenanceClassifications.get(eventValue) || { provenance: 'unverified', pastedCharacters: 0 };
+    const label = classification.provenance === 'verified-internal' ? t('writing.verifiedInternal')
+      : classification.provenance === 'legacy-unknown' ? t('writing.legacyUnknown') : t('writing.unverified');
+    editCounts.push(`provenance:${label}`, `pasted:${finiteNumber(classification.pastedCharacters)}`);
+    if (classification.sourceEvent) {
+      editCounts.push(`source:${classification.sourceEvent.type}`, `sourceEvent:${String(classification.sourceEvent.id || '').slice(0,128)}`);
+    }
+    if (eventMeta.transferId !== undefined && eventMeta.transferId !== null) editCounts.push(`transferId:${String(eventMeta.transferId).slice(0,128)}`);
+  } else if (ev.type === 'copy' || ev.type === 'cut') {
+    editCounts.push(`characters:${finiteNumber(eventMeta.characterCount)}`, `markerWritten:${eventMeta.markerWritten === true}`);
+    if (eventMeta.transferId !== undefined) editCounts.push(`transferId:${String(eventMeta.transferId).slice(0,128)}`);
+    if (eventMeta.sourceHash !== undefined) editCounts.push(`sourceHash:${String(eventMeta.sourceHash).slice(0,64)}`);
+  }
+  const meta = createElement('span', `id:${String(ev.id || '')} Δ:${finiteNumber(ev.charDelta)} ${String(ev.previousHash || '').slice(0,6)}→${String(ev.hash || '').slice(0,6)}${editCounts.length ? ` ${editCounts.join(' ')}` : ''}`, 'meta');
+  heading.append(timestamp, type, meta);
+  entry.append(heading);
+  if (isSensitive) {
+    const details = createElement('details');
+    details.append(createElement('summary', t('log.showText', { type: String(ev.type || ''), before: beforeSnippet.length, after: afterSnippet.length })));
+    if (beforeSnippet) {
+      details.append(createElement('div', t('log.before'), 'meta'));
+      details.append(createElement('div', beforeSnippet, 'snippet'));
+    }
+    if (afterSnippet) {
+      details.append(createElement('div', t('log.after'), 'meta'));
+      details.append(createElement('div', afterSnippet, 'snippet'));
+    }
+    entry.append(details);
+  } else {
+    entry.append(createElement('div', snippet.slice(0,200), 'snippet'));
+  }
+  return entry;
+}
+
+function renderDetailedLogPage() {
+  const detailedLog = document.getElementById('detailed-log');
+  const total = detailedLogState.filteredEvents.length;
+  const pageCount = Math.max(1, Math.ceil(total / detailedLogState.pageSize));
+  detailedLogState.page = Math.min(Math.max(1, detailedLogState.page), pageCount);
+  const start = (detailedLogState.page - 1) * detailedLogState.pageSize;
+  const end = Math.min(start + detailedLogState.pageSize, total);
+  detailedLog.replaceChildren();
+  if (total === 0) {
+    detailedLog.append(createElement('div', t('log.noMatching'), 'log-empty'));
+  } else {
+    const fragment = document.createDocumentFragment();
+    detailedLogState.filteredEvents.slice(start, end).forEach(eventValue => fragment.append(createDetailedLogEntry(eventValue)));
+    detailedLog.append(fragment);
+  }
+
+  const previousButton = document.getElementById('detailed-log-previous');
+  const nextButton = document.getElementById('detailed-log-next');
+  const range = document.getElementById('detailed-log-range');
+  previousButton.disabled = total === 0 || detailedLogState.page === 1;
+  nextButton.disabled = total === 0 || detailedLogState.page === pageCount;
+  range.textContent = total === 0 ? t('log.eventCount', { count: 0 }) : t('log.range', { start: start + 1, end, total });
+}
+
+function ensureDetailedLogRendered() {
+  if (detailedLogState.rendered) return;
+  detailedLogState.rendered = true;
+  updateDetailedLogFilter();
+  renderDetailedLogPage();
+}
+
+resetDetailedLogState([]);
+
+const WRITING_PROCESS_EVENT_TYPES = new Set(['typing', 'paste', 'delete', 'replace', 'replace-all', 'undo', 'redo']);
+
+function hasRecordedWritingProcess(events) {
+  return Array.isArray(events) && events.some(eventValue =>
+    eventValue && typeof eventValue === 'object' && WRITING_PROCESS_EVENT_TYPES.has(eventValue.type)
+  );
+}
+
+function renderInputProcessTechnical(payload) {
+  const analysis = analyzeInputProcess(payload);
+  const summary = analysis.summary;
+  const grid = document.getElementById('input-process-grid');
+  const details = document.getElementById('input-process-details');
+  grid.replaceChildren();
+  details.replaceChildren();
+  const availabilityLabel = {
+    complete: t('input.availability.complete'), partial: t('input.availability.partial'), unavailable: t('input.availability.unavailable'),
+    'legacy-not-recorded': t('input.availability.legacy'), unsupported: t('input.availability.unsupported')
+  }[summary.availability] || summary.availability;
+  appendStat(grid, t('input.schema'), summary.availability === 'legacy-not-recorded' ? t('input.notRecorded') : `v${summary.version}`);
+  appendStat(grid, t('input.availability'), availabilityLabel);
+  appendStat(grid, t('input.semanticValidation'), analysis.semanticValidation.valid ? t('input.semanticValid') : t('input.semanticInvalid'));
+  appendStat(grid, t('input.characterUnit'), 'UTF-16 code unit');
+  if (summary.thresholds.variesBySession) {
+    appendStat(grid, t('input.chunkThreshold'), t('input.variesBySession'));
+    appendStat(grid, t('input.longPauseThreshold'), t('input.variesBySession'));
+  } else {
+    appendStat(grid, t('input.chunkThreshold'), summary.thresholds.chunkPauseThresholdMs === null ? t('input.notAvailable') : `${summary.thresholds.chunkPauseThresholdMs / 1000}s`);
+    appendStat(grid, t('input.longPauseThreshold'), summary.thresholds.longPauseThresholdMs === null ? t('input.notAvailable') : `${summary.thresholds.longPauseThresholdMs / 1000}s`);
+  }
+  appendStat(grid, t('input.typingChunks'), displayInputMetric(analysis, 'chunkCount'));
+  appendStat(grid, t('input.directInserted'), displayInputMetric(analysis, 'directInsertedCharacters'));
+  appendStat(grid, t('input.directDeleted'), displayInputMetric(analysis, 'directDeletedCharacters'));
+  appendStat(grid, t('input.deletionOperations'), displayInputMetric(analysis, 'deletionOperationCount'));
+  appendStat(grid, t('input.compositions'), displayInputMetric(analysis, 'compositionCount'));
+  appendStat(grid, t('input.committedChars'), displayInputMetric(analysis, 'compositionCommittedCharacters'));
+  const compositionDuration = summary.compositionMsTotal ?? summary.observedTotals.compositionMsTotal;
+  appendStat(grid, t('input.compositionDuration'), summary.compositionMsTotal === null ? t('input.recordedOnly', { value: formatInputDuration(compositionDuration) }) : formatInputDuration(compositionDuration));
+  appendStat(grid, t('input.pauses'), displayInputMetric(analysis, 'pauseCount'));
+  appendStat(grid, t('input.longPauses'), displayInputMetric(analysis, 'longPauseCount'));
+  const pauseDuration = summary.pauseDurationMsTotal ?? summary.observedTotals.pauseDurationMsTotal;
+  appendStat(grid, t('input.pauseSubtotal'), summary.pauseDurationMsTotal === null ? t('input.recordedOnly', { value: formatInputDuration(pauseDuration) }) : formatInputDuration(pauseDuration));
+  appendStat(grid, t('input.foregroundPauses'), displayInputMetric(analysis, 'foregroundPauseCount'));
+  appendStat(grid, t('input.backgroundObserved'), displayInputMetric(analysis, 'backgroundPauseCount'));
+  appendStat(grid, t('input.unknownVisibility'), displayInputMetric(analysis, 'unknownVisibilityPauseCount'));
+  appendStat(grid, t('input.unknownDuration'), displayInputMetric(analysis, 'unknownDurationPauseCount'));
+
+  if (summary.availability === 'legacy-not-recorded') {
+    details.append(createElement('p', t('input.legacyNote'), 'review-note'));
+  }
+  const coverage = createElement('p', t('input.coverage', { supported: summary.coverage.supportedSessionCount, total: summary.coverage.sessionCount }), 'review-note');
+  details.append(coverage);
+  const issueEntries = Object.entries(summary.issueCodeEventCounts);
+  if (issueEntries.length > 0) {
+    const issueDetails = createElement('details', undefined, 'technical-details');
+    issueDetails.append(createElement('summary', t('input.captureNotes')));
+    const list = createElement('ul');
+    issueEntries.forEach(([code, count]) => list.append(createElement('li', t('input.issueCount', {
+      code,
+      count,
+      eventLabel: count === 1 ? 'event' : 'events'
+    }))));
+    issueDetails.append(list);
+    details.append(issueDetails);
+  }
+  if (!analysis.semanticValidation.valid) {
+    const semanticDetails = createElement('details', undefined, 'technical-details');
+    semanticDetails.append(createElement('summary', t('input.semanticErrors', { count: analysis.semanticValidation.errors.length })));
+    const list = createElement('ul');
+    analysis.semanticValidation.errors.forEach(error => list.append(createElement('li', error)));
+    semanticDetails.append(list);
+    details.append(semanticDetails);
+  }
+  return analysis;
+}
+
+function appendSessionInputProcess(container, sessionId, analysis) {
+  const info = analysis.sessions.get(sessionId);
+  const observed = analysis.sessionObserved.get(sessionId);
+  const block = createElement('div', undefined, 'session-provenance');
+  block.append(createElement('strong', t('input.title')));
+  if (!info || info.status === 'legacy') {
+    block.append(createElement('div', t('input.schemaLegacy')));
+  } else if (info.status === 'unsupported') {
+    block.append(createElement('div', t('input.schemaUnsupported', { version: String(info.config?.version) })));
+  } else if (info.status === 'disabled') {
+    block.append(createElement('div', t('input.captureDisabled')));
+  } else {
+    const config = info.config;
+    block.append(
+      createElement('div', t('input.schemaCapture', { version: config.version, status: config.initialCaptureStatus })),
+      createElement('div', t('input.thresholds', { chunk: config.chunkPauseThresholdMs, pause: config.longPauseThresholdMs })),
+      createElement('div', t('input.sessionCounts', { chunks: observed?.chunks || 0, pauses: observed?.pauses || 0, ime: observed?.compositions || 0 })),
+      createElement('div', t('input.capabilities', {
+        beforeInput: t(config.capabilities?.beforeInput === true ? 'input.available' : 'input.unavailableValue'),
+        input: t(config.capabilities?.inputEvent === true ? 'input.available' : 'input.unavailableValue'),
+        composition: t(config.capabilities?.compositionEvents === true ? 'input.available' : 'input.unavailableValue'),
+        visibility: t(config.capabilities?.visibilityState === true ? 'input.available' : 'input.unavailableValue'),
+        clock: t(config.capabilities?.monotonicClock === true ? 'input.available' : 'input.unavailableValue')
+      }))
+    );
+  }
+  container.append(block);
+}
+
+function setActiveView(viewName) {
+  const selectedView = viewName === 'technical' ? 'technical' : 'teacher';
+  document.querySelectorAll('.view-tab').forEach(button => {
+    const active = button.dataset.view === selectedView;
+    if (active) button.classList.add('active');
+    else button.classList.remove('active');
+    button.setAttribute('aria-selected', String(active));
+  });
+  document.getElementById('view-teacher').hidden = selectedView !== 'teacher';
+  document.getElementById('view-technical').hidden = selectedView !== 'technical';
+  if (selectedView === 'technical') ensureDetailedLogRendered();
+}
+
+document.querySelectorAll('.view-tab').forEach(button => {
+  button.addEventListener('click', () => setActiveView(button.dataset.view));
+  button.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      setActiveView(button.dataset.view);
+      return;
+    }
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    const tabs = Array.from(document.querySelectorAll('.view-tab'));
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    const nextTab = tabs[(tabs.indexOf(button) + direction + tabs.length) % tabs.length];
+    nextTab.focus();
+    setActiveView(nextTab.dataset.view);
+  });
+});
+
+function render(payload, verification){
+  const sessions = Array.isArray(payload.sessions) ? payload.sessions : [];
+  const events = payload.events;
+  const sessionStartIndex = indexSessionStartEvents(events);
+  resetDetailedLogState(events);
+  const storedSummary = payload.summary && typeof payload.summary === 'object' && !Array.isArray(payload.summary) ? payload.summary : {};
+  const recomputedSummary = recomputeSummary(payload);
+  const summaryComparison = compareSummary(storedSummary, recomputedSummary);
+  const inputProcessAnalysis = renderInputProcessTechnical(payload);
+  document.getElementById('file-info').textContent = t('file.loaded', { filename: String(payload.document.filename || ''), events: events.length, sessions: sessions.length });
+  document.getElementById('doc-preview').textContent=payload.document.markdown;
+
+  const teacherVerification = document.getElementById('teacher-verification');
+  teacherVerification.replaceChildren();
+  appendStat(teacherVerification, t('integrity.recordIntegrity'), verification.localIntegrityOk ? `✓ ${t('integrity.verified')}` : `✗ ${t('integrity.broken')}`);
+  appendStat(teacherVerification, t('integrity.finalSignature'), verification.finalSignatureVerification.valid ? `✓ ${displayVerificationState(verification.finalSignatureVerification.state)}` : displayVerificationState(verification.finalSignatureVerification.state));
+  appendStat(teacherVerification, t('integrity.writingProcess'), hasRecordedWritingProcess(events) ? `✓ ${t('integrity.recorded')}` : t('integrity.notRecorded'));
+
+  const verificationAttention = document.getElementById('verification-attention');
+  verificationAttention.replaceChildren();
+  const verificationAttentionRequired = !verification.documentHashMatch || !verification.eventLogHashMatch ||
+    !verification.eventChain.ok || !verification.finalChainHashMatch ||
+    (verification.anchorVerification.present > 0 && !verification.anchorVerification.valid) ||
+    (verification.finalSignatureVerification.present && !verification.finalSignatureVerification.valid) ||
+    !summaryComparison.match;
+  verificationAttention.hidden = !verificationAttentionRequired;
+  if (verificationAttentionRequired) verificationAttention.append(createElement('span', t('verification.attention')));
+
+  renderProcessReview(verification, inputProcessAnalysis);
+
+  const teacherProcessGrid = document.getElementById('teacher-process-grid');
+  teacherProcessGrid.replaceChildren();
+  appendStat(teacherProcessGrid, t('writing.activeTime'), formatActiveWritingTime(recomputedSummary.interactionActiveMs));
+  appendStat(teacherProcessGrid, t('writing.sessions'), recomputedSummary.sessionCount);
+  appendStat(teacherProcessGrid, t('writing.pastedTotal'), t('writing.pastedValue', {
+    chars: recomputedSummary.pastedChars,
+    events: recomputedSummary.pasteEvents,
+    eventLabel: recomputedSummary.pasteEvents === 1 ? 'event' : 'events'
+  }));
+  if (!recomputedSummary.pasteProvenanceAvailable || recomputedSummary.legacyUnknownPasteEvents > 0) {
+    appendStat(teacherProcessGrid, t('writing.pasteProvenance'), t('writing.legacyUnavailable'));
+  } else {
+    appendStat(teacherProcessGrid, t('writing.verifiedInternal'), t('unit.chars', { count: recomputedSummary.verifiedInternalPasteChars }));
+    appendStat(teacherProcessGrid, t('writing.unverified'), t('unit.chars', { count: recomputedSummary.unverifiedPasteChars }));
+  }
+
+  const integrityDetails = document.getElementById('integrity-details');
+  integrityDetails.replaceChildren();
+  const integrityGrid = createElement('div', undefined, 'grid');
+  appendStat(integrityGrid, t('integrity.documentHash'), verification.documentHashMatch ? `✓ ${t('integrity.match')}` : `✗ ${t('integrity.mismatch')}`);
+  appendStat(integrityGrid, t('integrity.eventLogHash'), verification.eventLogHashMatch ? `✓ ${t('integrity.match')}` : `✗ ${t('integrity.mismatch')}`);
+  appendStat(integrityGrid, t('integrity.eventChain'), verification.eventChain.ok ? `✓ ${t('integrity.valid')}` : `✗ ${t('integrity.invalid')}`);
+  appendStat(integrityGrid, t('integrity.finalChainHash'), verification.finalChainHashMatch ? `✓ ${t('integrity.match')}` : `✗ ${t('integrity.mismatch')}`);
+  appendStat(integrityGrid, t('integrity.serverAnchors'), t('integrity.present', { count: verification.anchorVerification.present }));
+  appendStat(integrityGrid, t('integrity.anchorVerification'), displayVerificationState(verification.anchorVerification.state));
+  appendStat(integrityGrid, t('integrity.finalSignature'), displayVerificationState(verification.finalSignatureVerification.state));
+  appendStat(integrityGrid, t('integrity.recordIntegrity'), verification.localIntegrityOk ? `✓ ${t('integrity.verified')}` : `✗ ${t('integrity.broken')}`);
+  appendStat(integrityGrid, t('integrity.computedStatus'), displayIntegrityStatus(verification.computedStatus));
+  appendStat(integrityGrid, t('integrity.claimedStatus'), displayIntegrityStatus(verification.claimedStatus));
+  appendStat(integrityGrid, t('integrity.summaryConsistency'), summaryComparison.match ? `✓ ${t('integrity.match')}` : `⚠ ${t('integrity.mismatch')}`);
+  integrityDetails.append(integrityGrid);
+
+  const technicalDetails = createElement('details', undefined, 'technical-details');
+  technicalDetails.append(createElement('summary', t('process.technicalDetails')));
+  const technical = createElement('pre', JSON.stringify({
+    calculatedDocumentHash: verification.documentHash,
+    storedDocumentHash: payload.document.hash,
+    manifestDocumentHash: payload.manifest?.documentHash,
+    calculatedEventLogHash: verification.eventLogHash,
+    manifestEventLogHash: payload.manifest?.eventLogHash,
+    calculatedFinalChainHash: verification.eventChain.finalHash || null,
+    manifestFinalChainHash: payload.manifest?.finalChainHash,
+    eventChainReason: verification.eventChain.ok ? null : verification.eventChain.reason,
+    anchorVerificationReason: verification.anchorVerification.reason || null,
+    finalSignatureReason: verification.finalSignatureVerification.reason || null,
+    independentlyRecomputedPasteProvenance: {
+      verifiedInternalPasteChars: recomputedSummary.verifiedInternalPasteChars,
+      verifiedInternalPasteEvents: recomputedSummary.verifiedInternalPasteEvents,
+      unverifiedPasteChars: recomputedSummary.unverifiedPasteChars,
+      unverifiedPasteEvents: recomputedSummary.unverifiedPasteEvents,
+      legacyUnknownPasteChars: recomputedSummary.legacyUnknownPasteChars,
+      legacyUnknownPasteEvents: recomputedSummary.legacyUnknownPasteEvents
+    },
+    manifest: payload.manifest || null
+  }, null, 2));
+  technicalDetails.append(technical);
+  integrityDetails.append(technicalDetails);
+
+  const summaryGrid = document.getElementById('summary-grid');
+  summaryGrid.replaceChildren();
+  renderSummaryConsistency(document.getElementById('summary-consistency'), summaryComparison);
+  appendStat(summaryGrid, t('writing.sessions'), recomputedSummary.sessionCount);
+  appendStat(summaryGrid, t('summary.total'), `${Math.round(recomputedSummary.durationMs/60000)}m`);
+  appendStat(summaryGrid, t('summary.active'), `${Math.round(recomputedSummary.interactionActiveMs/60000)}m`);
+  appendStat(summaryGrid, t('summary.inactive'), `${Math.round(recomputedSummary.inactiveMs/60000)}m`);
+  appendStat(summaryGrid, t('summary.finalChars'), recomputedSummary.finalChars);
+  appendStat(summaryGrid, t('summary.typed'), recomputedSummary.typedChars);
+  appendStat(summaryGrid, t('summary.pasted'), `${recomputedSummary.pastedChars} (${recomputedSummary.pasteEvents})`);
+  appendStat(summaryGrid, t('summary.verifiedPaste'), `${recomputedSummary.verifiedInternalPasteChars} (${recomputedSummary.verifiedInternalPasteEvents})`);
+  appendStat(summaryGrid, t('summary.unverifiedPaste'), `${recomputedSummary.unverifiedPasteChars} (${recomputedSummary.unverifiedPasteEvents})`);
+  appendStat(summaryGrid, t('summary.legacyPaste'), `${recomputedSummary.legacyUnknownPasteChars} (${recomputedSummary.legacyUnknownPasteEvents})`);
+  appendStat(summaryGrid, t('summary.largeDeletions'), recomputedSummary.largeDeletions);
+  appendStat(summaryGrid, t('summary.undoRedo'), `${recomputedSummary.undoCount}/${recomputedSummary.redoCount}`);
+  appendStat(summaryGrid, t('summary.replace'), recomputedSummary.replaceCount);
+  appendStat(summaryGrid, t('summary.markdownExports'), recomputedSummary.exportMarkdownCount);
+
+  const sessionsList = document.getElementById('sessions-list');
+  sessionsList.replaceChildren();
+  sessions.forEach((sessionValue, index) => {
+    const sess = sessionValue && typeof sessionValue === 'object' ? sessionValue : {};
+    const item = createElement('div');
+    item.style.borderBottom = '1px solid var(--border)';
+    item.style.padding = '8px 0';
+    const title = createElement('div', t('session.title', { number: index + 1, id: String(sess.id || '') }));
+    title.style.fontWeight = '700';
+    const client = createElement('div', t('session.client', {
+      start: String(sess.startedAtClient || ''), end: String(sess.endedAtClient || t('session.ongoing')),
+      duration: Math.round(finiteNumber(sess.durationMs)/60000), active: Math.round(finiteNumber(sess.interactionActiveMs)/60000),
+      inactive: Math.round(finiteNumber(sess.inactiveMs)/60000), events: finiteNumber(sess.eventCount)
+    }));
+    client.style.fontSize = '12px';
+    client.style.color = 'var(--text3)';
+    const server = createElement('div', sess.startedAtServer ? t('session.server', { value: String(sess.startedAtServer) }) : t('session.serverUnavailable'));
+    server.style.fontSize = '11px';
+    server.style.color = 'var(--text3)';
+    item.append(title, client, server);
+    appendSessionEditorProvenance(item, inspectSessionEditorProvenance(sess.id, sessionStartIndex));
+    appendSessionInputProcess(item, sess.id, inputProcessAnalysis);
+    sessionsList.append(item);
+  });
+  if (sessions.length === 0) sessionsList.append(createElement('div', t('session.none')));
+
+  renderWritingTimeline(document.getElementById('timeline-view'), buildWritingTimelineModel(payload));
+
+}
+
+async function loadFile(file){
+  try {
+    const text=await file.text();
+    const payload=await AcademicContainerIO.parseContainer(text);
+    const verification=await computeIntegrityVerification(payload);
+    render(payload, verification);
+    setActiveView('teacher');
+  } catch (err) {
+    alert(t('error.load', { message: localizeVerifierError(err) }));
+  }
+}
+document.getElementById('open-file-btn').addEventListener('click', ()=>document.getElementById('file-input').click());
+document.getElementById('file-input').addEventListener('change', e=>{ const f=e.target.files[0]; if(f) loadFile(f); e.target.value=''; });
+const drop=document.getElementById('drop');
+drop.addEventListener('click', ()=>document.getElementById('file-input').click());
+drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag'); });
+drop.addEventListener('dragleave', ()=>drop.classList.remove('drag'));
+drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('drag'); const f=e.dataTransfer.files[0]; if(f) loadFile(f); });
+</script>
+</body>
+</html>
