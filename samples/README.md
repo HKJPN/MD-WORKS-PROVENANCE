@@ -1,4 +1,5 @@
 # Academic MD//WORKS Sample Reports
+日本語訳が英吾の文末に続きます。
 
 These synthetic sample Reports are provided for evaluation and demonstration.
 
