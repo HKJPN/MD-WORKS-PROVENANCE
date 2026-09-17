@@ -3,7 +3,11 @@
 日本語訳が[英語の文末](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md#mdworks-provenance-%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88)に続きます。  
 The Japanese translation follows the English text.
 
-[These synthetic sample Reports](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples) are provided for evaluation and demonstration.
+[These three sample Reports](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples) were created using MD//WORKS PROVENANCE to demonstrate the following scenarios:
+
+- A report written normally.
+- A report created largely through copy-and-paste.
+- A report intentionally tampered with after it was finalized.
 
 ---
 
