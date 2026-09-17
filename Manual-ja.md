@@ -2,15 +2,11 @@
 
 ## はじめに
 
-MD//WORKS PROVENANCE は、学術レポートや論文の Writing Process（執筆プロセス）を記録し、その記録の整合性を検証できるようにする Markdown エディタおよび検証ツール群です。
-
-単なるテキスト編集にとどまらず、Interaction-active time（操作が行われていた時間）、Paste Provenance、Direct Edit、IME Composition、Typing Chunk、Input Pause 等をバックグラウンドで記録し、最終提出時には改変を検知するためのサーバー署名を付与できます。
+MD//WORKS PROVENANCE は、学術レポートや論文の Writing Process（執筆プロセス）を記録し、その記録の整合性を検証できるようにする Markdown エディタおよび検証ツール群です。単なるテキスト編集にとどまらず、Interaction-active time（操作が行われていた時間）、Paste Provenance、Direct Edit、IME Composition、Typing Chunk、Input Pause 等をバックグラウンドで記録し、最終提出時には改変を検知するためのサーバー署名を付与できます。
 
 本マニュアルは、レポートや論文を執筆する「学生・研究者・執筆者」と、記録された Writing Process を確認する「教員・指導者・評価者・第三者レビュアー」の双方に向けたガイドです。
 
-MD//WORKS PROVENANCE は、AI利用、不正行為、剽窃、本人性を自動判定するシステムではありません。
-
-本β版は通常版MD//WORKSの操作感を維持しつつ、学術用途で誤解や提出事故を生む機能を整理したものです。
+MD//WORKS PROVENANCE は、AI利用、不正行為、剽窃、本人性を自動判定するシステムではありません。本β版は通常版MD//WORKSの操作感を維持しつつ、学術用途で誤解や提出事故を生む機能を整理したものです。
 
 学生を監視するツールではなく、
 
@@ -24,35 +20,31 @@ MD//WORKS PROVENANCE は、AI利用、不正行為、剽窃、本人性を自動
 
 ### 1-1. 起動とアプリ化
 
-インストールは不要です。
+インストールは不要です。提供されたMD//WORKS PROVENANCE EditorのHTMLファイルをブラウザで開いて利用します。β版では **Windows上のChromium系ブラウザ（Chrome / Edge等）を推奨環境** とします。Firefox等ではFile System Access APIの有無により、保存操作がファイル選択ではなくダウンロード方式になる場合があります。Safari / iPad等を含むブラウザ間では挙動差があり得るため、授業で指定された環境がある場合はその指示に従ってください。Input Process Metricsは現在Experimental機能であり、ブラウザ、OS、IME、入力方式の違いによって観測できる情報に差が出る場合があります。
 
-提供されたMD//WORKS PROVENANCE EditorのHTMLファイルをブラウザで開いて利用します。
+ブラウザの「アプリとしてインストール」機能の利用可否は、配布方法（ローカルHTML / Web配布）やブラウザ側の仕様に依存します。MD//WORKS PROVENANCE本体の必須機能ではありません。
 
-β版では **Windows上のChromium系ブラウザ（Chrome / Edge等）を推奨環境** とします。
+### 1-2. 表示言語
 
-Firefox等ではFile System Access APIの有無により、保存操作がファイル選択ではなくダウンロード方式になる場合があります。
+MD//WORKS PROVENANCE Editor、Report Verifier、Overview Verifierは、ブラウザの優先言語をもとに表示言語を自動選択します。
 
-Safari / iPad等を含むブラウザ間では挙動差があり得るため、授業で指定された環境がある場合はその指示に従ってください。
+* 日本語（`ja` / `ja-JP` 等）が優先されている場合：日本語UI
+* 英語（`en` / `en-US` 等）が優先されている場合：英語UI
+* 対応していない言語のみが設定されている場合：英語UI
 
-Input Process Metricsは現在Experimental機能であり、ブラウザ、OS、IME、入力方式の違いによって観測できる情報に差が出る場合があります。
+現β版にはアプリ内の手動言語切替はありません。表示言語を変更する場合は、ブラウザの言語設定を変更してアプリを再読み込みしてください。表示言語はPresentationのみを変更します。
 
-ブラウザの「アプリとしてインストール」機能の利用可否は、配布方法（ローカルHTML / Web配布）やブラウザ側の仕様に依存します。
+Reportに記録されるDocument、Event、Hash、Signature、Integrity判定等の内容や検証結果は、表示言語によって変わりません。
 
-MD//WORKS PROVENANCE本体の必須機能ではありません。
+### 1-3. 対応環境と複数タブでの作業
 
-### 1-2. 対応環境と複数タブでの作業
+複数のReportを扱う場合は、別タブや別ウィンドウでEditorを開いて作業できます。ただし、MD//WORKS PROVENANCEはクラウド上の「Workspace」を管理する仕組みではありません。
 
-複数のReportを扱う場合は、別タブや別ウィンドウでEditorを開いて作業できます。
+各Reportの正式な作業状態は **レポートを保存（Save Report）で保存したHTMLファイル** に保持されます。
 
-ただし、MD//WORKS PROVENANCEはクラウド上の「Workspace」を管理する仕組みではありません。
+緊急テキスト復元（Emergency Recovery）は各ブラウザセッション内の一時的なテキスト救済用であり、複数タブ間で共有される正式な保存領域ではありません。同じ保存先ファイルを複数のタブから同時編集・上書きする運用は避けてください。
 
-各Reportの正式な作業状態は **Save Reportで保存したHTMLファイル** に保持されます。
-
-Emergency Recoveryは各ブラウザセッション内の一時的なテキスト救済用であり、複数タブ間で共有される正式な保存領域ではありません。
-
-同じ保存先ファイルを複数のタブから同時編集・上書きする運用は避けてください。
-
-### 1-3. 画面構成
+### 1-4. 画面構成
 
 画面は主に以下のエリアで構成されています。
 
@@ -108,17 +100,15 @@ Verified Internalは分子・分母から除外されます。
 
 ### 2-1. 新規作成と既存ファイルを開く
 
-新しいレポートを作成する場合は、**新しいMD//WORKS PROVENANCE Editorを開き、空のEditorから執筆を開始します。**
-
-現β版のFileメニューには「New / 新規作成」コマンドはありません。
+新しいレポートを作成する場合は、**新しいMD//WORKS PROVENANCE Editorを開き、空のEditorから執筆を開始します。** 現β版のFileメニューには「New / 新規作成」コマンドはありません。
 
 既存のAcademic Report（HTMLコンテナ）の続きを書く場合は、
 
-**File > Open Report**
+**ファイル > レポートを開く（File > Open Report）**
 
-またはタイトルバーの **Open** ボタンを使用します。
+またはタイトルバーの **開く（Open）** ボタンを使用します。
 
-保存したHTMLファイルには、最後にSave Reportした時点までの：
+保存したHTMLファイルには、最後にレポートを保存（Save Report）した時点までの：
 
 * 文書
 * Writing Process
@@ -133,13 +123,9 @@ Verified Internalは分子・分母から除外されます。
 
 ### 2-2. Wordファイルを読み込む (.docx)
 
-**ファイル > Import Word (.docx)...**
+**ファイル > Word (.docx) を取り込む…（Import Word (.docx)…）** から、Wordファイルを読み込んでMarkdownに変換し、現在のカーソル位置へ挿入します。
 
-から、Wordファイルを読み込んでMarkdownに変換し、現在のカーソル位置へ挿入します。
-
-選択範囲がある場合は、選択範囲を削除してから挿入されます。
-
-文書全体を置換する動作ではありません。
+選択範囲がある場合は、選択範囲を削除してから挿入されます。文書全体を置換する動作ではありません。
 
 Wordから取り込まれた文章は、既存のPasteと同様に：
 
@@ -156,33 +142,25 @@ provenance: unverified
 meta.inputSource = "word-import"
 ```
 
-としてWord由来であることが記録されます。
+としてWord由来であることが記録されます。Wordファイル自体が問題だからUnverifiedになるわけではありません。その作成過程をAcademic Editor側で観測していないためです。
 
-Wordファイル自体が問題だからUnverifiedになるわけではありません。
+### 2-3. 緊急テキスト復元（Emergency Recovery）
 
-その作成過程をAcademic Editor側で観測していないためです。
+ブラウザやPCの予期せぬ停止に備え、Editorはブラウザの `sessionStorage` に **最新1件の一時的な本文テキストスナップショット** を保持します。未保存の本文が失われた場合は、
 
-### 2-3. Emergency Recovery（緊急テキスト復元）
-
-ブラウザやPCの予期せぬ停止に備え、Editorはブラウザの `sessionStorage` に **最新1件の一時的な本文テキストスナップショット** を保持します。
-
-未保存の本文が失われた場合は、
-
-**File > Emergency Recovery...**
+**ファイル > 緊急テキスト復元…（Emergency Recovery…）**
 
 を開き、救出可能なテキストがないか確認してください。
 
-Emergency Recoveryでは：
+緊急テキスト復元では：
 
 * 復旧テキストをクリップボードへコピー
 * `*-recovered.md` として保存
 * Recovery copyの削除
 
-等を行えます。
+等を行えます。自動的に元のReportへ復元する機能はありません。
 
-自動的に元のReportへ復元する機能はありません。
-
-**注意：Emergency Recoveryはテキスト救済のみの機能です。**
+**注意：緊急テキスト復元（Emergency Recovery）はテキスト救済のみの機能です。**
 
 次の情報は復元しません。
 
@@ -193,9 +171,7 @@ Emergency Recoveryでは：
 * Server Anchor
 * Final Signature
 
-正規のReportバックアップでもありません。
-
-こまめに **Save Report (Ctrl+S)** でWorking Reportを保存してください。
+正規のReportバックアップでもありません。こまめに **レポートを保存（Save Report / Ctrl+S）** でWorking Reportを保存してください。
 
 Recoveryから取り出した文章をEditorへ貼り付ける場合は通常のPasteとして扱われ、同一Report内の先行Copy/Cutと照合できなければUnverifiedになります。
 
@@ -231,11 +207,7 @@ Markdown形式で文章を作成します。
 Local image embedding is not available in Academic mode.
 ```
 
-と通知されます。
-
-また、現β版のAcademic PreviewはMarkdown画像記法を画像として描画する機能を備えていません。
-
-図や画像をレポートで使用する必要がある場合は、授業・提出方法の指示に従ってください。
+と通知されます。また、現β版のAcademic PreviewはMarkdown画像記法を画像として描画する機能を備えていません。図や画像をレポートで使用する必要がある場合は、授業・提出方法の指示に従ってください。
 
 ### 3-3. 学籍情報の記載（授業で指定される場合）
 
@@ -252,9 +224,7 @@ Local image embedding is not available in Academic mode.
 
 **現β版では、本文冒頭の学籍番号・氏名・メールを自動抽出して本人確認したり、ファイル名と自動照合したりする機能は実装されていません。**
 
-提出ファイル名の規則が指定されている場合は、担当教員の指示に従ってください。
-
-本文に記載された氏名や学籍番号は、記載された本人が実際に執筆したことを証明するものではありません。
+提出ファイル名の規則が指定されている場合は、担当教員の指示に従ってください。本文に記載された氏名や学籍番号は、記載された本人が実際に執筆したことを証明するものではありません。
 
 ### 3-4. 学術的な装飾
 
@@ -291,30 +261,22 @@ Local image embedding is not available in Academic mode.
 
 ### 4-1. プレビューで確認する
 
-タイトルバーの **Preview** ボタンは、EditorとPreviewの **分割表示をオン / オフ** します。
+タイトルバーの **プレビュー（Preview）** ボタンは、EditorとPreviewの **分割表示をオン / オフ** します。プレビューだけを大きく表示したい場合は：
 
-Previewだけを大きく表示したい場合は：
-
-* Preview内の **Focus** ボタン
-* **View > Preview Focus**
+* プレビュー内の **Focus** ボタン
+* **表示 > プレビューのみ表示（View > Preview Focus）**
 
 を使用します。
 
-Preview Focusからは画面右上の **↩ Editor** で編集画面へ戻れます。
+プレビューのみ表示からは画面右上の **↩ エディタ（↩ Editor）** で編集画面へ戻れます。
 
 ### 4-2. 検索・置換と正規表現
 
-**編集 > Find (Ctrl+F) / Replace (Ctrl+H)**
-
-で検索・置換パネルが開きます。
-
-正規表現や大文字・小文字の区別をサポートしています。
+**編集 > 検索（Find / Ctrl+F） / 置換（Replace / Ctrl+H）** で検索・置換パネルが開きます。正規表現や大文字・小文字の区別をサポートしています。
 
 ### 4-3. Markdown整形と目次の挿入
 
-**フォーマット > Insert / Update TOC**
-
-を実行すると、文書内の見出し構造を解析し、クリック可能な目次を自動生成します。
+**書式 > 目次を挿入 / 更新（Format > Insert / Update TOC）** を実行すると、文書内の見出し構造を解析し、クリック可能な目次を自動生成します。
 
 ### 4-4. 各種表示モード
 
@@ -332,26 +294,22 @@ Preview Focusからは画面右上の **↩ Editor** で編集画面へ戻れま
 
 ## 5. Writing Record（執筆プロセスの記録）
 
-Academic版の中心的な機能です。
-
-Editor上で記録対象となるWriting Processはバックグラウンドで記録され、提出後にその記録の整合性や執筆過程を確認するための材料となります。
-
-これらの値だけで著者性や不正行為を自動判定するものではありません。
+Academic版の中心的な機能です。Editor上で記録対象となるWriting Processはバックグラウンドで記録され、提出後にその記録の整合性や執筆過程を確認するための材料となります。これらの値だけで著者性や不正行為を自動判定するものではありません。
 
 ### 5-1. Writing Recordとは
 
-タイトルバーの **Record（◷）** ボタンを押すか、ステータスバーの：
+タイトルバーの **記録（Record / ◷）** ボタンを押すか、ステータスバーの：
 
 ```text
 Active | Unverified | Anchors
 ```
 
-領域をクリックすると「Current Writing Record」パネルが開きます。
+領域をクリックすると「現在の執筆記録（Current Writing Record）」パネルが開きます。
 
 例：
 
 ```text
-Current Writing Record
+現在の執筆記録
 
 Active time              24 min
 Sessions                   3
@@ -403,9 +361,7 @@ pastedHash
 sourceEventId
 ```
 
-等が正常に対応したPasteです。
-
-同一Report内の転送であることを確認できたことを意味し、文章の著者性そのものを証明するものではありません。
+等が正常に対応したPasteです。同一Report内の転送であることを確認できたことを意味し、文章の著者性そのものを証明するものではありません。
 
 #### Unverified（未検証）
 
@@ -432,11 +388,7 @@ Unverifiedが多いからといって直ちに不正とは見なされません�
 ### 5-3. アクティブ執筆時間とセッション管理
 
 * **Active time**
-  アプリ上で実際に操作が行われていた時間として記録されたInteraction-active timeです。
-
-  放置時間はカウントされません。
-
-  総学習時間、思考時間、読書時間を意味しません。
+  アプリ上で実際に操作が行われていた時間として記録されたInteraction-active timeです。放置時間はカウントされません。総学習時間、思考時間、読書時間を意味しません。
 
 * **Sessions**
   Academic Editorを起動したとき、またはReportをOpenして編集を再開したときに新しいSessionが開始されます。
@@ -518,9 +470,7 @@ IME変換途中の未確定文字列そのものを保存するものではあ�
 
 #### Input Pauses
 
-対象となる編集Activity間で観測された無入力区間です。
-
-確定したPauseが60秒以上の場合は `long` と分類されます。
+対象となる編集Activity間で観測された無入力区間です。確定したPauseが60秒以上の場合は `long` と分類されます。
 
 ただしPauseは：
 
@@ -533,19 +483,17 @@ IME変換途中の未確定文字列そのものを保存するものではあ�
 
 #### Capture Status / Capture notes
 
-ブラウザやIME等からInput Process Metricsをどの程度取得できたかを示す技術情報です。
-
-Input Process Metricsは、AI利用、人間による執筆、不正行為を自動判定するためのスコアではありません。
+ブラウザやIME等からInput Process Metricsをどの程度取得できたかを示す技術情報です。Input Process Metricsは、AI利用、人間による執筆、不正行為を自動判定するためのスコアではありません。
 
 ---
 
 ## 6. 保存とレポート提出（Submit）
 
-### 6-1. 作業中の保存（Save Report）
+### 6-1. 作業中の保存（レポートを保存 / Save Report）
 
 執筆途中のデータを保存する場合は、必ず：
 
-**ファイル > Save Report (Ctrl+S)**
+**ファイル > レポートを保存（Save Report / Ctrl+S）**
 
 を使用してください。
 
@@ -558,28 +506,22 @@ Input Process Metricsは、AI利用、人間による執筆、不正行為を自
 * Summary
 * Manifest
 
-等を含むHTMLコンテナ形式のWorking Reportです。
+等を含むHTMLコンテナ形式のWorking Reportです。Markdown `.md` ファイルやPDFではありません。ブラウザのタブを閉じると未保存のデータは失われる可能性があります。
 
-Markdown `.md` ファイルやPDFではありません。
-
-ブラウザのタブを閉じると未保存のデータは失われる可能性があります。
-
-Emergency Recoveryは自動バックアップではありません。
+緊急テキスト復元（Emergency Recovery）は自動バックアップではありません。
 
 ### 6-2. 別PCでの継続
 
-Save Reportで保存したWorking ReportのHTMLファイルを移動すれば、別のPCやブラウザでも編集を再開できます。
+レポートを保存（Save Report）で保存したWorking ReportのHTMLファイルを移動すれば、別のPCやブラウザでも編集を再開できます。Report内には最後に保存した時点までの文書とWriting Processが含まれており、開いた後は新しいSessionとして編集が続きます。
 
-Report内には最後に保存した時点までの文書とWriting Processが含まれており、開いた後は新しいSessionとして編集が続きます。
+緊急テキスト復元（Emergency Recovery）の一時データは引き継がれません。
 
-Emergency Recoveryの一時データは引き継がれません。
-
-### 6-3. Submit Report（最終提出レポートの作成）
+### 6-3. レポートを提出（Submit Report）
 
 レポートが完成し、教員へ提出する準備ができたら以下の操作を行います。
 
-1. タイトルバーの **Submit（✓）** ボタン、または **File > Submit Report** を選択します。
-2. 「Ready to Submit」画面が表示されます。
+1. タイトルバーの **提出（Submit / ✓）** ボタン、または **ファイル > レポートを提出（File > Submit Report）** を選択します。
+2. 「提出準備（Ready to Submit）」画面が表示されます。
 3. 引用や参考文献の記載を確認します。
 4. チェックボックス：
 
@@ -589,7 +531,7 @@ I have checked any citations and source references required for this document.
 
 をオンにします。
 
-5. **Sign & Finalize** を押します。
+5. **署名して最終化（Sign & Finalize）** を押します。
 6. Final Signature取得後、Finalized Reportが保存されます。
 
 Final Signatureは：
@@ -598,19 +540,11 @@ Final Signatureは：
 
 ではありません。
 
-署名後に内容が変更された場合に、Verifierで不整合を検出できるようにする暗号署名です。
-
-Submitにはインターネット接続が必要です。
-
-Submit後もEditorはロックされません。
-
-修正後は再度Submitしてください。
+署名後に内容が変更された場合に、Verifierで不整合を検出できるようにする暗号署名です。Submitにはインターネット接続が必要です。Submit後もEditorはロックされません。修正後は再度Submitしてください。
 
 ### 6-4. 印刷 / PDFへの書き出し
 
-**ファイル > Print Preview... (Ctrl+P)**
-
-から印刷・PDF保存できます。
+**ファイル > 印刷プレビュー…（Print Preview… / Ctrl+P）** から印刷・PDF保存できます。
 
 ただしPDF/印刷物はAcademic Report提出形式ではありません。
 
@@ -622,6 +556,8 @@ Writing ProcessやFinal Signatureを完全に検証できる提出物として�
 
 Academic Reportについて：
 
+Report VerifierとOverview VerifierもEditorと同様に、ブラウザの優先言語に応じて日本語または英語で表示されます。どちらの表示言語でも、同じReportに対するIntegrity判定、Verification attention、Process Review、暗号学的検証結果は同一です。
+
 * Writing Process
 * Hash Chain
 * Manifest
@@ -629,9 +565,7 @@ Academic Reportについて：
 * Final Signature
 * Input Process Metrics
 
-等を確認するための専用ツールです。
-
-著者本人であることや学術不正の有無を自動的に証明・判定するものではありません。
+等を確認するための専用ツールです。著者本人であることや学術不正の有無を自動的に証明・判定するものではありません。
 
 Verifierには用途の異なる2つがあります。
 
@@ -659,11 +593,7 @@ VerifierはReportに含まれる：
 * Manifest
 * Summary
 
-等からSHA-256ハッシュやEvent Chainを独立再計算します。
-
-Server AnchorやFinal Signatureは、信頼済み公開鍵を用いてEd25519署名検証します。
-
-これらの処理はブラウザ内でローカルに行われ、検証のためにReport本文を外部サーバーへアップロードする必要はありません。
+等からSHA-256ハッシュやEvent Chainを独立再計算します。Server AnchorやFinal Signatureは、信頼済み公開鍵を用いてEd25519署名検証します。これらの処理はブラウザ内でローカルに行われ、検証のためにReport本文を外部サーバーへアップロードする必要はありません。
 
 ### 7-2. Report Verifier（単一Reportの検証）
 
@@ -745,9 +675,9 @@ Verification attentionは：
 
 Paste量が多いことだけでVerification attentionになることもありません。
 
-### 7-4. Teacher View（教員向けダッシュボード）
+### 7-4. 教員向け表示（Teacher View）
 
-Teacher Viewは、情報科学を専門としない教員でもReportの状態を確認しやすいよう、重要情報を要約して表示します。
+教員向け表示（Teacher View）は、情報科学を専門としない教員でもReportの状態を確認しやすいよう、重要情報を要約して表示します。
 
 基本構成は：
 
@@ -807,7 +737,7 @@ Review Priority
 
 そのため警告色ではなく、中立的な表示になります。
 
-Teacher View上部で：
+教員向け表示（Teacher View）上部で：
 
 ```text
 Record integrity
@@ -821,11 +751,7 @@ Integrity
 ● Unsigned
 ```
 
-となる場合があります。
-
-これは矛盾ではありません。
-
-前者はローカルな記録整合性を示し、後者はFinal Signature / Anchorまで含む総合的なIntegrity状態を示します。
+となる場合があります。これは矛盾ではありません。前者はローカルな記録整合性を示し、後者はFinal Signature / Anchorまで含む総合的なIntegrity状態を示します。
 
 ##### Capture Quality
 
@@ -860,9 +786,7 @@ Input Process Metricsをどの程度十分に観測・解釈できたかを示�
 
 > **証拠の取得・解釈可能性**
 
-を示す指標です。
-
-学生のRisk Scoreではありません。
+を示す指標です。学生のRisk Scoreではありません。
 
 ##### Review Priority
 
@@ -900,13 +824,13 @@ Process Reviewカードには常に：
 
 という趣旨の説明が表示されます。
 
-##### Show technical details
+##### 技術詳細を見る（Show technical details）
 
 Process Reviewカードの：
 
-**Show technical details**
+**技術詳細を見る（Show technical details）**
 
-を押すとTechnical ViewのInput Process Metricsへ移動します。
+を押すと技術表示（Technical View）のInput Process Metricsへ移動します。
 
 #### Writing Process
 
@@ -937,9 +861,9 @@ SessionごとのInteraction-active time等を日単位で表示します。
 
 最終的なレポート本文を表示します。
 
-### 7-5. Technical View（技術詳細・イベントログ）
+### 7-5. 技術表示（Technical View）
 
-Technical ViewはTeacher Viewより詳細な技術情報を表示します。
+技術表示（Technical View）は教員向け表示（Teacher View）より詳細な技術情報を表示します。
 
 #### Integrity Details
 
@@ -1017,9 +941,7 @@ timing-unavailable
 observation-gap
 ```
 
-は一部の入力過程を十分に観測できなかったことを意味します。
-
-不正やAI利用を意味するものではありません。
+は一部の入力過程を十分に観測できなかったことを意味します。不正やAI利用を意味するものではありません。
 
 #### Semantic Validation
 
@@ -1192,9 +1114,9 @@ Network通信は主に：
 
 ### 10-1. Submitに関するトラブル
 
-#### 「Sign & Finalize」が押せない
+#### 「署名して最終化（Sign & Finalize）」が押せない
 
-Ready to Submit画面の引用・出典確認チェックボックスがオンになっているか確認してください。
+提出準備（Ready to Submit）画面の引用・出典確認チェックボックスがオンになっているか確認してください。
 
 処理中は重複操作防止のため一時的にボタンが無効になる場合があります。
 
@@ -1204,7 +1126,7 @@ Ready to Submit画面の引用・出典確認チェックボックスがオン�
 
 Working Reportはそのまま編集可能です。
 
-必要に応じてRetry Finalize、またはCancel後にSave Reportしてください。
+必要に応じて **最終化を再試行（Retry Finalize）**、または **キャンセル（Cancel）** 後に **レポートを保存（Save Report）** してください。
 
 ### 10-2. IntegrityがInvalid / Signature Invalidになる
 
@@ -1322,7 +1244,7 @@ Unverifiedは：
 
 Anchor数が0であること自体はIntegrity Errorではありません。
 
-### 10-10. 高度な数式・Mermaid・脚注がPreviewで表示されない
+### 10-10. 高度な数式・Mermaid・脚注がプレビュー（Preview）で表示されない
 
 現β版Academic Previewでは：
 
@@ -1412,10 +1334,10 @@ Anchor数が0であること自体はIntegrity Errorではありません。
 
 ### 学生・執筆者
 
-* **Ctrl+S** でこまめにSave Report
+* **Ctrl+S** でこまめに **レポートを保存（Save Report）**
 * 採点・審査終了までWorking Reportを保存
 * 修正後は再度Submit
-* Emergency Recoveryは最終手段
+* 緊急テキスト復元（Emergency Recovery）は最終手段
 * 授業の引用・AI利用ルールに従う
 * Input Process Metricsを自分の評価スコアと考えない
 
@@ -1427,7 +1349,7 @@ Anchor数が0であること自体はIntegrity Errorではありません。
 * Capture Qualityを学生Riskとして扱わない
 * Verification attentionは技術的確認項目として扱う
 * Process ReviewのReview Priorityと区別する
-* Technical Viewは根拠確認が必要な場合に使用
+* 技術表示（Technical View）は根拠確認が必要な場合に使用
 * `Not assessed`をRisk categoryとして解釈しない
 
 ### 研究者・個人利用者
@@ -1450,7 +1372,7 @@ Anchor数が0であること自体はIntegrity Errorではありません。
 * Japanese IMEはBrowserごとに挙動差があり得ます。
 * Word tableは文字列を保持しますが、Markdown pipe tableへの変換は保証しません。
 * 極端に大きい文書ではFind Highlight等が遅くなる場合があります。
-* Emergency Recoveryは正式なBackupではありません。
+* 緊急テキスト復元（Emergency Recovery）は正式なBackupではありません。
 * PDF / PrintはAcademic Report提出形式ではありません。
 * 現β版は本人確認機能を提供しません。
 * Input Process Metricsは、入力がPhysical Keyboard、Automation、Speech Input、Accessibility Software等のどれから来たかを認証しません。
