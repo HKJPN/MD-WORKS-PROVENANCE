@@ -34,9 +34,9 @@
 
 普段どおり文章を書き、**Save Report**で執筆記録を含むHTML Reportを保存します。同じReport内でのCopy / Cut → Pasteは照合され **Verified Internal** として記録され、同じReport内と確認できなかったPasteは **Unverified** として記録されます。
 
-ペーストの**Unverified**　は
+ペーストの**Unverified**　はもちろん
 > **Unverified ≠ 外部由来 ≠ AI ≠ 剽窃 ≠ 不正**
-ですが、外部からのペースト割合は一定割合以下に抑え、MD//WORKS PROVENANCE内でできるだけ多く編集することが推奨されます。もし外部からのペーストの割合が多い場合は [この2番目のサンプルファイルのように](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md) 、評価者からは見えるようになります。
+ですが、外部からのペースト割合は一定割合以下に抑え、MD//WORKS PROVENANCE内で記述し編集することが推奨されます。もし外部からのペーストの割合が多い場合は [この2番目のサンプルファイルのように](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md) 、評価者からは見えるようになります。
 
 Experimental機能として、Direct Edit、削除、IME Composition、
 Typing Chunk、Pause等のInput Process Metricsも記録されます。これは、執筆者独特のタイピングを記録しAIや自動入力ソフトと区別するためです。
