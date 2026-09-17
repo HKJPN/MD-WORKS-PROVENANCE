@@ -36,6 +36,7 @@
 
 ペーストの**Unverified**　はもちろん
 > **Unverified ≠ 外部由来 ≠ AI ≠ 剽窃 ≠ 不正**
+
 ですが、外部からのペースト割合は一定割合以下に抑え、MD//WORKS PROVENANCE内で記述し編集することが推奨されます。もし外部からのペーストの割合が多い場合は [この2番目のサンプルファイルのように](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md) 、評価者からは見えるようになります。
 
 Experimental機能として、Direct Edit、削除、IME Composition、
