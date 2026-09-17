@@ -1,5 +1,5 @@
 # MD//WORKS PROVENANCE
-**Languages:**  [🇯🇵 日本語](README-ja.md) or [🇺🇸 English](README.md) <br>
+**Documentation:** [🇺🇸 English](README.md) | [🇯🇵 日本語](README-ja.md) <br>
 
 **Don’t guess whether a paper was written by AI. Preserve how it was written.**
 
@@ -8,34 +8,74 @@
 [![Local-first](https://img.shields.io/badge/design-local--first-4c8bf5.svg)](#privacy-and-trust-boundaries)
 [![No analytics](https://img.shields.io/badge/analytics-none-2ea44f.svg)](#privacy-and-trust-boundaries)
 
-**MD//WORKS PROVENANCE** is a writing editor and verification toolkit designed to preserve a **tamper-evident record of the writing process**.
+As generative AI, copy-and-paste workflows, and Word-based drafting become routine, it is increasingly difficult to infer how a document was produced from the final text alone.
+
+MD//WORKS PROVENANCE takes a different approach. Instead of trying to classify text as “human” or “AI,” it **records the writing process and makes later changes to the protected record detectable.**
 
 <img src="./images/Readme1.png" alt="MD//WORKS PROVENANCE overview" width="100%"><br>
 
-Instead of trying to infer authorship from the final text, it records what happened while the document was being written:
-
-- direct writing and editing activity
-- **Input Process Metrics for Direct Edit, IME composition, typing chunks, pauses, and capture status**
-- Copy / Cut → Paste PROVENANCE inside the same Report
-- writing sessions and interaction-active time
-- a hash-chained event history
-- server anchors during writing
-- a final cryptographic signature at submission
-
-The result is a self-contained HTML Report that can be independently checked in a browser.
-
-> **MD//WORKS PROVENANCE is not an AI detector, plagiarism detector, misconduct detector, or identity-proofing system.**  
-> It verifies the integrity of recorded evidence about the writing process.
-
-Writers work locally in the browser.
-
-A single Report can be shared with a supervisor, collaborator, editor, client, or other reviewer and checked with the **Report Verifier**.
-
-Institutions can review many Reports with the **Overview Verifier**.
-
-In either case, a Report does not need to be uploaded to a third-party verification service just to check its integrity.
+> ### 💡 MD//WORKS PROVENANCE in 1 minute
+>
+> **What is it?**  
+> A Markdown editor that records the **Writing Process** — how a document was edited —
+> instead of trying to guess whether AI was used.
+>
+> **What does it preserve?**  
+> - Direct editing activity, Paste provenance, writing Sessions, interaction-active time, and other process evidence are stored in a self-contained HTML Report.
+> - At submission, a server-issued Final Signature can be added so that later inconsistencies with the signed record can be detected.
+>
+> **Who makes the judgment?**  
+> MD//WORKS PROVENANCE **does not automatically decide whether AI was used**, who authored the text, whether plagiarism occurred, or whether misconduct took place. It provides transparent process evidence for educators, supervisors, reviewers, and writers to interpret in context. Writers can also use it to preserve a process record they can later explain and share when needed
 
 [Documentation](./Manual.md) · [Student FAQ](./FAQ.md)
+
+---
+
+## 👨‍🎓 For Students & Writers
+
+Write normally in the Editor and use **Save Report** to preserve your document together with its Writing Process.
+
+A Copy / Cut → Paste transfer inside the same Report can be recorded as **Verified Internal** when it can be matched to the earlier recorded transfer. A Paste that cannot be verified that way is recorded as **Unverified**.
+
+> **Unverified ≠ External ≠ AI ≠ Plagiarism ≠ Misconduct**
+
+Experimental Input Process Metrics can also preserve lightweight observations about Direct Edit activity, deletions, IME composition, Typing Chunks, and Pauses.
+
+MD//WORKS PROVENANCE is not a per-keystroke keylogger. When you are ready to submit, you can create a Finalized Report containing a server-issued Final Signature. The goal is not to monitor the writer. The goal is to let writers **preserve a process record they can later explain and share when needed.**
+
+---
+
+## 👨‍🏫 For Instructors & Evaluators
+
+Report verification runs locally in the browser. A Report does not need to be uploaded to a third-party verification service simply to verify its integrity.
+
+**For one Report**  
+→ **Report Verifier**
+
+**For a class or collection of Reports**  
+→ **Overview Verifier**
+
+The Verifiers can inspect Document Hashes, Event Logs, Event Chains, Final Signatures, Paste provenance, Writing Timelines, and Input Process Metrics. These are not collapsed into a single “cheating score.”
+
+**Integrity**
+describes the consistency of the protected record.
+
+**Capture Quality**
+describes how completely Input Process evidence could be observed and interpreted.
+
+**Review Priority**
+is a separate field intended for human-review assistance. In the current beta, automatic Review Priority interpretation is not enabled, so the normal state is **Not assessed**.
+
+---
+
+## ⚙️ Core Concept: PROVENANCE, not prediction
+
+Many academic-integrity tools primarily examine the final submission. MD//WORKS PROVENANCE focuses on a different question:
+
+> **What Writing Process was recorded, and does that record still match the evidence that was saved and signed?**
+
+Rather than predicting “human” or “AI” from the final text,
+MD//WORKS PROVENANCE preserves observable process evidence and makes the integrity of that record independently verifiable. That is the core idea behind MD//WORKS PROVENANCE.
 
 ---
 
@@ -777,6 +817,16 @@ The Verifier does not need to upload a student's full Report to a remote verific
 A separate operational note: not storing IP addresses in the Report does not mean that normal web infrastructure is technically incapable of seeing network metadata.
 
 Server and hosting logs should be governed separately by the institution's deployment policy.
+
+---
+
+## Interface language
+
+The Editor, Report Verifier, and Overview Verifier automatically use Japanese or English based on the browser's preferred languages.
+
+The current beta does not provide an in-app language selector.
+
+Interface language changes presentation only. It does not change Report evidence, hashes, signatures, integrity decisions, sorting semantics, or verification outcomes.
 
 ---
 

@@ -1,5 +1,5 @@
 # MD//WORKS PROVENANCE
-**言語選択:** or [🇺🇸 English](README.md) 又は[🇯🇵 日本語](README-ja.md)  <br>
+**ドキュメント:** [🇯🇵 日本語](README-ja.md) | [🇺🇸 English](README.md)  <br>
 
 **自分のWriting Processを、自分で保持し、必要なときに第三者へ検証可能な記録として示せる。監視ではなく、透明性のためのMarkdownエディタ。**
 
@@ -11,26 +11,76 @@
 > **通常版MD//WORKSは別プロジェクトとしてMIT、Academic版のコードは特記がない限りAGPL-3.0-onlyです。**  
 > 必要な権利を保有するコードについては、代替のInstitutional Licenseが提供される場合があります。
 
-生成AI、コピペ、Wordからの移行が当たり前になった今、「どうやって書かれたか」をどう証明しますか？
-
-MD//WORKS PROVENANCEはAIを検出しようとしません。  
-**執筆過程そのものを記録し、その記録を改ざん検知可能にします。**
+生成AI、コピペ、Wordからの移行が当たり前になった今、最終文章だけを見て「誰が、どう書いたか」を推測することは難しくなっています。 MD//WORKS PROVENANCEは、AIらしさを判定するのではなく、**文章がどのように編集されたかという執筆過程そのものを記録し、その記録が後から変更されていないかを検証できるようにするツールです。**
 
 <img src="./images/Readme1-ja.png" alt="MD//WORKS PROVENANCEの概要" width="100%"><br>
 
-学生・研究者・執筆者はブラウザだけで動くEditorでWriting Processを記録し、必要に応じて暗号署名付きHTML Reportを作成できます。
-
-単一Reportは **Report Verifier** で第三者に提示・検証でき、大学等では **Overview Verifier** で多数のReportをまとめて確認できます。検証のためにReportを外部の検証サービスへアップロードする必要はありません。
-
-**これは監視ツールではありません。**
-
-Academic Reportには、IPアドレス、raw User-Agent、1キーごとの入力ログ等を意図的に保存しません。
-
-Input Process Metricsについても、1キーごとの入力時刻列やIME変換途中の文字列を保存するのではなく、Chunk単位の集計情報として記録します。
-
-通常のホスティング／ネットワークのサーバーログはReport内容とは別の運用上の問題です。
+> ### 💡 1分でわかる MD//WORKS PROVENANCE
+>
+> **何をするツール？**  
+> 「AIが書いたか」を自動判定するのではなく、文章がどのように編集されたかという**Writing Process（執筆過程）**を記録するMarkdownエディタです。
+>
+> **何が残る？**  
+> - 直接編集、Pasteの来歴、執筆Session、操作が行われていた時間などを自己完結型のHTML Reportに保存します。
+> - 提出時にはFinal Signatureを付与し、後から署名対象の記録との不一致を検出できるようにします。
+>
+> **誰が判断する？**  
+> AI利用、著者性、剽窃、不正を自動判定しません。評価者・教員・指導者等が、記録されたEvidenceを他の情報と合わせて確認するための材料を提供します。執筆者自身が、書いたプロセスを第三者に説明する材料としても使えます。
 
 [マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ-ja.md)
+
+---
+
+## 👨‍🎓 学生・執筆者へ
+
+普段どおり文章を書き、**Save Report**で執筆記録を含むHTML Reportを保存します。同じReport内でのCopy / Cut → Pasteは照合可能な場合に **Verified Internal** として記録され、その方法では確認できなかったPasteは **Unverified** として記録されます。
+
+> **Unverified ≠ 外部由来 ≠ AI ≠ 剽窃 ≠ 不正**
+
+さらにExperimental機能として、Direct Edit、削除、IME Composition、
+Typing Chunk、Pause等のInput Process Metricsも記録できます。MD//WORKS PROVENANCEは1キーごとの入力ログを保存するキーロガーではありません。提出時にはFinal Signatureを付与したFinalized Reportを作成できます。
+
+これはあなたのWriting Processを「監視する」のではなく、**必要なときに、自分の執筆過程を説明できる形で残すためのツールです。**
+
+---
+
+## 👨‍🏫 教員・評価者へ
+
+Reportの検証は、**Reportを外部の検証サービスへアップロードすることなく、ブラウザ内でローカルに実行できます。**
+
+**1件を詳しく確認する場合**  
+→ **Report Verifier**
+
+**授業などで多数のReportを一覧確認する場合**  
+→ **Overview Verifier**
+
+Verifierでは、Document Hash、Event Log、Event Chain、Final Signature、Paste Provenance、Writing Timeline、Input Process Metrics等を確認できます。
+
+ただし、これらを単純な「不正スコア」に変換することはしません。
+
+**Integrity**
+は記録の整合性、
+
+**Capture Quality**
+は入力過程をどの程度観測できたか、
+
+**Review Priority**
+は人による確認を支援するための別の概念です。
+
+現β版ではReview Priorityの自動判定は有効化されておらず、通常 **Not assessed** と表示されます。
+
+---
+
+## ⚙️ コアアイデア：AI検出器ではなく、過程の検証器
+
+多くのツールが最終提出物を主な対象とするのに対し、MD//WORKS PROVENANCEは、
+
+> **どのようなWriting Processが記録され、
+> その記録が現在も保存・署名されたEvidenceと整合しているか？**
+
+を確認することを目的としています。最終文章から「AIか人間か」を推測するのではなく、**観測できた執筆過程を残し、その記録の整合性を後から検証する。** これがMD//WORKS PROVENANCEの基本的な考え方です。
+
+
 
 ---
 
@@ -204,6 +254,16 @@ Teacher Viewでは、これらの値から `Human` / `AI` / `Suspicious` 等の�
   → **Overview Verifier**
 
 Report VerifierはOverview Verifierの「簡易版」という位置づけではなく、**単一Reportを持ち運び、第三者へ説明するためのシンプルな検証UI**です。
+
+---
+
+## 表示言語
+
+Editor / Report Verifier / Overview VerifierのUIは、ブラウザの優先言語に応じて日本語または英語で自動表示されます。
+
+現β版にはアプリ内の手動言語切替はありません。
+
+表示言語はUIのみの違いであり、ReportのEvidence、Hash、Signature、Integrity判定、ソート順の意味、検証結果には影響しません。
 
 ---
 
