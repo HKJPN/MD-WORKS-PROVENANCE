@@ -130,51 +130,6 @@ Possible explanations include accidental file modification, file corruption, or 
 
 ---
 
-## Why can Signature be "Verified" while Integrity is "Broken"?
-
-This is an important point.
-
-The Final Signature protects the final manifest created when the Report was finalized.
-
-In this sample, that signed manifest has not been changed.
-
-Therefore:
-
-- the **Final Signature is still valid**
-- but the **current document text is different from the document recorded in that signed manifest**
-
-In simplified form:
-
-```text
-Document at finalization
-        ↓
-Document Hash
-        ↓
-Signed Manifest
-        ↓
-Final Signature
-        ✓ Verified
-
-Current document
-        ↓
-Current Document Hash
-        ✕ Does not match the signed manifest
-
-Overall Integrity
-        → Broken
-````
-
-So there is no contradiction between:
-
-* **Signature: Verified**
-* **Integrity: Broken**
-
-The signature confirms that the stored manifest is authentic.
-
-The integrity check confirms whether the current Report contents still match that manifest.
-
----
-
 # Quick glossary
 
 | Verifier display             | Plain-language meaning                                                                                                        |
@@ -323,55 +278,6 @@ MD//WORKS PROVENANCEにおける「非内部貼り付け」とは、
 * 学業上の不正行為があったのか
 
 **意図しない編集、ファイル破損、意図的な改変など複数の可能性があるため、変更理由は別途確認する必要があります。**
-
----
-
-## なぜ「最終署名：検証済み」なのに「整合性不一致」になるのですか？
-
-ここは重要なポイントです。
-
-最終署名は、Reportを最終化した時点で作成された**最終Manifest**に対して付与されています。
-
-このサンプルでは、その署名済みManifest自体は変更されていません。
-
-そのため、
-
-* **最終署名そのものは正常に検証できる**
-* しかし、**現在の本文は、そのManifestに記録された本文Hashと一致しない**
-
-という状態になります。
-
-簡略化すると、次のようになります。
-
-```text
-最終化時の本文
-      ↓
-本文Hash
-      ↓
-最終Manifest
-      ↓
-最終署名
-      ✓ 検証済み
-
-現在の本文
-      ↓
-現在の本文Hash
-      ✕ Manifestに記録されたHashと一致しない
-
-Report全体の整合性
-      → 整合性不一致
-```
-
-したがって、
-
-* **最終署名：検証済み**
-* **整合性：整合性不一致**
-
-が同時に表示されても矛盾ではありません。
-
-最終署名は、保存されているManifestが正しく署名されたものであることを確認しています。
-
-整合性検証は、**現在のReport内容が、そのManifestに記録された内容と現在も一致しているか**を確認しています。
 
 ---
 
