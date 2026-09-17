@@ -50,9 +50,7 @@ A normally finalized Academic Report.
 
 This is the normal example.
 
-The writing process was recorded, the current document matches the integrity information stored in the Report, and the Final Signature can be verified.
-
-Use this file to confirm the normal verification workflow.
+The writing process was recorded, the current document matches the integrity information stored in the Report, and the Final Signature can be verified. Use this file to confirm the normal verification workflow. However, It does not guarantee original authorship or that it wasn't ghostwritten.
 
 ---
 
