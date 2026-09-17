@@ -24,13 +24,12 @@ Figure 1. Three sample files were verified by the `overview-verifier.html`.
 
 > **A high Non-internal paste share does not always mean AI use, plagiarism, or misconduct.**
 
-It means only that some pasted text could not be verified as originating from an earlier Copy/Cut event within the same Report. However, further follow-up with **the author is recommended to determine the reason for such a high proportion of non-internal paste.** For such purposes, more detailed information about the writing process can be viewed from the Technical View tab of the Verifier (Red frames indicated in the Figure).
-
+It means only that some pasted text could not be verified as originating from an earlier Copy/Cut event within the same Report. However, further follow-up with **the author is recommended to determine the reason for such a high proportion of non-internal paste.** For such purposes, more detailed information about the writing process can be viewed from the Technical View tab of the Verifier (indicated by the red frames in the figure).
 Likewise:
 
 > **Integrity Broken does not by itself mean academic misconduct.**
 
-It means that the current Report does not match the integrity information recorded at finalization.  Nevertheless, **the reason for the modification must be confirmed, as it could indicate either unintentional file corruption or deliberate tampering.**
+It means that the current Report does not match the integrity information recorded at finalization.  Nevertheless, **the reason for the modification must be confirmed, as it could indicate either unintentional file corruption or deliberate tampering.**　You should inspect the writing process using the Technical View tab of the Verifier (indicated by the red frames in the figure)
 
 ---
 
