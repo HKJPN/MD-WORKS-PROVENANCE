@@ -27,7 +27,7 @@ MD//WORKS PROVENANCE takes a different approach. Instead of trying to classify t
 > **Who makes the judgment?**  
 > MD//WORKS PROVENANCE **does not automatically decide whether AI was used**, who authored the text, whether plagiarism occurred, or whether misconduct took place. It provides transparent process evidence for educators, supervisors, reviewers, and writers to interpret in context. Writers can also use it to preserve a process record they can later explain and share when needed
 
-Try it instantly · [See tamper detection in action](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)  · [Documentation](./Manual.md) · [Student FAQ](./FAQ.md)　 ·  
+[Try it instantly](https://hkjpn.github.io/MD-WORKS-PROVENANCE/) · [See tamper detection in action](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)  · [Documentation](./Manual.md) · [Student FAQ](./FAQ.md)　 ·  
 
 ---
 
