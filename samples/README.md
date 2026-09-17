@@ -212,8 +212,8 @@ MD//WORKS PROVENANCEでは、
 | サンプル                              | 一言でいうと                                     | 何を意味し、何をするべきか？                       |
 | --------------------------------- | ------------------------------------------ | ------------------------------- |
 | `01-normal-finalized-report.html` | 正常に最終化されたReport                            | 執筆記録、整合性、最終署名が正常。ただし、他人の執筆の可能性等まで否定できるものではない  |
-| `02-high-unverified-report.html`  | このReport内と照合できない **Copy/Pasteが多い** Report | 必ずしもAI利用、盗用、不正行為とは限らないが、要執筆過程確認 |
-| `03-integrity-broken-report.html` | **最終化後に本文が変更** されたReport                        | 必ずしも改ざんとは限らなないが、要執筆過程確認　|
+| `02-high-unverified-report.html`  | このReport内と照合できない **Copy/Pasteが多い** Report | 必ずしもAI利用、盗用、不正行為とは限らないが、 **要執筆過程確認** |
+| `03-integrity-broken-report.html` | **最終化後に本文が変更** されたReport                        | 必ずしも改ざんとは限らなないが、 **要執筆過程確認**　|
 
 <img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicJ.jpg" alt="SamplePicJ.jpg" width="100%"><br>
 Figure 1. `overview-verifier`により3つのサンプルファイルを確認している状態を示した。
