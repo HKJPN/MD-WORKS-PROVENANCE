@@ -221,6 +221,7 @@ MD//WORKS PROVENANCEでは、
 | `03-integrity-broken-report.html` | **最終化後に本文が変更** されたReport                        | 図中赤枠のVerifierの技術表示タブから詳細を確認       |
 
 <img src="https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/images/SamplePicJ.jpg" alt="SamplePicJ.jpg" width="100%"><br>
+Figure 1. `overview-verifier`により3つのサンプルファイルを確認している状態を示す
 
 ### 最初に覚えていただきたい2つの点
 
