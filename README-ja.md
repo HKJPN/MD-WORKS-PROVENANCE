@@ -27,7 +27,7 @@
 > **誰が判断する？**  
 > AI利用、著者性、剽窃、不正を自動判定しません。評価者・教員・指導者等が、記録されたEvidenceを他の情報と合わせて確認するための材料を提供します。執筆者自身が、書いたプロセスを第三者に説明する材料としても使えます。
 
-[ すぐに試してみる ] | [改ざんはどう見えるか？](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md) | [マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ-ja.md) | 
+[ すぐに試してみる ] |  [改ざんはどう見えるか？](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)  |  [マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ-ja.md) | 
 
 ---
 
