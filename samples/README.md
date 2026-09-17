@@ -1,4 +1,4 @@
-# Academic MD//WORKS Sample Reports
+# MD//WORKS PROVENANCE Sample Reports
 
 日本語訳が[英語の文末](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md#academic-mdworks-%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88)に続きます。  
 The Japanese translation follows the English text.
@@ -200,7 +200,7 @@ It does **not** by itself prove authorship, determine AI use, or determine acade
 
 ---
 
-# Academic MD//WORKS サンプルレポート
+# MD//WORKS PROVENANCE サンプルレポート
 
 [これらのサンプルレポート](https://github.com/HKJPN/MD-WORKS-PROVENANCE/tree/main/samples)は、評価およびデモを目的として作成されたダミーデータです。
 
