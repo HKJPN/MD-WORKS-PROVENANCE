@@ -15,10 +15,11 @@ A normally finalized Academic Report.
 
 Expected result:
 
-- Record integrity: Verified
-- Final Signature: Signature verified
-- Event Chain: Valid
-- Summary: Match
+- Non-internal paste share: 0%
+- Process: Recorded
+- Integrity: Verified
+- Signature: Verified
+- Verification attention: -
 
 Use this file to confirm the normal verification workflow.
 
@@ -28,9 +29,11 @@ A valid Finalized Report containing a high proportion of Unverified Paste.
 
 Expected result:
 
-- Record integrity: Verified
-- Final Signature: Signature verified
-- High Non-internal paste share
+- Non-internal paste share: **85%**
+- Process: Recorded
+- Integrity: Verified
+- Signature: Verified
+- Verification attention: -
 
 This demonstrates an important distinction:
 
@@ -44,8 +47,11 @@ A Finalized Report that was intentionally modified after finalization.
 
 Expected result:
 
-- Integrity: Broken
-- One or more hash/signature checks require attention
+- Non-internal paste share: 0%
+- Process: Recorded
+- Integrity: **Broken**
+- Signature: Verified
+- Verification attention: **Attention**
 
 This file is provided only to demonstrate tamper detection.
 
