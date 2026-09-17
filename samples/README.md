@@ -15,7 +15,7 @@ The Japanese translation follows the English text.
 
 MD//WORKS PROVENANCE records information about the writing process and also checks whether the submitted Report is still consistent with the record created at finalization.
 
-| Sample | In plain language | Main point |
+| Sample |  Verification result | Main point |
 |---|---|---|
 | `01-normal-finalized-report.html` | A normal finalized Report | Writing record and integrity verification are normal. However, It does not guarantee original authorship or that it wasn't ghostwritten. |
 | `02-high-unverified-report.html` | A Report containing **a large amount of Paste** that could not be matched to an earlier Copy/Cut in the same Report | **Need for further inspection** |
@@ -175,7 +175,7 @@ MD//WORKS PROVENANCEでは、
 
 を別々に確認します。
 
-| サンプル                              | 一言でいうと                                     | 何を意味し、何をするべきか？                       |
+| サンプル                              | 検査結果が示した内容                                    | 何を意味し、何をするべきか？                       |
 | --------------------------------- | ------------------------------------------ | ------------------------------- |
 | `01-normal-finalized-report.html` | 正常に最終化されたReport                            | 執筆記録、整合性、最終署名が正常。ただし、他人の執筆の可能性等まで否定できるものではない  |
 | `02-high-unverified-report.html`  | このReport内と照合できない **Copy/Pasteが多い** Report | 必ずしもAI利用、盗用、不正行為とは限らないが、 **要執筆過程確認** |
