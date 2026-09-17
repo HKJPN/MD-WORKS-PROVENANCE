@@ -2,8 +2,12 @@
 
 These synthetic sample Reports are provided for evaluation and demonstration.
 
-They contain no real student informat
-<img src="./images/SamplePicE.jpg" alt="SamplePicE.jpg" width="100%"><br>ion.
+They contain no real student information.
+
+
+<img src=".main/images/SamplePicE.jpg" alt="SamplePicE.jpg" width="100%"><br>
+
+
 
 ## 01-normal-finalized-report.html
 
