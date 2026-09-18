@@ -26,7 +26,7 @@
 > **誰が判断する？**  
 > AI利用、著者性、剽窃、不正を自動判定しません。評価者・教員・指導者等が、記録されたEvidenceを他の情報と合わせて確認するための材料を提供します。執筆者自身が、書いたプロセスを第三者に説明する材料としても使えます。
 
-[ すぐに試してみる ](https://hkjpn.github.io/MD-WORKS-PROVENANCE/) |  [改ざんはどう見えるか？](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)  |  [マニュアルを読む](./Manual-ja.md) | [学生向けFAQ](./FAQ-ja.md) | 
+[ すぐに試してみる ](https://hkjpn.github.io/MD-WORKS-PROVENANCE/) |  [改ざんはどう見えるか？](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)  |  [マニュアルを読む](./Manual-ja.md) | [学生・執筆者向けFAQ](./FAQ-ja.md) | 
 
 ---
 
@@ -46,7 +46,7 @@ Typing Chunk、Pause等のInput Process Metricsも記録されます。これは
 
 こうした仕組みで、あなたのWriting Processは「監視される」のではなく、**「必要なときに、自分の執筆過程を説明できる形**」で残すことができきます。
 
-| [学生向けFAQ](./FAQ-ja.md) | [実運用上の推奨](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8)
+| [学生・執筆者向けFAQ](./FAQ-ja.md) | [実運用上の推奨](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8)
 
 ---
 
@@ -66,7 +66,7 @@ Verifierでは、Document Hash、Event Log、Event Chain、Final Signature、Pas
 
 現β版ではReview Priorityの自動判定は有効化されておらず、通常 **Not assessed** と表示されます。
 
-[実運用上の推奨](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8)
+[実運用上の推奨](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8) |  [マニュアルを読む](./Manual-ja.md)
 
 以下は、情報科学の専門家や導入を検討される大学や企業様向けの情報で、若干専門的になります。
 ---
