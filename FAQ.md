@@ -100,7 +100,7 @@ Yes. Move and open a saved Working Report to continue. Emergency Recovery data s
 
 ## 20. Should I keep both Working and Finalized Reports?
 
-Yes. Keep the Working Report until grading, editorial review, or research review is complete. Also retain the exact Finalized Report that you submitted or shared.
+Yes. Keep the Working Report until grading, editorial review, or research review is complete. Also retain the exact Finalized Report that you submitted or shared. You can easily extract either file as a standard Markdown document by opening it in [the regular MD//WORKS](https://hkjpn.github.io/markdown-editor/). While editing in Markdown is generally more convenient for writing papers, keep in mind that your writing process history will be lost.
 
 ## 21. Is a printed or PDF copy an Academic Report?
 
