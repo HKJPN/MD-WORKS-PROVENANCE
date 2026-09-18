@@ -50,6 +50,7 @@ While you can write and record your process offline in MD//WORKS PROVENANCE, **a
 Through this architecture, your Writing Process is not "surveilled." Instead, you are preserving your own verifiable evidence, allowing you to **explain and prove your writing process whenever necessary**.
 
 | [Student FAQ](./FAQ.md) | [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md#29-practical-recommendations)
+
 ---
 
 ## 👨‍🏫 For Evaluators & Instructors
