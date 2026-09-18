@@ -73,6 +73,48 @@ To understand what these metrics mean and how to evaluate tampering or potential
 
 [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md#29-practical-recommendations) |  [Read the whole Manual](./Manual.md)
 
+## Roadmap
+
+### Level 0 — current beta
+
+* Writing Process recording
+* Paste PROVENANCE
+* **Input Process Metrics (Experimental)**
+* Server Anchor
+* Final Signature
+* Working / Finalized Reports
+* Report Verifier
+* Overview Verifier
+* local-first writing workflow
+* no identity verification
+
+### Level 1
+
+Potential structured Report metadata:
+
+```text
+studentId
+studentName
+studentEmail
+assignmentId
+courseId
+```
+
+Structured identity metadata would still not, by itself, prove authorship.
+
+### Level 2
+
+Potential institutional identity integration:
+
+* OIDC
+* university SSO
+* Google Workspace
+* Microsoft Entra ID
+
+SSO can strengthen the account-to-submission link.
+
+It still does not prove who physically authored every part of the document.
+
 
 *The following sections contain slightly more technical information intended for computer science professionals, institutions, and enterprises considering deployment.*
 ---
@@ -1097,50 +1139,6 @@ During the beta period:
 * feature proposals are welcome
 
 Before broadly accepting external code contributions, the project may publish a Contributor License Agreement (CLA) or equivalent contribution policy.
-
----
-
-## Roadmap
-
-### Level 0 — current beta
-
-* Writing Process recording
-* Paste PROVENANCE
-* **Input Process Metrics (Experimental)**
-* Server Anchor
-* Final Signature
-* Working / Finalized Reports
-* Report Verifier
-* Overview Verifier
-* local-first writing workflow
-* no identity verification
-
-### Level 1
-
-Potential structured Report metadata:
-
-```text
-studentId
-studentName
-studentEmail
-assignmentId
-courseId
-```
-
-Structured identity metadata would still not, by itself, prove authorship.
-
-### Level 2
-
-Potential institutional identity integration:
-
-* OIDC
-* university SSO
-* Google Workspace
-* Microsoft Entra ID
-
-SSO can strengthen the account-to-submission link.
-
-It still does not prove who physically authored every part of the document.
 
 ---
 
