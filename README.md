@@ -49,7 +49,7 @@ While you can write and record your process offline in MD//WORKS PROVENANCE, **a
 
 Through this architecture, your Writing Process is not "surveilled." Instead, you are preserving your own verifiable evidence, allowing you to **explain and prove your writing process whenever necessary**.
 
-| [Student FAQ](./FAQ.md) | [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md)
+| [Student FAQ](./FAQ.md) | [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md#29-practical-recommendations)
 ---
 
 ## 👨‍🏫 For Evaluators & Instructors
@@ -70,7 +70,7 @@ To understand what these metrics mean and how to evaluate tampering or potential
 
 *Note: In the current beta, automatic classification for `Review Priority` is not enabled, and will typically display as **Not assessed**.*
 
-[Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8) |  [Read the Manual](./Manual.md)
+[Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md#29-practical-recommendations) |  [Read the whole Manual](./Manual.md)
 
 
 *The following sections contain slightly more technical information intended for computer science professionals, institutions, and enterprises considering deployment.*
