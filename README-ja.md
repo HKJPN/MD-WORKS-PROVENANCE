@@ -68,12 +68,13 @@ Verifierでは、Document Hash、Event Log、Event Chain、Final Signature、Pas
 
 [実運用上の推奨](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8) |  [マニュアルを読む](./Manual-ja.md)
 
+以下は、情報科学の専門家や導入を検討される大学や企業様向けの情報で、若干専門的になります。
 ---
 
 ## ロードマップ
 
 * **Level 0（現β版）**
-  Writing Process記録、Paste PROVENANCE、Input Process Metrics（Experimental）、Working / Finalized Report、Report Verifier、Overview Verifierを提供。本人認証は行わず、学籍情報等の運用は授業・LMS側のルールで管理
+  Writing Process記録、Paste PROVENANCE、Input Process Metrics（Experimental）、Working / Finalized Report、Report Verifier、Overview Verifierを提供。本人認証は行わず、学籍情報等の運用は授業・LMS側のルールで管理（例、学籍番号をファイル名の最初に記載）
 
 * **Level 1**
   `File > Report Info` に `studentId / studentName / studentEmail` の正式フィールドをManifestに追加
@@ -81,8 +82,6 @@ Verifierでは、Document Hash、Event Log、Event Chain、Final Signature、Pas
 * **Level 2**
   学校SSO（OIDC）連携、Email Verification列の追加
 
-
-以下は、情報科学の専門家や導入を検討される大学や企業様向けの情報で、若干専門的になります。
 ---
 
 ## ⚙️ コアアイデア：AI検出器ではなく、過程の検証器
