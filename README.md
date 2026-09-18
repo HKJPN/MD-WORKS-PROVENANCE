@@ -31,41 +31,50 @@ MD//WORKS PROVENANCE takes a different approach. Instead of trying to classify t
 
 ---
 
-## 👨‍🎓 For Students & Writers
+## 👨‍🎓 For Writers & Students
 
-Write normally in the Editor and use **Save Report** to preserve your document together with its Writing Process.
+Write your text as usual and use **Save Report** to save an HTML Report that includes your writing process record. Copy/Cut and Paste actions within the same Report are matched and recorded as **Verified Internal**. Any Paste that cannot be traced back to the same Report is marked as **Unverified**.
 
-A Copy / Cut → Paste transfer inside the same Report can be recorded as **Verified Internal** when it can be matched to the earlier recorded transfer. A Paste that cannot be verified that way is recorded as **Unverified**.
+Of course, an **Unverified** paste simply means:
 
-> **Unverified ≠ External ≠ AI ≠ Plagiarism ≠ Misconduct**
+> **Unverified ≠ External Source ≠ AI ≠ Plagiarism ≠ Misconduct**
 
-Experimental Input Process Metrics can also preserve lightweight observations about Direct Edit activity, deletions, IME composition, Typing Chunks, and Pauses.
+However, it is highly recommended to keep the proportion of external pastes low and do most of your drafting and editing directly within MD//WORKS PROVENANCE. If your Report contains a high volume of external pastes, it will be clearly visible to evaluators, [as shown in our second sample file](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md?utm_source=gemini).
 
-MD//WORKS PROVENANCE is not a per-keystroke keylogger. When you are ready to submit, you can create a Finalized Report containing a server-issued Final Signature. The goal is not to monitor the writer. The goal is to let writers **preserve a process record they can later explain and share when needed.**
+As an experimental feature, the editor also records **Input Process Metrics**—such as Direct Edits, deletions, IME Compositions, Typing Chunks, and Pauses. The purpose of these metrics is to capture your unique typing behavior, helping to distinguish human writing from AI generation or automated input tools.
+
+When you are ready to submit, select **File > Submit Report** to generate a local **Finalized Report** sealed with a Final Signature. You will then submit this file to your evaluator using their specified method.
+
+While you can write and record your process offline in MD//WORKS PROVENANCE, **an internet connection is required when clicking "Submit Report."** This is because the application must request a tamper-evident digital signature (Final Signature) from the server to seal your final record. If the writing process or final document is tampered with, or if the file becomes corrupted, the verifier will flag it—[as demonstrated in our third sample file](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md?utm_source=gemini).
+
+Through this architecture, your Writing Process is not "surveilled." Instead, you are preserving your own verifiable evidence, allowing you to **explain and prove your writing process whenever necessary**.
+
+| [Student FAQ](https://www.google.com/search?q=./FAQ.md&utm_source=gemini) | [Practical Recommendations](https://www.google.com/search?q=https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md%252329-practical-recommendations&utm_source=gemini) |
 
 ---
 
-## 👨‍🏫 For Instructors & Evaluators
+## 👨‍🏫 For Evaluators & Instructors
 
-Report verification runs locally in the browser. A Report does not need to be uploaded to a third-party verification service simply to verify its integrity.
+Submitted Reports can be verified **locally entirely within your browser—no need to upload student files to third-party verification servers.**
 
-**For one Report**  
-→ **Report Verifier**
+**To inspect a single Report in detail:**
 
-**For a class or collection of Reports**  
-→ **Overview Verifier**
+→ Use the **Report Verifier**
 
-The Verifiers can inspect Document Hashes, Event Logs, Event Chains, Final Signatures, Paste provenance, Writing Timelines, and Input Process Metrics. These are not collapsed into a single “cheating score.”
+**To review a batch of Reports for an entire class:**
 
-**Integrity**
-describes the consistency of the protected record.
+→ Use the **Overview Verifier**
 
-**Capture Quality**
-describes how completely Input Process evidence could be observed and interpreted.
+The Verifier allows you to inspect the Document Hash, Event Log, Event Chain, Final Signature, Paste Provenance, Writing Timeline, Input Process Metrics, and more.
 
-**Review Priority**
-is a separate field intended for human-review assistance. In the current beta, automatic Review Priority interpretation is not enabled, so the normal state is **Not assessed**.
+To understand what these metrics mean and how to evaluate tampering or potential misconduct, please refer to our [three evaluation sample files](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md?utm_source=gemini).
 
+*Note: In the current beta, automatic classification for `Review Priority` is not enabled, and will typically display as **Not assessed**.*
+
+[Practical Recommendations](https://www.google.com/search?q=https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md%252329-practical-recommendations&utm_source=gemini) |  [Read the Manual](https://www.google.com/search?q=./Manual.md&utm_source=gemini)
+
+
+*The following sections contain slightly more technical information intended for computer science professionals, institutions, and enterprises considering deployment.*
 ---
 
 ## ⚙️ Core Concept: PROVENANCE, not prediction
