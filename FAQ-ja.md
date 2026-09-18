@@ -50,7 +50,7 @@ MD//WORKS PROVENANCE形式での提出を求められた場合は、通常は**F
 
 ## 9. Submitは複数回できますか？
 
-はい。再度Submitすると、その時点の内容に対して新しいfinalization記録とFinal Signatureが作成されます。
+はい、何度でも可能です。再度Submitすると、その時点の内容に対して新しいfinalization記録とFinal Signatureが作成されます。
 
 ## 10. Submit後に編集するとどうなりますか？
 
@@ -98,7 +98,7 @@ Academic Reportには、IPアドレス、raw User-Agent、ハードウェア識�
 
 ## 20. Working ReportとFinalized Reportの両方を保管すべきですか？
 
-はい。採点、指導、編集、研究レビュー等が終わるまではWorking Reportを保管し、実際に提出・共有したFinalized Reportもそのまま残すことを推奨します。
+はい。課題の採点、指導、編集、研究レビュー等が終わるまではWorking Reportを保管し、実際に提出・共有したFinalized Reportもそのまま残すことを推奨します。もちろん、どちらのファイルも通常版の[MD//WORK](https://hkjpn.github.io/markdown-editor/)で開くことで、一般的なマークダウンファイルとして取り出すことができます。論文を執筆する際には、マークダウンファイルとして編集する方が便利です。執筆プロセスの記録は失われることに注意してください。
 
 ## 21. 印刷物やPDFはAcademic Reportですか？
 
