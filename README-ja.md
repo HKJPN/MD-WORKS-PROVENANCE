@@ -64,7 +64,7 @@ Verifierでは、Document Hash、Event Log、Event Chain、Final Signature、Pas
 
 これらが何を意味し、不正や改ざんをどのように評価すべきかは、[３つのサンプルファイル例](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md)をご覧ください。
 
-現β版ではReview Priorityの自動判定は有効化されておらず、通常 **Not assessed** と表示されます。
+現β版では、改ざんや剽窃の評価を厳密に行うために、Review Priorityの自動判定は有効化されておらず、多くの場合は場合は **Not assessed** と表示されます。本人の執筆であることの確認や証明についても、将来のバージョンで搭載を予定しています。現β版では、学籍番号をファイル名の最初に記載することで、一覧でのソート等は行えますが、確認や証明はできません。
 
 [実運用上の推奨](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8) |  [マニュアルを読む](./Manual-ja.md)
 
