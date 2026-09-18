@@ -73,6 +73,7 @@ To understand what these metrics mean and how to evaluate tampering or potential
 
 [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md#29-practical-recommendations) |  [Read the whole Manual](./Manual.md)
 
+*The following sections contain slightly more technical information intended for computer science professionals, institutions, and enterprises considering deployment.*
 ---
 
 ### Roadmap
@@ -91,7 +92,6 @@ To understand what these metrics mean and how to evaluate tampering or potential
 * Institutional SSO (OIDC) integration.
 * Addition of an Email Verification column.
 
-*The following sections contain slightly more technical information intended for computer science professionals, institutions, and enterprises considering deployment.*
 ---
 
 ## ⚙️ Core Concept: PROVENANCE, not prediction
