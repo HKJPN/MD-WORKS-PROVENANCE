@@ -69,7 +69,9 @@ The Verifier allows you to inspect the Document Hash, Event Log, Event Chain, Fi
 
 To understand what these metrics mean and how to evaluate tampering or potential misconduct, please refer to our [three evaluation sample files](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md).
 
-*Note: In the current beta, automatic classification for `Review Priority` is not enabled, and will typically display as **Not assessed**.*
+> **Notes on the current beta:**
+> * **Review Priority:** Automatic classification is disabled and will usually display as **Not assessed**. We assume evaluators will manually review reports for AI use or plagiarism.
+> * **Identity Verification:** Formal authorship and identity verification features will be added in future versions. For now, including the Student ID at the beginning of the filename is a convenient way to sort submissions in the Overview Verifier, but it does not serve as proof of identity.
 
 [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md#29-practical-recommendations) |  [Read the whole Manual](./Manual.md)
 
