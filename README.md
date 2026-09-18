@@ -49,8 +49,7 @@ While you can write and record your process offline in MD//WORKS PROVENANCE, **a
 
 Through this architecture, your Writing Process is not "surveilled." Instead, you are preserving your own verifiable evidence, allowing you to **explain and prove your writing process whenever necessary**.
 
-| [Student FAQ](https://www.google.com/search?q=./FAQ.md&utm_source=gemini) | [Practical Recommendations](https://www.google.com/search?q=https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md%252329-practical-recommendations&utm_source=gemini) |
-
+| [Student FAQ](./FAQ-ja.md) | [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md)
 ---
 
 ## 👨‍🏫 For Evaluators & Instructors
@@ -67,11 +66,11 @@ Submitted Reports can be verified **locally entirely within your browser—no ne
 
 The Verifier allows you to inspect the Document Hash, Event Log, Event Chain, Final Signature, Paste Provenance, Writing Timeline, Input Process Metrics, and more.
 
-To understand what these metrics mean and how to evaluate tampering or potential misconduct, please refer to our [three evaluation sample files](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md?utm_source=gemini).
+To understand what these metrics mean and how to evaluate tampering or potential misconduct, please refer to our [three evaluation sample files](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/samples/README.md).
 
 *Note: In the current beta, automatic classification for `Review Priority` is not enabled, and will typically display as **Not assessed**.*
 
-[Practical Recommendations](https://www.google.com/search?q=https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md%252329-practical-recommendations&utm_source=gemini) |  [Read the Manual](https://www.google.com/search?q=./Manual.md&utm_source=gemini)
+[Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual-ja.md#12-%E5%AE%9F%E9%81%8B%E7%94%A8%E4%B8%8A%E3%81%AE%E6%8E%A8%E5%A5%A8) |  [Read the Manual](./Manual.md)
 
 
 *The following sections contain slightly more technical information intended for computer science professionals, institutions, and enterprises considering deployment.*
