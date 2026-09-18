@@ -73,48 +73,23 @@ To understand what these metrics mean and how to evaluate tampering or potential
 
 [Practical Recommendations](https://github.com/HKJPN/MD-WORKS-PROVENANCE/blob/main/Manual.md#29-practical-recommendations) |  [Read the whole Manual](./Manual.md)
 
-## Roadmap
+---
 
-### Level 0 — current beta
+### Roadmap
 
-* Writing Process recording
-* Paste PROVENANCE
-* **Input Process Metrics (Experimental)**
-* Server Anchor
-* Final Signature
-* Working / Finalized Reports
-* Report Verifier
-* Overview Verifier
-* local-first writing workflow
-* no identity verification
+**Level 0 — Current Beta**
 
-### Level 1
+* Provides Writing Process recording, Paste PROVENANCE, Input Process Metrics (Experimental), Working / Finalized Reports, Report Verifier, and Overview Verifier.
+* No identity verification is provided. The management of student information relies on the rules and workflows of individual courses (e.g., requiring the student ID in the filename).
 
-Potential structured Report metadata:
+**Level 1**
 
-```text
-studentId
-studentName
-studentEmail
-assignmentId
-courseId
-```
+* Add official fields for `studentId`, `studentName`, and `studentEmail` to the Manifest via a new **File > Report Info** menu.
 
-Structured identity metadata would still not, by itself, prove authorship.
+**Level 2**
 
-### Level 2
-
-Potential institutional identity integration:
-
-* OIDC
-* university SSO
-* Google Workspace
-* Microsoft Entra ID
-
-SSO can strengthen the account-to-submission link.
-
-It still does not prove who physically authored every part of the document.
-
+* Institutional SSO (OIDC) integration.
+* Addition of an Email Verification column.
 
 *The following sections contain slightly more technical information intended for computer science professionals, institutions, and enterprises considering deployment.*
 ---
