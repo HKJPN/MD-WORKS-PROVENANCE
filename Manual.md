@@ -116,6 +116,8 @@ You can continue editing afterward, but the next ordinary Save produces a Workin
 
 The interface is divided into several areas.
 
+<img src="./images/Screen.JPG" alt="Screen.JPG" width="100%"><br>
+
 ## 3.1 Menu and title bar
 
 The top of the window contains the main file and view controls.
