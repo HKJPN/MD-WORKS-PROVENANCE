@@ -5228,6 +5228,14 @@ function buildWritingRecordViewModel(targetController) {
     }
 
     function appendInline(parent, text) {
+      const lines = text.split('\n');
+      lines.forEach((line, index) => {
+        if (index > 0) parent.appendChild(document.createElement('br'));
+        appendInlineLine(parent, index < lines.length - 1 ? line.replace(/(?: {2,}|\\)$/, '') : line);
+      });
+    }
+
+    function appendInlineLine(parent, text) {
       const token = /(`[^`\n]+`|\*\*[^*\n]+\*\*|~~[^~\n]+~~|\*[^*\n]+\*|\[[^\]\n]+\]\([^)\n]+\))/g;
       let position = 0;
       let match;
