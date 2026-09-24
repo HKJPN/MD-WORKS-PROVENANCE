@@ -47,7 +47,7 @@ Reportに記録されるDocument、Event、Hash、Signature、Integrity判定等
 ### 1-4. 画面構成
 
 画面は主に以下のエリアで構成されています。
-
+<img src="./images/Screen.JPG" alt="Screen.JPG" width="100%"><br>
 ① **メニューバー / タイトルバー**  
    ファイル操作、提出（Submit）、全画面表示などを行います。DEEPボタンはAcademic版ではRecordボタンに置き換えられています。
 
