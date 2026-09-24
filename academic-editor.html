@@ -1843,9 +1843,9 @@ const INPUT_PROCESS_ENDED_BY = new Set([
 ]);
 const EDITOR_PROVENANCE = Object.freeze({
   name: 'MD//WORKS Provenance',
-  version: '0.4.1',
-  buildId: '20260827.1',
-  sourceRevision: 'git:uncommitted'
+  version: '0.5.0-beta.1',
+  buildId: '20260924.1',
+  sourceRevision: 'git:v0.5.0-beta.1'
 });
 
 function normalizeBrowserMajorVersion(value) {
@@ -3493,7 +3493,7 @@ class AcademicController {
     this.lastEventHash = this.payload.events.length > 0 ? this.payload.events[this.payload.events.length - 1].hash : INITIAL_PREVIOUS_HASH;
 
     this.editor.value = this.payload.document.markdown || "";
-    this.filenameInput.value = String(file?.name || '').trim() || this.payload.document.filename || "assignment.html";
+    this.filenameInput.value = String(file?.name || '') || this.payload.document.filename || "assignment.html";
     this.typingManager.resetForDocument(this.editor.value);
 
     this.sessionManager.stop();
