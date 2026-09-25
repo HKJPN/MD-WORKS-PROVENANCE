@@ -153,6 +153,8 @@ The toolbar provides shortcuts for common Markdown structures, including:
 * table
 * horizontal rule
 * table of contents
+* inline math
+* display math
 
 ## 3.3 Editor and Preview
 
@@ -514,13 +516,69 @@ The current Academic Editor does not support local image embedding through:
 
 This keeps Report size under control and avoids large binary payloads that could make verification less reliable.
 
-## 10.2 Current Preview scope
+## 10.2 Basic LaTeX Math
+
+MD//WORKS PROVENANCE supports basic LaTeX math inside Markdown documents and renders it as formatted mathematics in Preview.
+
+For inline math, surround the expression with a single `$` delimiter.
+
+```markdown
+The relationship between mass and energy is $E = mc^2$.
+```
+
+For display math, surround the expression with `$$`.
+
+```markdown
+$$
+E = mc^2
+$$
+```
+
+Examples of supported basic mathematical notation include:
+
+```markdown
+$x^2 + y^2 = z^2$
+
+$\frac{a}{b}$
+
+$\sqrt{x}$
+
+$\alpha + \beta = \gamma$
+
+$\sum_{i=1}^{n} x_i$
+
+$\int_0^\infty e^{-x}\,dx$
+```
+
+You can also use **Inline Math** and **Display Math** from the Format menu or toolbar to wrap selected text in the appropriate math delimiters.
+
+* **Inline Math** — Uses `$...$` for mathematics within a line of text.
+* **Display Math** — Uses `$$...$$` for a separate displayed equation.
+
+To display a literal `$` character, write `\$`.
+
+Math syntax inside Inline Code or Code Blocks is not rendered as mathematics and remains code.
+
+Math is rendered in Preview, Print Preview, PDF output, and supported saved-report views. The Markdown document itself retains the original LaTeX math source.
+
+> **Note:**
+> Math support in MD//WORKS PROVENANCE is intended for basic LaTeX mathematical notation and is not a complete LaTeX environment. Advanced features such as equation numbering, `\label` / `\ref`, custom macros, and TikZ are not supported. If an expression cannot be rendered correctly, the application preserves the source notation where possible rather than allowing the expression to break the document or Preview.
+
+### Math and the Writing Record
+
+Math remains part of the Markdown document and is included in document integrity verification.
+
+Math typed directly from the keyboard is recorded as normal direct input. Math pasted from another source follows the normal paste-provenance rules.
+
+When Inline Math or Display Math is applied using the Format menu or toolbar, the `$` / `$$` delimiters inserted by the editor are recorded as formatting operations. These editor-generated delimiters do not unnecessarily increase Direct input or change the non-internal paste share.
+
+## 10.3 Current Preview scope
 
 The current beta focuses on common Markdown structures.
 
 Advanced rendering features available in other Markdown environments are not guaranteed here, including:
 
-* LaTeX / KaTeX rendering
+* advanced LaTeX features such as equation numbering, cross-references, custom macros, and TikZ
 * Mermaid diagrams
 * Markdown footnote rendering
 * special superscript / subscript extensions
@@ -1374,9 +1432,9 @@ If the application is offline or cannot reach the anchor service, no new Server 
 
 Zero Anchors alone is not an Integrity Error.
 
-## Advanced Markdown is not rendered
+## Advanced LaTeX, Mermaid, or Markdown footnotes are not rendered
 
-The current beta prioritizes common Markdown structures and does not guarantee rendering of advanced extensions such as Mermaid, KaTeX, or Markdown footnotes.
+The current beta supports basic LaTeX math, but does not guarantee advanced LaTeX features such as equation numbering, cross-references, custom macros, or TikZ. Mermaid and Markdown footnote rendering are also not guaranteed. See “10.2 Basic LaTeX Math” for the supported syntax and limitations.
 
 ---
 
@@ -1510,4 +1568,3 @@ Input Process Metrics extend that principle:
 > **Preserve more of how the Editor observed the document being edited, without turning observation into automatic judgment.**
 
 That is the role of MD//WORKS PROVENANCE.
-
