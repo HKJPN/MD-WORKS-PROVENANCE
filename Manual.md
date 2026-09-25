@@ -506,15 +506,38 @@ Word table cell text is preserved where possible, but conversion into a Markdown
 
 # 10. Images and advanced Markdown
 
-## 10.1 Local images
+## 10.1 Images
 
-The current Academic Editor does not support local image embedding through:
+MD//WORKS PROVENANCE can insert PNG, JPEG, and WebP images into a Markdown document. Use **Image…** in the toolbar; image Paste and Drag & Drop are not supported.
 
-* Paste
-* Drag & Drop
-* Base64 embedding
+Choose one of two methods according to how you want to manage the image.
 
-This keeps Report size under control and avoids large binary payloads that could make verification less reliable.
+### Embedded Image
+
+An **Embedded Image** stores the image data in the Markdown document. The document can therefore retain the image by itself, without a separate image file. This method is suitable for small images, but it increases the document size.
+
+The limits are:
+
+* **300 KiB** per embedded image
+* **2 MiB** total embedded image data per document
+
+Use a Relative Image for an image larger than 300 KiB.
+
+### Relative Image
+
+A **Relative Image** keeps the Markdown document lightweight and lets you manage the image as a separate file. The image must be in the same folder as the document's Asset Root or in a folder below it, and Markdown refers to it with a relative path, for example:
+
+```markdown
+![Figure 1](./images/figure1.png)
+```
+
+Relative Images are suitable for larger images, but displaying them requires access to the **Asset Root** that contains their files. Use:
+
+**Image… → Connect Asset Root**
+
+The Asset Root is the folder that you explicitly select so that MD//WORKS PROVENANCE can resolve Relative Images. See “13. Opening and resuming a Report” for reconnection after reopening a Working Report and “15. Submit and Finalize” for image checks during Finalization.
+
+Image assets associated with a Report are included in integrity checks. Image verification checks the integrity of image assets associated with the Report. It does not determine who created an image, establish authorship, or determine whether AI was used.
 
 ## 10.2 Basic LaTeX Math
 
@@ -655,6 +678,14 @@ When a valid Working Report is opened:
 
 Only content included in the last successful Save is guaranteed to be present in the Working Report.
 
+## 13.1 Reconnecting an Asset Root
+
+Access to an Asset Root is not stored in the Report file itself. After closing and reopening a Working Report that contains Relative Images, reconnect the required folder with **Image… → Connect Asset Root** when needed.
+
+You can still open, edit, and save the Working Report while the Asset Root is disconnected or an image has another asset problem. Relative Images may not be displayed until access is restored.
+
+In environments that use the folder-selection fallback, MD//WORKS PROVENANCE uses the files as they were when the folder was selected. If an image is changed by another application, select the folder again to view and verify its latest state.
+
 ---
 
 # 14. Emergency Recovery
@@ -716,7 +747,23 @@ The confirmation checkbox is used only in the submission dialog.
 
 It is not stored as Writing Process evidence.
 
-## 15.1 Final Signature
+## 15.1 Image verification
+
+During Finalization, MD//WORKS PROVENANCE checks every current image asset again. If a Relative Image file has changed since it was recorded, it is shown as a changed Asset. To use the changed image as the official version, explicitly approve it with **Accept Updated Image**.
+
+You may save a Working Report, but you cannot Finalize while:
+
+* the Asset Root cannot be accessed
+* a referenced image cannot be found
+* an image has changed and its update has not been accepted
+* an image exceeds its size limit
+* an image is unsupported or cannot be verified correctly
+
+There is no “Finalize anyway” exception. Finalization becomes available after all current image assets have been verified.
+
+At Finalization, verified Relative Images are stored inside the Finalized Report. The Finalized Report therefore does not depend on the original image folder. Moving, deleting, or changing an original image afterward does not change the image already fixed inside that Finalized Report. The original Markdown source still retains the Relative Image path.
+
+## 15.2 Final Signature
 
 Finalization requests a server-issued Ed25519 signature over the final Manifest.
 
@@ -726,11 +773,11 @@ A Final Signature does **not** make the HTML file impossible to edit.
 
 MD//WORKS PROVENANCE is designed to be **tamper-evident**, not tamper-proof.
 
-## 15.2 Network requirement
+## 15.3 Network requirement
 
 Submit requires an internet connection because Final Signature is server-issued.
 
-## 15.3 Submitting more than once
+## 15.4 Submitting more than once
 
 You may submit more than once.
 
