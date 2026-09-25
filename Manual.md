@@ -164,7 +164,17 @@ To display only the Preview, use **Preview Focus**.
 
 From Preview Focus, use **↩ Editor** to return.
 
-## 3.4 Status bar
+## 3.4 Line breaks and paragraphs
+
+Line breaks entered in the Editor are preserved in Preview.
+
+* Pressing Enter creates a visible line break in Preview.
+* Leaving a blank line starts a new paragraph.
+* Headings, lists, tables, and code blocks follow their Markdown structure.
+
+This provides a writing and preview experience similar to a conventional word processor for ordinary text.
+
+## 3.5 Status bar
 
 The status bar provides a compact view of the current Writing Record.
 
