@@ -263,17 +263,38 @@ Inline CodeやCode Block内の `$...$` は数式として解釈されず、コ�
 
 ［Format］メニューやツールバーからInline Math / Display Mathを適用した場合、エディタが追加する `$` / `$$` は書式操作として記録されます。この操作によって直接入力文字数や貼り付け割合が不必要に増えることはありません。
 
-### 3-4. 画像の挿入について
+### 3-4. 画像の挿入
 
-現β版のAcademic Editorでは、**ローカル画像のBase64埋め込みや画像ファイルのPaste / Drag & Dropには対応していません。**
+MD//WORKS PROVENANCEでは、PNG、JPEG、WebP画像をMarkdown文書へ挿入できます。ツールバーの **Image…** を使用してください。画像のPaste / Drag & Dropには対応していません。
 
-画像ファイルをドラッグした場合は：
+画像の管理方法に応じて、次の2種類を使い分けます。
 
-```text
-Local image embedding is not available in Academic mode.
+#### Embedded Image
+
+**Embedded Image**は画像データをMarkdown本文へ埋め込む方式です。文書単体で画像を保持でき、別の画像ファイルを一緒に管理する必要がありません。小さな画像に適していますが、画像を埋め込むと文書サイズが増えます。
+
+上限は次のとおりです。
+
+* Embedded Image 1点あたり **300 KiB**
+* 1文書あたりのEmbedded Imageデータ合計 **2 MiB**
+
+300 KiBを超える画像にはRelative Imageを使用してください。
+
+#### Relative Image
+
+**Relative Image**は画像をMarkdown本文へ埋め込まず、Asset Rootと同じフォルダまたはその配下にある画像ファイルを相対パスで参照する方式です。
+
+```markdown
+![Figure 1](./images/figure1.png)
 ```
 
-と通知されます。また、現β版のAcademic PreviewはMarkdown画像記法を画像として描画する機能を備えていません。図や画像をレポートで使用する必要がある場合は、授業・提出方法の指示に従ってください。
+大きな画像に適し、画像ファイルを別々に管理できるため、Markdown本文を軽量なまま保てます。ただし、表示には画像ファイルを含む **Asset Root** へのアクセスが必要です。次の操作で接続します。
+
+**Image… → Connect Asset Root**
+
+Asset Rootは、Relative Imageを解決するために利用者が明示的に選択するフォルダです。Working Reportを開き直した後の再接続については「6-2. 別PCでの継続」、Finalization時の確認については「6-4. 画像の確認とFinalization」を参照してください。
+
+画像もReportに関連するAssetとして整合性確認の対象になります。画像の検証は、Reportに含まれる画像資産の整合性を確認するためのものです。画像の作成者、著者性、AI利用の有無などを判定するものではありません。
 
 ### 3-5. 学籍情報の記載（授業で指定される場合）
 
@@ -582,6 +603,12 @@ IME変換途中の未確定文字列そのものを保存するものではあ�
 
 緊急テキスト復元（Emergency Recovery）の一時データは引き継がれません。
 
+Asset Rootへのアクセス権はReportファイル自体には保存されません。Relative Imageを含むWorking Reportを閉じて再度開いた場合は、必要に応じて **Image… → Connect Asset Root** から画像を含むフォルダを再接続してください。
+
+Asset Rootが未接続の場合や画像Assetに問題がある場合でも、Working Reportを開く、編集する、保存することは可能です。ただし、Relative Imageは表示できない場合があります。
+
+フォルダ選択fallbackを使用する環境では、フォルダを選択した時点のファイル状態が使用されます。外部アプリで画像を変更した場合は、フォルダを再選択すると最新状態を表示・確認できます。
+
 ### 6-3. レポートを提出（Submit Report）
 
 レポートが完成し、教員へ提出する準備ができたら以下の操作を行います。
@@ -608,7 +635,23 @@ Final Signatureは：
 
 署名後に内容が変更された場合に、Verifierで不整合を検出できるようにする暗号署名です。Submitにはインターネット接続が必要です。Submit後もEditorはロックされません。修正後は再度Submitしてください。
 
-### 6-4. 印刷 / PDFへの書き出し
+### 6-4. 画像の確認とFinalization
+
+Finalization時には、すべてのcurrent image assetsが再確認されます。記録後にRelative Imageのファイルが変更されている場合は、変更されたAssetとして警告されます。変更後の画像を正式に使用する場合は、**Accept Updated Image** で明示的に承認してください。
+
+次の状態でもWorking Reportの保存は可能ですが、Finalizeは行えません。
+
+* Asset Rootへアクセスできない
+* 参照画像が見つからない
+* 画像が変更され、まだ更新を承認していない
+* 画像がサイズ上限を超えている
+* 画像が非対応または正常に検証できない
+
+「Finalize anyway」のような例外操作はありません。すべてのcurrent image assetsが確認された状態になるとFinalizeできます。
+
+Finalize時には、検証済みのRelative ImageがFinalized Report内部へ格納されます。このため、**Finalized Reportは元の画像フォルダに依存しません。** Finalized Report作成後に元画像を移動、削除、変更しても、すでにFinalized Report内部へ固定された画像表示は変化しません。一方、元のMarkdown sourceではRelative Imageの相対パス表記が保持されます。
+
+### 6-5. 印刷 / PDFへの書き出し
 
 **ファイル > 印刷プレビュー…（Print Preview… / Ctrl+P）** から印刷・PDF保存できます。
 
