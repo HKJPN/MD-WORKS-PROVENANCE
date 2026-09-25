@@ -2061,12 +2061,18 @@ function isVerificationAttentionRequired(verification, summaryComparison) {
     !summaryComparison.match;
 }
 
+function isFormattingOperation(event) {
+  return event?.meta?.owner === 'explicit-operation' &&
+    typeof event.meta.operation === 'string' && event.meta.operation.startsWith('format:');
+}
+
 function calculateReplaceInsertedChars(events) {
   if (!Array.isArray(events)) return 0;
   return events.reduce((total, eventValue) => {
     const event = eventValue && typeof eventValue === 'object' && !Array.isArray(eventValue) ? eventValue : {};
     const meta = event.meta && typeof event.meta === 'object' && !Array.isArray(event.meta) ? event.meta : {};
-    if (event.type !== 'replace' || typeof meta.insertedCharacters !== 'number' || !Number.isFinite(meta.insertedCharacters)) return total;
+    if (event.type !== 'replace' || isFormattingOperation(event) ||
+        typeof meta.insertedCharacters !== 'number' || !Number.isFinite(meta.insertedCharacters)) return total;
     return total + Math.max(0, meta.insertedCharacters);
   }, 0);
 }
