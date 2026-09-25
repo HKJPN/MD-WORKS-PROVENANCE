@@ -685,6 +685,232 @@ const INPUT_PROCESS_ENDED_BY = new Set([
   'explicit-operation', 'session-end', 'document-switch', 'finalization', 'unknown'
 ]);
 
+/* BEGIN IMAGE ASSET PROVENANCE */
+/* Image Asset Provenance v1. Inlined in the three HTML entry points by sync-image-assets.mjs. */
+function createImageAssetProvenance(canonicalize) {
+  'use strict';
+  const ASSET_PROVENANCE_VERSION = 1;
+  const LIMITS = Object.freeze({ embeddedImage: 307200, embeddedTotal: 2097152, relativeImage: 10485760, relativeTotal: 26214400 });
+  const MIME = new Set(['image/png', 'image/jpeg', 'image/webp']);
+  const fail = state => { throw Object.assign(new Error(state), { state }); };
+  const hash = async bytes => 'sha256:' + Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), x => x.toString(16).padStart(2, '0')).join('');
+  const manifestHash = manifest => hash(new TextEncoder().encode(canonicalize(manifest)));
+  function normalize(source) {
+    if (typeof source !== 'string' || !source || /[\\:%?#\x00-\x20<>"|]/.test(source) || source.startsWith('/')) return null;
+    const path = source.startsWith('./') ? source.slice(2) : source;
+    const parts = path.split('/');
+    return parts.every(part => part && part !== '.' && part !== '..') ? path : null;
+  }
+  function scan(markdown) {
+    const refs = [];
+    let fence = null, display = false;
+    for (const line of String(markdown).split('\n')) {
+      const marker = line.match(/^\s*(`{3,}|~{3,})/);
+      if (fence) { if (marker && marker[1][0] === fence) fence = null; continue; }
+      if (marker) { fence = marker[1][0]; continue; }
+      if (/^\s*\$\$\s*$/.test(line)) { display = !display; continue; }
+      if (display || /^\s*\$\$(.+?)\$\$\s*$/.test(line) || /^\s*<!--[\s\S]*-->\s*$/.test(line)) continue;
+      // Code and math take precedence over image syntax, including multi-backtick code.
+      const tokens = /(`+)([\s\S]*?)\1|(?<!\\)\$[^$\n]+\$|!\[([^\]\n]*)\]\(([^)\n]*)\)/g;
+      for (const match of line.matchAll(tokens)) {
+        if (match[3] !== undefined) refs.push({ alt: match[3], source: match[4], syntax: match[0] });
+      }
+    }
+    return refs;
+  }
+  function decode(base64, limit) {
+    if (typeof base64 !== 'string' || base64.length > Math.ceil(limit / 3) * 4) fail('over-limit');
+    if (!base64.length || base64.length % 4 || !/^[A-Za-z0-9+/]*={0,2}$/.test(base64)) fail('invalid Base64 image');
+    const size = base64.length / 4 * 3 - (base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0);
+    if (size > limit) fail('over-limit');
+    const binary = atob(base64);
+    if (btoa(binary) !== base64) fail('invalid Base64 image');
+    return Uint8Array.from(binary, ch => ch.charCodeAt(0));
+  }
+  function encode(bytes) {
+    let binary = '';
+    for (let start = 0; start < bytes.length; start += 32768) binary += String.fromCharCode(...bytes.subarray(start, start + 32768));
+    return btoa(binary);
+  }
+  function sniff(bytes, declared = '') {
+    const starts = expected => expected.every((v, i) => bytes[i] === v);
+    let mime = null;
+    if (bytes.length >= 8 && starts([137,80,78,71,13,10,26,10])) mime = 'image/png';
+    else if (bytes.length >= 3 && starts([255,216,255])) mime = 'image/jpeg';
+    else if (bytes.length >= 12 && starts([82,73,70,70]) && [87,69,66,80].every((v,i) => bytes[i+8] === v)) mime = 'image/webp';
+    if (!mime || (declared && (!MIME.has(declared.toLowerCase()) || declared.toLowerCase() !== mime))) fail('unsupported image');
+    return mime;
+  }
+  function embedded(source, budget = LIMITS.embeddedImage) {
+    const comma = source.indexOf(',');
+    const header = source.slice(0, comma);
+    const match = /^data:(image\/(?:png|jpeg|webp));base64$/i.exec(header);
+    if (!match) fail('unsupported image');
+    const bytes = decode(source.slice(comma + 1), Math.min(budget, LIMITS.embeddedImage));
+    return { bytes, mimeType: sniff(bytes, match[1]) };
+  }
+  async function readFile(file, budget = LIMITS.relativeImage) {
+    if (file.size > Math.min(budget, LIMITS.relativeImage)) fail('over-limit');
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (bytes.length > LIMITS.relativeImage) fail('over-limit');
+    return { bytes, mimeType: sniff(bytes, file.type), byteLength: bytes.length, sha256: await hash(bytes) };
+  }
+  function createRoot() {
+    let directory = null, files = null;
+    return {
+      clear() { directory = files = null; },
+      setDirectory(handle) { directory = handle; files = null; },
+      setFiles(list) {
+        directory = null; files = new Map();
+        for (const file of list) {
+          const relative = file.webkitRelativePath || '';
+          const path = normalize(relative.slice(relative.indexOf('/') + 1));
+          if (relative.includes('/') && path) files.set(path, file);
+        }
+      },
+      async resolve(path) {
+        if (!normalize(path)) fail('unsupported image');
+        if (!directory && !files) fail('unavailable');
+        if (files) { if (!files.has(path)) fail('missing'); return files.get(path); }
+        try {
+          if (directory.queryPermission && await directory.queryPermission({ mode: 'read' }) !== 'granted') fail('unavailable');
+          const parts = path.split('/'); let current = directory;
+          for (const part of parts.slice(0, -1)) current = await current.getDirectoryHandle(part);
+          return await (await current.getFileHandle(parts.at(-1))).getFile();
+        } catch (error) { fail(error.name === 'NotFoundError' ? 'missing' : 'unavailable'); }
+      }
+    };
+  }
+  async function collect(markdown, previous = { version: 1, assets: [] }, resolver = null, packageAssets = false) {
+    const assets = [], states = new Map(), records = new Map(), seen = new Map(), embeddedAssets = [];
+    const old = Array.isArray(previous?.assets) ? previous.assets : [];
+    let embeddedTotal = 0, relativeTotal = 0;
+    for (const ref of scan(markdown)) {
+      if (records.has(ref.source)) continue;
+      const isEmbedded = /^data:/i.test(ref.source), normalized = isEmbedded ? null : normalize(ref.source);
+      if (!isEmbedded && normalized && seen.has(normalized)) { records.set(ref.source, seen.get(normalized)); continue; }
+      let data = null, state = 'verified';
+      let entry = old.find(a => !isEmbedded && a.sourceKind === 'relative-file' && (normalized ? a.normalizedSourceRef === normalized : a.sourceRef === ref.source));
+      try {
+        if (isEmbedded) {
+          data = embedded(ref.source, LIMITS.embeddedTotal - embeddedTotal); data.byteLength = data.bytes.length; data.sha256 = await hash(data.bytes);
+          entry = old.find(a => a.sourceKind === 'embedded-base64' && a.sha256 === data.sha256);
+        } else {
+          if (!normalized) fail('unsupported image');
+          if (!resolver) fail('unavailable');
+          data = await readFile(await resolver(normalized), LIMITS.relativeTotal - relativeTotal);
+        }
+      } catch (error) {
+        state = error.state || 'unavailable';
+        if (state === 'over-limit' && isEmbedded) embeddedTotal = Math.max(embeddedTotal, LIMITS.embeddedTotal + 1);
+        if (isEmbedded) entry = old.find(a => a.sourceKind === 'embedded-base64' && !a.sha256 && !assets.some(existing => existing.assetId === a.assetId));
+      }
+      const key = isEmbedded ? (data?.sha256 || ref.source) : (normalized || ref.source);
+      if (seen.has(key)) { records.set(ref.source, seen.get(key)); continue; }
+      if (!entry) entry = { assetId: crypto.randomUUID(), kind: 'image', sourceKind: isEmbedded ? 'embedded-base64' : 'relative-file', sourceRef: isEmbedded ? null : ref.source, normalizedSourceRef: normalized, mimeType: null, byteLength: null, sha256: null };
+      else entry = { ...entry, sourceRef: isEmbedded ? null : ref.source };
+      if (data) {
+        if (entry.sha256 && entry.sha256 !== data.sha256) state = 'changed';
+        else if (!entry.sha256) Object.assign(entry, { mimeType: data.mimeType, byteLength: data.byteLength, sha256: data.sha256 });
+        else if (entry.mimeType !== data.mimeType || entry.byteLength !== data.byteLength) state = 'Image metadata mismatch';
+        if (isEmbedded) { embeddedTotal += data.byteLength; if (embeddedTotal > LIMITS.embeddedTotal) state = 'over-limit'; }
+        else { relativeTotal += data.byteLength; if (relativeTotal > LIMITS.relativeTotal) state = 'over-limit'; }
+      }
+      const record = { entry, state, data };
+      assets.push(entry); states.set(entry.assetId, state); records.set(ref.source, record); seen.set(key, record);
+      if (packageAssets && !isEmbedded && state === 'verified') {
+        // Encode the exact bytes already checked above. Never reopen the file here.
+        embeddedAssets.push({ assetId: entry.assetId, mimeType: data.mimeType, byteLength: data.byteLength, sha256: data.sha256, base64: encode(data.bytes) });
+      }
+    }
+    return { assetManifest: { version: 1, assets }, states, records, embeddedAssets, embeddedTotal, relativeTotal, ok: [...states.values()].every(s => s === 'verified') };
+  }
+  async function verify(payload) {
+    if (payload.manifest?.assetProvenanceVersion === undefined) return { ok: true, legacy: true, state: 'Not available / Legacy' };
+    try {
+      if (payload.manifest.assetProvenanceVersion !== 1 || payload.assetManifest?.version !== 1 || !Array.isArray(payload.assetManifest.assets)) fail('Invalid asset manifest');
+      if (await manifestHash(payload.assetManifest) !== payload.manifest.assetManifestHash) fail('Asset Manifest hash mismatch');
+      const entries = payload.assetManifest.assets, ids = new Set(), keys = new Set();
+      const finalized = !!payload.finalSignature;
+      const packages = payload.embeddedAssets || [];
+      if (!Array.isArray(packages)) fail('Invalid packaged assets');
+      const packageIds = new Set(); let total = 0;
+      const packaged = new Map();
+      for (const item of packages) {
+        if (!finalized || packageIds.has(item.assetId)) fail('Unexpected packaged asset');
+        packageIds.add(item.assetId);
+        const entry = entries.find(e => e.assetId === item.assetId && e.sourceKind === 'relative-file');
+        if (!entry) fail('Unexpected packaged asset');
+        const bytes = decode(item.base64, Math.min(LIMITS.relativeImage, LIMITS.relativeTotal - total));
+        total += bytes.length; if (total > LIMITS.relativeTotal) fail('over-limit');
+        const mime = sniff(bytes, item.mimeType), sha256 = await hash(bytes);
+        if (bytes.length !== item.byteLength || bytes.length !== entry.byteLength || sha256 !== item.sha256 || sha256 !== entry.sha256 || mime !== entry.mimeType) fail('Packaged image hash/metadata mismatch');
+        packaged.set(entry.normalizedSourceRef, new Blob([bytes], { type: mime }));
+      }
+      for (const entry of entries) {
+        if (!entry || typeof entry.assetId !== 'string' || !entry.assetId || ids.has(entry.assetId) || entry.kind !== 'image') fail('Invalid asset entry');
+        for (const field of ['assetId','kind','sourceKind','sourceRef','normalizedSourceRef','mimeType','byteLength','sha256']) if (!Object.hasOwn(entry, field)) fail('Missing asset field');
+        if (entry.sha256 !== null && (!/^sha256:[a-f0-9]{64}$/.test(entry.sha256) || !MIME.has(entry.mimeType) || !Number.isSafeInteger(entry.byteLength) || entry.byteLength <= 0)) fail('Invalid recorded asset metadata');
+        ids.add(entry.assetId);
+        if (!['relative-file', 'embedded-base64'].includes(entry.sourceKind)) fail('Invalid asset source');
+        if (entry.sourceKind === 'relative-file' && normalize(entry.sourceRef) !== entry.normalizedSourceRef) fail('Invalid asset path');
+        if (entry.sourceKind === 'embedded-base64' && (entry.sourceRef !== null || entry.normalizedSourceRef !== null)) fail('Invalid embedded source');
+        const key = entry.sourceKind + ':' + (entry.normalizedSourceRef || entry.sha256 || entry.assetId);
+        if (keys.has(key)) fail('Duplicate asset'); keys.add(key);
+        if (finalized && (!MIME.has(entry.mimeType) || !Number.isSafeInteger(entry.byteLength) || entry.byteLength <= 0 || !/^sha256:[a-f0-9]{64}$/.test(entry.sha256))) fail('Incomplete asset entry');
+      }
+      const resolver = finalized ? async path => { if (!packaged.has(path)) fail('missing'); return packaged.get(path); } : null;
+      const current = await collect(payload.document.markdown, payload.assetManifest, resolver);
+      if (canonicalize(current.assetManifest) !== canonicalize(payload.assetManifest)) fail('Document / Asset Manifest mismatch');
+      if ([...current.records.values()].some(r => r.state === 'Image metadata mismatch')) fail('Image metadata mismatch');
+      if (finalized && !current.ok) fail('Finalized assets not verified');
+      if (finalized && packages.length !== entries.filter(e => e.sourceKind === 'relative-file').length) fail('Missing packaged asset');
+      const embeddedIssues = [...new Set([...current.records.values()].filter(r => r.entry.sourceKind === 'embedded-base64' && r.state !== 'verified').map(r => r.state))];
+      const state = !finalized && embeddedIssues.length ? 'Working Report — embedded images: ' + embeddedIssues.join(', ')
+        : !finalized && entries.some(e => e.sourceKind === 'relative-file') ? 'External assets not independently available' : 'Verified';
+      return { ok: true, state, current, packaged };
+    } catch (error) { return { ok: false, state: error.state || error.message }; }
+  }
+  const mounted = new WeakMap();
+  function release(target) {
+    const old = mounted.get(target);
+    if (old) { old.cancelled = true; for (const url of old.urls) URL.revokeObjectURL(url); }
+    mounted.delete(target);
+  }
+  function placeholder(alt, source) {
+    const span = document.createElement('span');
+    span.className = 'mdworks-image'; span.dataset.imageSource = source; span.dataset.imageAlt = alt;
+    span.textContent = '[Image: validating]'; return span;
+  }
+  async function mount(target, resultPromise) {
+    release(target);
+    const state = { urls: [], cancelled: false }; mounted.set(target, state);
+    try {
+      const result = await resultPromise;
+      if (state.cancelled) return;
+      for (const holder of target.querySelectorAll('.mdworks-image')) {
+        const record = result.records.get(holder.dataset.imageSource);
+        holder.textContent = '';
+        if (record?.data && ['verified', 'changed'].includes(record.state)) {
+          const image = document.createElement('img'); image.alt = holder.dataset.imageAlt;
+          image.style.maxWidth = '100%'; image.style.height = 'auto';
+          const url = URL.createObjectURL(new Blob([record.data.bytes], { type: record.data.mimeType }));
+          state.urls.push(url); image.src = url; holder.appendChild(image);
+        }
+        if (record?.state !== 'verified') {
+          const warning = document.createElement('span');
+          warning.textContent = record?.state === 'changed' ? 'Image changed since it was recorded' : '[Image: ' + (record?.state || 'unavailable') + ']';
+          holder.appendChild(warning);
+        }
+      }
+    } catch { if (!state.cancelled) for (const holder of target.querySelectorAll('.mdworks-image')) holder.textContent = '[Image: unavailable]'; }
+  }
+  return Object.freeze({ ASSET_PROVENANCE_VERSION, LIMITS, normalize, scan, decode, encode, sniff, embedded, readFile, hash, manifestHash, createRoot, collect, verify, placeholder, mount, release });
+}
+const ImageAssets = createImageAssetProvenance(canonicalize);
+const ASSET_PROVENANCE_VERSION = ImageAssets.ASSET_PROVENANCE_VERSION;
+/* END IMAGE ASSET PROVENANCE */
+
 function canonicalize(data) {
   if (data === null) return 'null';
   const t = typeof data;
@@ -945,7 +1171,8 @@ async function computeIntegrityVerification(payload) {
   const eventLogHashMatch = manifest.eventLogHash === eventLogHash;
   const eventChain = await verifyEventChain(payload.events);
   const finalChainHashMatch = eventChain.ok && manifest.finalChainHash === eventChain.finalHash;
-  const localIntegrityOk = documentHashMatch && eventLogHashMatch && eventChain.ok && finalChainHashMatch;
+  const assetVerification = await ImageAssets.verify(payload);
+  const localIntegrityOk = assetVerification.ok && documentHashMatch && eventLogHashMatch && eventChain.ok && finalChainHashMatch;
 
   const anchorVerification = await verifyAnchorSignatures(payload.anchors);
   const finalSignatureVerification = await verifyFinalSignature(payload);
@@ -962,6 +1189,7 @@ async function computeIntegrityVerification(payload) {
     eventChain,
     finalChainHashMatch,
     localIntegrityOk,
+    assetVerification,
     anchorVerification,
     finalSignatureVerification,
     computedStatus,
@@ -2055,7 +2283,7 @@ function appendSessionInputProcess(container, sessionId, analysis) {
 
 function isVerificationAttentionRequired(verification, summaryComparison) {
   return !verification.documentHashMatch || !verification.eventLogHashMatch ||
-    !verification.eventChain.ok || !verification.finalChainHashMatch ||
+    verification.assetVerification?.ok === false || !verification.eventChain.ok || !verification.finalChainHashMatch ||
     (verification.anchorVerification.present > 0 && !verification.anchorVerification.valid) ||
     (verification.finalSignatureVerification.present && !verification.finalSignatureVerification.valid) ||
     !summaryComparison.match;
@@ -2063,7 +2291,7 @@ function isVerificationAttentionRequired(verification, summaryComparison) {
 
 function isFormattingOperation(event) {
   return event?.meta?.owner === 'explicit-operation' &&
-    typeof event.meta.operation === 'string' && event.meta.operation.startsWith('format:');
+    typeof event.meta.operation === 'string' && (event.meta.operation.startsWith('format:') || event.meta.operation.startsWith('asset:'));
 }
 
 function calculateReplaceInsertedChars(events) {
@@ -2401,6 +2629,7 @@ function render(payload, verification){
 
   const teacherVerification = document.getElementById('teacher-verification');
   teacherVerification.replaceChildren();
+  appendStat(teacherVerification, 'Asset Integrity', verification.assetVerification?.state || 'Not available / Legacy');
   appendStat(teacherVerification, t('integrity.recordIntegrity'), verification.localIntegrityOk ? `✓ ${t('integrity.verified')}` : `✗ ${t('integrity.broken')}`);
   appendStat(teacherVerification, t('integrity.finalSignature'), verification.finalSignatureVerification.valid ? `✓ ${displayVerificationState(verification.finalSignatureVerification.state)}` : displayVerificationState(verification.finalSignatureVerification.state));
   appendStat(teacherVerification, t('integrity.writingProcess'), hasRecordedWritingProcess(events) ? `✓ ${t('integrity.recorded')}` : t('integrity.notRecorded'));
@@ -2408,7 +2637,7 @@ function render(payload, verification){
   const verificationAttention = document.getElementById('verification-attention');
   verificationAttention.replaceChildren();
   const verificationAttentionRequired = !verification.documentHashMatch || !verification.eventLogHashMatch ||
-    !verification.eventChain.ok || !verification.finalChainHashMatch ||
+    verification.assetVerification?.ok === false || !verification.eventChain.ok || !verification.finalChainHashMatch ||
     (verification.anchorVerification.present > 0 && !verification.anchorVerification.valid) ||
     (verification.finalSignatureVerification.present && !verification.finalSignatureVerification.valid) ||
     !summaryComparison.match;
@@ -2436,6 +2665,7 @@ function render(payload, verification){
   const integrityDetails = document.getElementById('integrity-details');
   integrityDetails.replaceChildren();
   const integrityGrid = createElement('div', undefined, 'grid');
+  appendStat(integrityGrid, 'Asset Integrity', verification.assetVerification?.state || 'Not available / Legacy');
   appendStat(integrityGrid, t('integrity.documentHash'), verification.documentHashMatch ? `✓ ${t('integrity.match')}` : `✗ ${t('integrity.mismatch')}`);
   appendStat(integrityGrid, t('integrity.eventLogHash'), verification.eventLogHashMatch ? `✓ ${t('integrity.match')}` : `✗ ${t('integrity.mismatch')}`);
   appendStat(integrityGrid, t('integrity.eventChain'), verification.eventChain.ok ? `✓ ${t('integrity.valid')}` : `✗ ${t('integrity.invalid')}`);

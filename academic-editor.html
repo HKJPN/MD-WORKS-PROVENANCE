@@ -214,6 +214,14 @@ body::before{
   box-shadow:inset 0 2px 7px rgba(92,64,38,.14),0 0 0 1px rgba(255,248,236,.56) inset,0 0 12px var(--accent-active-shadow);
 }
 @media print{body::before{display:none!important}}
+dialog.image-dialog{margin:auto;padding:24px;width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 48px);color:var(--text)}
+dialog.image-dialog[open]{display:grid;gap:16px}
+dialog.image-dialog::backdrop{background:rgba(15,23,42,.35)}
+.image-dialog h2{font-size:20px}.image-dialog p{font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.image-dialog label{display:grid;gap:6px;font-size:13px;font-weight:600}
+.image-dialog input:not([type="file"]){width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:inherit}
+.image-actions{display:flex;gap:8px;flex-wrap:wrap}.image-asset-list{display:grid;gap:8px}.image-asset-list:empty{display:none}
+.image-asset-list p{padding:10px 12px;border:1px solid var(--border);border-radius:8px}.image-asset-list button{margin-left:8px}
 </style>
 <script>try{const t=localStorage.getItem('mdworks_theme_mode');document.documentElement.dataset.theme=/^(midnight|paper|warm)$/.test(t||'')?t:'paper'}catch{document.documentElement.dataset.theme='paper'}</script>
 </head>
@@ -226,7 +234,7 @@ body::before{
   <div class="menu-item"><button class="menu-trigger" data-menu="help" aria-haspopup="true" aria-expanded="false">Help</button><div class="menu-dropdown" id="menu-help" role="menu"><button class="menu-entry" data-help="quick" role="menuitem">Quick Start</button><button class="menu-entry" data-help="keys" role="menuitem">Keyboard Shortcuts</button><div class="menu-sep"></div><button class="menu-entry" data-help="github" role="menuitem">GitHub</button><div class="menu-sep"></div><button class="menu-entry" data-help="about" role="menuitem">About MD//WORKS Provenance</button></div></div>
 </nav>
 <header id="titlebar"><div class="title-left"><span id="app-name">MD//WORKS PROVENANCE</span><input id="filename-display" value="assignment.html" placeholder="Filename" aria-label="Filename"><span id="inline-save-state" class="save-state" role="status" aria-live="polite">Ready</span></div><div class="title-actions"><button class="title-btn" id="open-btn"><span aria-hidden="true">↥</span><span class="wide">Open</span></button><button class="title-btn primary" id="save-btn"><span aria-hidden="true">↓</span><span class="wide">Save</span></button><button class="title-btn success submit-action" id="submit-btn"><span aria-hidden="true">✓</span><span class="wide">Submit</span></button><button class="title-btn" id="preview-toggle-btn" data-action="preview"><span aria-hidden="true">◫</span><span class="wide">Preview</span></button><button class="title-btn outline-action" data-action="outline"><span aria-hidden="true">☷</span><span class="wide">Outline</span></button><button class="title-btn record-action" id="record-btn" data-action="record" aria-controls="writing-record-panel" aria-expanded="false" aria-label="Current Writing Record" title="Current Writing Record"><span aria-hidden="true">◷</span><span class="wide">Record</span></button><button id="spell-toggle-title-btn" class="title-btn spell-title-action" data-action="spell" aria-pressed="false" aria-label="Browser Spellcheck" title="Browser Spellcheck"><span class="wide">Spell</span></button><button class="title-btn icon" data-action="fullscreen" aria-label="Fullscreen" title="Fullscreen">⛶</button></div><input id="api-url-input" type="hidden" value="https://academic-api.kuwata.workers.dev"><input type="file" id="file-input" accept=".html,.htm" hidden><input id="word-import-input" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden></header>
-<div id="toolbar" role="toolbar" aria-label="Markdown formatting"><div class="tool-group"><button class="tool-btn heading" data-format="h1" aria-label="Heading 1">H1</button><button class="tool-btn heading" data-format="h2" aria-label="Heading 2">H2</button><button class="tool-btn heading" data-format="h3" aria-label="Heading 3">H3</button></div><div class="tool-group"><button class="tool-btn" data-format="bold" aria-label="Bold"><b>B</b></button><button class="tool-btn" data-format="italic" aria-label="Italic"><i>I</i></button><button class="tool-btn" data-format="strike" aria-label="Strike"><s>S</s></button><button class="tool-btn" data-format="code" aria-label="Inline code">` `</button><button class="tool-btn" data-format="superscript" aria-label="Superscript">x<sup>2</sup></button><button class="tool-btn" data-format="subscript" aria-label="Subscript">x<sub>2</sub></button><button class="tool-btn" data-format="inline-math" aria-label="Inline Math">$x$</button><button class="tool-btn" data-format="display-math" aria-label="Display Math">$$</button></div><div class="tool-group"><button class="tool-btn" data-format="bullet">• List</button><button class="tool-btn" data-format="ordered">1. List</button><button class="tool-btn" data-format="task">☐ Task</button><button class="tool-btn" data-format="quote">❝ Quote</button></div><div class="tool-group"><button class="tool-btn" data-format="codeblock">{ } Code</button><button class="tool-btn" data-format="link">⌘ Link</button><button class="tool-btn" data-format="table">⊞ Table</button><button class="tool-btn" data-format="hr">─ Rule</button></div></div>
+<div id="toolbar" role="toolbar" aria-label="Markdown formatting"><div class="tool-group"><button class="tool-btn" id="image-menu-button">Image…</button></div><div class="tool-group"><button class="tool-btn heading" data-format="h1" aria-label="Heading 1">H1</button><button class="tool-btn heading" data-format="h2" aria-label="Heading 2">H2</button><button class="tool-btn heading" data-format="h3" aria-label="Heading 3">H3</button></div><div class="tool-group"><button class="tool-btn" data-format="bold" aria-label="Bold"><b>B</b></button><button class="tool-btn" data-format="italic" aria-label="Italic"><i>I</i></button><button class="tool-btn" data-format="strike" aria-label="Strike"><s>S</s></button><button class="tool-btn" data-format="code" aria-label="Inline code">` `</button><button class="tool-btn" data-format="superscript" aria-label="Superscript">x<sup>2</sup></button><button class="tool-btn" data-format="subscript" aria-label="Subscript">x<sub>2</sub></button><button class="tool-btn" data-format="inline-math" aria-label="Inline Math">$x$</button><button class="tool-btn" data-format="display-math" aria-label="Display Math">$$</button></div><div class="tool-group"><button class="tool-btn" data-format="bullet">• List</button><button class="tool-btn" data-format="ordered">1. List</button><button class="tool-btn" data-format="task">☐ Task</button><button class="tool-btn" data-format="quote">❝ Quote</button></div><div class="tool-group"><button class="tool-btn" data-format="codeblock">{ } Code</button><button class="tool-btn" data-format="link">⌘ Link</button><button class="tool-btn" data-format="table">⊞ Table</button><button class="tool-btn" data-format="hr">─ Rule</button></div></div>
 <main id="main-container"><aside id="outline-panel" aria-label="Document outline"><div class="panel-head"><span>Outline</span><button class="panel-close" data-action="outline" aria-label="Close outline">✕</button></div><div id="outline-list"></div></aside><div id="editor-wrap"><div id="editor-backdrop" aria-hidden="true"></div><textarea id="editor" spellcheck="false" aria-label="Markdown editor" placeholder="# 研究目的&#10;&#10;ここにMarkdownを記述してください..."></textarea></div><div id="splitter" aria-hidden="true"></div><section id="preview-wrap" aria-label="Markdown preview"><div class="preview-head"><span>PREVIEW</span><div class="preview-actions"><button class="mini-btn" data-action="preview-focus">Focus</button><button class="mini-btn" data-action="preview">Close</button></div></div><div id="preview" tabindex="-1"></div></section>
   <section id="sr-panel" aria-label="Search and replace"><div class="sr-tabs"><button class="sr-tab active" id="tab-find">Find</button><button class="sr-tab" id="tab-replace">Replace</button><button id="sr-close" aria-label="Close search">✕</button></div><div class="sr-row"><input class="sr-input" id="sr-search-input" placeholder="Find" aria-label="Find"><span class="sr-count" id="sr-count"></span><button class="sr-nav" id="sr-prev" aria-label="Previous match">↑</button><button class="sr-nav" id="sr-next" aria-label="Next match">↓</button></div><div class="sr-error" id="sr-error">Invalid regular expression</div><div class="sr-options"><label><input type="checkbox" id="sr-opt-regex"> RegExp</label><label><input type="checkbox" id="sr-opt-case"> Case Sensitive</label><label><input type="checkbox" id="sr-opt-word"> Whole Word</label></div><div class="sr-replace" id="sr-replace-area"><div class="sr-row"><input class="sr-input" id="sr-replace-input" placeholder="Replace with" aria-label="Replace with"></div><div class="sr-actions"><button class="sr-action" id="sr-btn-replace">Replace</button><button class="sr-action" id="sr-btn-replace-all">Replace All</button></div></div></section>
   <aside id="writing-record-panel" aria-labelledby="writing-record-heading" aria-hidden="true"><div class="record-panel-head"><h2 id="writing-record-heading" tabindex="-1">Current Writing Record</h2><button class="record-close" id="record-close-btn" aria-label="Close Current Writing Record">✕</button></div><div class="record-panel-body"><section class="record-section" aria-label="Record overview"><div class="record-row" title="Interaction-active time"><span>Active time</span><strong id="wr-active">0s</strong></div><div class="record-row"><span>Sessions</span><strong id="wr-sessions">1</strong></div><div class="record-row"><span>Current document</span><strong id="wr-document">0 chars</strong></div></section><section class="record-section" aria-label="Recorded input"><h3 class="record-section-title">Recorded input</h3><div class="record-row"><span>Direct input</span><strong id="wr-direct">0 chars</strong></div><div class="record-row"><span>Verified internal</span><strong id="wr-verified">0 chars</strong></div><div class="record-row"><span>Unverified</span><strong id="wr-unverified">0 chars</strong></div><div class="record-row" id="wr-legacy-row" hidden><span>Legacy unknown</span><strong id="wr-legacy">0 chars</strong></div><div class="record-activity"><div class="activity-bar empty" id="record-input-bar" role="img" aria-label="Input Activity: No recorded input yet" title="Input Activity: No recorded input yet"><span class="activity-segment activity-direct"></span><span class="activity-segment activity-verified"></span><span class="activity-segment activity-unverified"></span></div><div class="record-activity-key" aria-hidden="true"><span class="key-direct">Direct input</span><span class="key-verified">Verified internal</span><span class="key-unverified">Unverified</span></div></div><div class="record-row"><span>Non-internal paste share</span><strong id="wr-share">—</strong></div></section><section class="record-section" aria-label="Record totals"><div class="record-row"><span>Events</span><strong id="wr-events">0</strong></div><div class="record-row" title="Recorded server anchor responses. Final verification is performed by the Verifier."><span>Server anchors</span><strong id="wr-anchors">0</strong></div></section><p class="record-note">Active time reflects recorded interaction activity and does not include all reading or thinking time.</p><p class="record-note">These values describe recorded writing activity. They do not determine authorship or academic misconduct.</p><p class="record-note">Unverified means that a Paste could not be matched to an earlier Copy/Cut in this Report.</p></div></aside></main>
@@ -1513,7 +1521,7 @@ const I18N_EN = Object.freeze({
   'toast.replaceConfirm': 'Replace all {count} matches?', 'toast.replaced': 'Replaced {count} matches',
   'toast.tocConfirm': 'Update the existing table of contents?',
   'toast.tocUpdated': 'Table of contents updated', 'toast.tocInserted': 'Table of contents inserted',
-  'toast.imageUnavailable': 'Local image embedding is not available in Academic mode.'
+  'toast.imageUnavailable': 'Use Image… to insert an image. Clipboard and drag-and-drop images are not supported.'
 });
 
 const I18N_JA = Object.freeze({
@@ -1643,7 +1651,7 @@ const I18N_JA = Object.freeze({
   'toast.fullscreenUnavailable': '全画面表示を利用できませんでした',
   'toast.replaceConfirm': '{count}件の一致をすべて置換しますか？', 'toast.replaced': '{count}件を置換しました',
   'toast.tocConfirm': '既存の目次を更新しますか？', 'toast.tocUpdated': '目次を更新しました',
-  'toast.tocInserted': '目次を挿入しました', 'toast.imageUnavailable': 'Academicモードではローカル画像を埋め込めません。'
+  'toast.tocInserted': '目次を挿入しました', 'toast.imageUnavailable': '画像は Image… から挿入してください。画像の貼り付けやドロップには対応していません。'
 });
 
 const I18N = Object.freeze({ en: I18N_EN, ja: I18N_JA });
@@ -1809,6 +1817,232 @@ window.MDWorksI18n = Object.freeze({ I18N, UI_LANG, detectUiLanguage, t, applySt
    1. JCS (RFC 8785) & SHA-256 Cryptography Core
    ========================================================================== */
 const INITIAL_PREVIOUS_HASH = "0".repeat(64);
+
+/* BEGIN IMAGE ASSET PROVENANCE */
+/* Image Asset Provenance v1. Inlined in the three HTML entry points by sync-image-assets.mjs. */
+function createImageAssetProvenance(canonicalize) {
+  'use strict';
+  const ASSET_PROVENANCE_VERSION = 1;
+  const LIMITS = Object.freeze({ embeddedImage: 307200, embeddedTotal: 2097152, relativeImage: 10485760, relativeTotal: 26214400 });
+  const MIME = new Set(['image/png', 'image/jpeg', 'image/webp']);
+  const fail = state => { throw Object.assign(new Error(state), { state }); };
+  const hash = async bytes => 'sha256:' + Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), x => x.toString(16).padStart(2, '0')).join('');
+  const manifestHash = manifest => hash(new TextEncoder().encode(canonicalize(manifest)));
+  function normalize(source) {
+    if (typeof source !== 'string' || !source || /[\\:%?#\x00-\x20<>"|]/.test(source) || source.startsWith('/')) return null;
+    const path = source.startsWith('./') ? source.slice(2) : source;
+    const parts = path.split('/');
+    return parts.every(part => part && part !== '.' && part !== '..') ? path : null;
+  }
+  function scan(markdown) {
+    const refs = [];
+    let fence = null, display = false;
+    for (const line of String(markdown).split('\n')) {
+      const marker = line.match(/^\s*(`{3,}|~{3,})/);
+      if (fence) { if (marker && marker[1][0] === fence) fence = null; continue; }
+      if (marker) { fence = marker[1][0]; continue; }
+      if (/^\s*\$\$\s*$/.test(line)) { display = !display; continue; }
+      if (display || /^\s*\$\$(.+?)\$\$\s*$/.test(line) || /^\s*<!--[\s\S]*-->\s*$/.test(line)) continue;
+      // Code and math take precedence over image syntax, including multi-backtick code.
+      const tokens = /(`+)([\s\S]*?)\1|(?<!\\)\$[^$\n]+\$|!\[([^\]\n]*)\]\(([^)\n]*)\)/g;
+      for (const match of line.matchAll(tokens)) {
+        if (match[3] !== undefined) refs.push({ alt: match[3], source: match[4], syntax: match[0] });
+      }
+    }
+    return refs;
+  }
+  function decode(base64, limit) {
+    if (typeof base64 !== 'string' || base64.length > Math.ceil(limit / 3) * 4) fail('over-limit');
+    if (!base64.length || base64.length % 4 || !/^[A-Za-z0-9+/]*={0,2}$/.test(base64)) fail('invalid Base64 image');
+    const size = base64.length / 4 * 3 - (base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0);
+    if (size > limit) fail('over-limit');
+    const binary = atob(base64);
+    if (btoa(binary) !== base64) fail('invalid Base64 image');
+    return Uint8Array.from(binary, ch => ch.charCodeAt(0));
+  }
+  function encode(bytes) {
+    let binary = '';
+    for (let start = 0; start < bytes.length; start += 32768) binary += String.fromCharCode(...bytes.subarray(start, start + 32768));
+    return btoa(binary);
+  }
+  function sniff(bytes, declared = '') {
+    const starts = expected => expected.every((v, i) => bytes[i] === v);
+    let mime = null;
+    if (bytes.length >= 8 && starts([137,80,78,71,13,10,26,10])) mime = 'image/png';
+    else if (bytes.length >= 3 && starts([255,216,255])) mime = 'image/jpeg';
+    else if (bytes.length >= 12 && starts([82,73,70,70]) && [87,69,66,80].every((v,i) => bytes[i+8] === v)) mime = 'image/webp';
+    if (!mime || (declared && (!MIME.has(declared.toLowerCase()) || declared.toLowerCase() !== mime))) fail('unsupported image');
+    return mime;
+  }
+  function embedded(source, budget = LIMITS.embeddedImage) {
+    const comma = source.indexOf(',');
+    const header = source.slice(0, comma);
+    const match = /^data:(image\/(?:png|jpeg|webp));base64$/i.exec(header);
+    if (!match) fail('unsupported image');
+    const bytes = decode(source.slice(comma + 1), Math.min(budget, LIMITS.embeddedImage));
+    return { bytes, mimeType: sniff(bytes, match[1]) };
+  }
+  async function readFile(file, budget = LIMITS.relativeImage) {
+    if (file.size > Math.min(budget, LIMITS.relativeImage)) fail('over-limit');
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (bytes.length > LIMITS.relativeImage) fail('over-limit');
+    return { bytes, mimeType: sniff(bytes, file.type), byteLength: bytes.length, sha256: await hash(bytes) };
+  }
+  function createRoot() {
+    let directory = null, files = null;
+    return {
+      clear() { directory = files = null; },
+      setDirectory(handle) { directory = handle; files = null; },
+      setFiles(list) {
+        directory = null; files = new Map();
+        for (const file of list) {
+          const relative = file.webkitRelativePath || '';
+          const path = normalize(relative.slice(relative.indexOf('/') + 1));
+          if (relative.includes('/') && path) files.set(path, file);
+        }
+      },
+      async resolve(path) {
+        if (!normalize(path)) fail('unsupported image');
+        if (!directory && !files) fail('unavailable');
+        if (files) { if (!files.has(path)) fail('missing'); return files.get(path); }
+        try {
+          if (directory.queryPermission && await directory.queryPermission({ mode: 'read' }) !== 'granted') fail('unavailable');
+          const parts = path.split('/'); let current = directory;
+          for (const part of parts.slice(0, -1)) current = await current.getDirectoryHandle(part);
+          return await (await current.getFileHandle(parts.at(-1))).getFile();
+        } catch (error) { fail(error.name === 'NotFoundError' ? 'missing' : 'unavailable'); }
+      }
+    };
+  }
+  async function collect(markdown, previous = { version: 1, assets: [] }, resolver = null, packageAssets = false) {
+    const assets = [], states = new Map(), records = new Map(), seen = new Map(), embeddedAssets = [];
+    const old = Array.isArray(previous?.assets) ? previous.assets : [];
+    let embeddedTotal = 0, relativeTotal = 0;
+    for (const ref of scan(markdown)) {
+      if (records.has(ref.source)) continue;
+      const isEmbedded = /^data:/i.test(ref.source), normalized = isEmbedded ? null : normalize(ref.source);
+      if (!isEmbedded && normalized && seen.has(normalized)) { records.set(ref.source, seen.get(normalized)); continue; }
+      let data = null, state = 'verified';
+      let entry = old.find(a => !isEmbedded && a.sourceKind === 'relative-file' && (normalized ? a.normalizedSourceRef === normalized : a.sourceRef === ref.source));
+      try {
+        if (isEmbedded) {
+          data = embedded(ref.source, LIMITS.embeddedTotal - embeddedTotal); data.byteLength = data.bytes.length; data.sha256 = await hash(data.bytes);
+          entry = old.find(a => a.sourceKind === 'embedded-base64' && a.sha256 === data.sha256);
+        } else {
+          if (!normalized) fail('unsupported image');
+          if (!resolver) fail('unavailable');
+          data = await readFile(await resolver(normalized), LIMITS.relativeTotal - relativeTotal);
+        }
+      } catch (error) {
+        state = error.state || 'unavailable';
+        if (state === 'over-limit' && isEmbedded) embeddedTotal = Math.max(embeddedTotal, LIMITS.embeddedTotal + 1);
+        if (isEmbedded) entry = old.find(a => a.sourceKind === 'embedded-base64' && !a.sha256 && !assets.some(existing => existing.assetId === a.assetId));
+      }
+      const key = isEmbedded ? (data?.sha256 || ref.source) : (normalized || ref.source);
+      if (seen.has(key)) { records.set(ref.source, seen.get(key)); continue; }
+      if (!entry) entry = { assetId: crypto.randomUUID(), kind: 'image', sourceKind: isEmbedded ? 'embedded-base64' : 'relative-file', sourceRef: isEmbedded ? null : ref.source, normalizedSourceRef: normalized, mimeType: null, byteLength: null, sha256: null };
+      else entry = { ...entry, sourceRef: isEmbedded ? null : ref.source };
+      if (data) {
+        if (entry.sha256 && entry.sha256 !== data.sha256) state = 'changed';
+        else if (!entry.sha256) Object.assign(entry, { mimeType: data.mimeType, byteLength: data.byteLength, sha256: data.sha256 });
+        else if (entry.mimeType !== data.mimeType || entry.byteLength !== data.byteLength) state = 'Image metadata mismatch';
+        if (isEmbedded) { embeddedTotal += data.byteLength; if (embeddedTotal > LIMITS.embeddedTotal) state = 'over-limit'; }
+        else { relativeTotal += data.byteLength; if (relativeTotal > LIMITS.relativeTotal) state = 'over-limit'; }
+      }
+      const record = { entry, state, data };
+      assets.push(entry); states.set(entry.assetId, state); records.set(ref.source, record); seen.set(key, record);
+      if (packageAssets && !isEmbedded && state === 'verified') {
+        // Encode the exact bytes already checked above. Never reopen the file here.
+        embeddedAssets.push({ assetId: entry.assetId, mimeType: data.mimeType, byteLength: data.byteLength, sha256: data.sha256, base64: encode(data.bytes) });
+      }
+    }
+    return { assetManifest: { version: 1, assets }, states, records, embeddedAssets, embeddedTotal, relativeTotal, ok: [...states.values()].every(s => s === 'verified') };
+  }
+  async function verify(payload) {
+    if (payload.manifest?.assetProvenanceVersion === undefined) return { ok: true, legacy: true, state: 'Not available / Legacy' };
+    try {
+      if (payload.manifest.assetProvenanceVersion !== 1 || payload.assetManifest?.version !== 1 || !Array.isArray(payload.assetManifest.assets)) fail('Invalid asset manifest');
+      if (await manifestHash(payload.assetManifest) !== payload.manifest.assetManifestHash) fail('Asset Manifest hash mismatch');
+      const entries = payload.assetManifest.assets, ids = new Set(), keys = new Set();
+      const finalized = !!payload.finalSignature;
+      const packages = payload.embeddedAssets || [];
+      if (!Array.isArray(packages)) fail('Invalid packaged assets');
+      const packageIds = new Set(); let total = 0;
+      const packaged = new Map();
+      for (const item of packages) {
+        if (!finalized || packageIds.has(item.assetId)) fail('Unexpected packaged asset');
+        packageIds.add(item.assetId);
+        const entry = entries.find(e => e.assetId === item.assetId && e.sourceKind === 'relative-file');
+        if (!entry) fail('Unexpected packaged asset');
+        const bytes = decode(item.base64, Math.min(LIMITS.relativeImage, LIMITS.relativeTotal - total));
+        total += bytes.length; if (total > LIMITS.relativeTotal) fail('over-limit');
+        const mime = sniff(bytes, item.mimeType), sha256 = await hash(bytes);
+        if (bytes.length !== item.byteLength || bytes.length !== entry.byteLength || sha256 !== item.sha256 || sha256 !== entry.sha256 || mime !== entry.mimeType) fail('Packaged image hash/metadata mismatch');
+        packaged.set(entry.normalizedSourceRef, new Blob([bytes], { type: mime }));
+      }
+      for (const entry of entries) {
+        if (!entry || typeof entry.assetId !== 'string' || !entry.assetId || ids.has(entry.assetId) || entry.kind !== 'image') fail('Invalid asset entry');
+        for (const field of ['assetId','kind','sourceKind','sourceRef','normalizedSourceRef','mimeType','byteLength','sha256']) if (!Object.hasOwn(entry, field)) fail('Missing asset field');
+        if (entry.sha256 !== null && (!/^sha256:[a-f0-9]{64}$/.test(entry.sha256) || !MIME.has(entry.mimeType) || !Number.isSafeInteger(entry.byteLength) || entry.byteLength <= 0)) fail('Invalid recorded asset metadata');
+        ids.add(entry.assetId);
+        if (!['relative-file', 'embedded-base64'].includes(entry.sourceKind)) fail('Invalid asset source');
+        if (entry.sourceKind === 'relative-file' && normalize(entry.sourceRef) !== entry.normalizedSourceRef) fail('Invalid asset path');
+        if (entry.sourceKind === 'embedded-base64' && (entry.sourceRef !== null || entry.normalizedSourceRef !== null)) fail('Invalid embedded source');
+        const key = entry.sourceKind + ':' + (entry.normalizedSourceRef || entry.sha256 || entry.assetId);
+        if (keys.has(key)) fail('Duplicate asset'); keys.add(key);
+        if (finalized && (!MIME.has(entry.mimeType) || !Number.isSafeInteger(entry.byteLength) || entry.byteLength <= 0 || !/^sha256:[a-f0-9]{64}$/.test(entry.sha256))) fail('Incomplete asset entry');
+      }
+      const resolver = finalized ? async path => { if (!packaged.has(path)) fail('missing'); return packaged.get(path); } : null;
+      const current = await collect(payload.document.markdown, payload.assetManifest, resolver);
+      if (canonicalize(current.assetManifest) !== canonicalize(payload.assetManifest)) fail('Document / Asset Manifest mismatch');
+      if ([...current.records.values()].some(r => r.state === 'Image metadata mismatch')) fail('Image metadata mismatch');
+      if (finalized && !current.ok) fail('Finalized assets not verified');
+      if (finalized && packages.length !== entries.filter(e => e.sourceKind === 'relative-file').length) fail('Missing packaged asset');
+      const embeddedIssues = [...new Set([...current.records.values()].filter(r => r.entry.sourceKind === 'embedded-base64' && r.state !== 'verified').map(r => r.state))];
+      const state = !finalized && embeddedIssues.length ? 'Working Report — embedded images: ' + embeddedIssues.join(', ')
+        : !finalized && entries.some(e => e.sourceKind === 'relative-file') ? 'External assets not independently available' : 'Verified';
+      return { ok: true, state, current, packaged };
+    } catch (error) { return { ok: false, state: error.state || error.message }; }
+  }
+  const mounted = new WeakMap();
+  function release(target) {
+    const old = mounted.get(target);
+    if (old) { old.cancelled = true; for (const url of old.urls) URL.revokeObjectURL(url); }
+    mounted.delete(target);
+  }
+  function placeholder(alt, source) {
+    const span = document.createElement('span');
+    span.className = 'mdworks-image'; span.dataset.imageSource = source; span.dataset.imageAlt = alt;
+    span.textContent = '[Image: validating]'; return span;
+  }
+  async function mount(target, resultPromise) {
+    release(target);
+    const state = { urls: [], cancelled: false }; mounted.set(target, state);
+    try {
+      const result = await resultPromise;
+      if (state.cancelled) return;
+      for (const holder of target.querySelectorAll('.mdworks-image')) {
+        const record = result.records.get(holder.dataset.imageSource);
+        holder.textContent = '';
+        if (record?.data && ['verified', 'changed'].includes(record.state)) {
+          const image = document.createElement('img'); image.alt = holder.dataset.imageAlt;
+          image.style.maxWidth = '100%'; image.style.height = 'auto';
+          const url = URL.createObjectURL(new Blob([record.data.bytes], { type: record.data.mimeType }));
+          state.urls.push(url); image.src = url; holder.appendChild(image);
+        }
+        if (record?.state !== 'verified') {
+          const warning = document.createElement('span');
+          warning.textContent = record?.state === 'changed' ? 'Image changed since it was recorded' : '[Image: ' + (record?.state || 'unavailable') + ']';
+          holder.appendChild(warning);
+        }
+      }
+    } catch { if (!state.cancelled) for (const holder of target.querySelectorAll('.mdworks-image')) holder.textContent = '[Image: unavailable]'; }
+  }
+  return Object.freeze({ ASSET_PROVENANCE_VERSION, LIMITS, normalize, scan, decode, encode, sniff, embedded, readFile, hash, manifestHash, createRoot, collect, verify, placeholder, mount, release });
+}
+const ImageAssets = createImageAssetProvenance(canonicalize);
+const ASSET_PROVENANCE_VERSION = ImageAssets.ASSET_PROVENANCE_VERSION;
+/* END IMAGE ASSET PROVENANCE */
 
 function canonicalize(data) {
   if (data === null) return 'null';
@@ -2398,10 +2632,11 @@ class TypingBatchManager {
     }, 1000);
   }
 
-  beginExplicitOperation(operation = 'explicit-operation') {
+  beginExplicitOperation(operation = 'explicit-operation', metadata = {}) {
     if (this.pendingComposition?.phase === 'settling') this._settleComposition(false);
     this.pendingExplicitOperation = {
       operation: String(operation || 'explicit-operation'),
+      metadata,
       beforeValue: this.editor.value,
       started: this._now()
     };
@@ -2471,6 +2706,7 @@ class TypingBatchManager {
       this._recordDiscreteEvent('replace', diff, {
         owner: 'explicit-operation',
         operation: explicitOperation.operation,
+        ...explicitOperation.metadata,
         removedCharacters: diff.removedText.length,
         insertedCharacters: diff.insertedText.length,
         largeDeletion: diff.removedText.length >= this.LARGE_DELETE_THRESHOLD,
@@ -3200,7 +3436,7 @@ function analyzeInputProcess(payloadValue) {
 /* ==========================================================================
    4. Academic Container I/O
    ========================================================================== */
-function initializeStandaloneDocument() {
+async function initializeStandaloneDocument() {
   const content = document.getElementById('document-content');
   try {
     const source = document.getElementById('mdworks-academic-payload');
@@ -3208,6 +3444,14 @@ function initializeStandaloneDocument() {
     const payload = JSON.parse(source.textContent);
     if (typeof payload?.document?.markdown !== 'string') throw new Error('Document missing');
     const markdown = payload.document.markdown;
+    const assets = createImageAssetProvenance(canonicalize);
+    let assetResult;
+    if (payload.finalSignature) {
+      const check = await assets.verify(payload);
+      assetResult = check.ok && check.current ? check.current : { records: new Map() };
+    } else assetResult = await assets.collect(markdown, payload.assetManifest);
+    content.replaceChildren();
+    const appendImage = (parent, alt, source) => parent.appendChild(assets.placeholder(alt, source));
 
     const isEscaped = (text, index) => {
       let slashes = 0;
@@ -3255,6 +3499,11 @@ function initializeStandaloneDocument() {
             continue;
           }
         }
+        const imageMatch = line.slice(position).match(/^!\[([^\]\n]*)\]\(([^)\n]*)\)/);
+        if (imageMatch) {
+          appendImage(parent, imageMatch[1], imageMatch[2]);
+          position += imageMatch[0].length; continue;
+        }
         const scriptMatch = line.slice(position).match(/^<(sup|sub)>([^<>\r\n]*)<\/\1>/);
         if (scriptMatch) {
           const element = document.createElement(scriptMatch[1]);
@@ -3281,6 +3530,7 @@ function initializeStandaloneDocument() {
           next < line.length
           && line[next] !== '`'
           && line[next] !== '<'
+          && line[next] !== '!'
           && (line[next] !== '$' || isEscaped(line, next))
         ) next += 1;
         appendText(parent, line.slice(position, next));
@@ -3326,6 +3576,27 @@ function initializeStandaloneDocument() {
       appendInline(content, line);
       if (index < lines.length - 1) appendText(content, '\n');
       index += 1;
+    }
+    await assets.mount(content, Promise.resolve(assetResult));
+    if (!payload.finalSignature && assets.scan(markdown).some(ref => !/^data:/i.test(ref.source))) {
+      const root = assets.createRoot();
+      const controls = document.createElement('p');
+      const status = document.createElement('span');
+      const folder = document.createElement('input'); folder.type = 'file'; folder.multiple = true; folder.setAttribute('webkitdirectory', ''); folder.hidden = true;
+      const refresh = async () => {
+        try { await assets.mount(content, assets.collect(markdown, payload.assetManifest, path => root.resolve(path))); status.textContent = ' Asset Root connected'; }
+        catch (error) { status.textContent = ' ' + error.message; }
+      };
+      folder.addEventListener('change', () => { if (folder.files.length) { root.setFiles(folder.files); refresh(); } });
+      const connect = document.createElement('button'); connect.textContent = 'Connect Asset Root';
+      connect.addEventListener('click', async () => {
+        if (!window.showDirectoryPicker) { folder.value = ''; folder.click(); return; }
+        try { root.setDirectory(await window.showDirectoryPicker({ mode: 'read' })); await refresh(); }
+        catch (error) { status.textContent = ' ' + error.message; }
+      });
+      const fallback = document.createElement('button'); fallback.textContent = 'Select Folder (fallback)';
+      fallback.addEventListener('click', () => { folder.value = ''; folder.click(); });
+      controls.append(connect, fallback, folder, status); content.before(controls);
     }
   } catch {
     if (content) content.textContent = 'Unable to display document.\nOpen this file with MD//WORKS PROVENANCE Report Verifier for verification.';
@@ -3383,6 +3654,8 @@ ${jsonString}
 <\/script>
 <script>
 (() => {
+  const canonicalize = ${canonicalize.toString()};
+  const createImageAssetProvenance = ${createImageAssetProvenance.toString()};
   (${initializeStandaloneDocument.toString()})();
 })();
 <\/script>
@@ -3672,6 +3945,8 @@ class AcademicController {
     this._eventQueue = Promise.resolve();
     this._eventQueueFailure = null;
     this.payload = loadedPayload;
+    this.assetRoot?.clear();
+    this.assetRevision = (this.assetRevision || 0) + 1;
     this.lastEventHash = this.payload.events.length > 0 ? this.payload.events[this.payload.events.length - 1].hash : INITIAL_PREVIOUS_HASH;
 
     this.editor.value = this.payload.document.markdown || "";
@@ -3690,6 +3965,31 @@ class AcademicController {
    * 通常SaveはWorking snapshotを生成する。
    * Finalization metadata/signatureは引き継がない。
    */
+  async collectImageAssets(markdown, packageAssets = false) {
+    this.assetRoot ||= ImageAssets.createRoot();
+    const previous = this.payload.assetManifest;
+    // A signed document always resolves from its internal package, never from local files.
+    if (this.payload.finalSignature) {
+      const verified = await ImageAssets.verify(this.payload);
+      if (!verified.ok) {
+        // Damaged finalized packages must never fall back to the user's local files.
+        // They can still be saved as an unsigned Working Report for repair.
+        const unresolved = await ImageAssets.collect(markdown, previous);
+        for (const record of unresolved.records.values()) {
+          record.state = 'invalid packaged asset'; record.data = null;
+          unresolved.states.set(record.entry.assetId, record.state);
+        }
+        unresolved.ok = false;
+        return unresolved;
+      }
+      return ImageAssets.collect(markdown, previous, async path => {
+        if (!verified.packaged?.has(path)) throw Object.assign(new Error('unavailable'), { state: 'unavailable' });
+        return verified.packaged.get(path);
+      }, packageAssets);
+    }
+    return ImageAssets.collect(markdown, previous, path => this.assetRoot.resolve(path), packageAssets);
+  }
+
   async saveReportFile(isSubmit = false) {
     if (this.typingManager.hasPendingComposition()) {
       throw new Error('Finish the current IME composition before saving this Report. Emergency Recovery remains available.');
@@ -3705,6 +4005,11 @@ class AcademicController {
     const cutoffState = await cutoff;
     if (isSubmit && this._eventQueueFailure) throw this._eventQueueFailure;
     const events = this.payload.events.slice(0, cutoffState.eventCount);
+    const assetRevision = this.assetRevision || 0;
+    const assetSnapshot = await this.collectImageAssets(markdownText, isSubmit);
+    if (assetRevision !== (this.assetRevision || 0)) throw new Error('Image state changed during save. Please retry.');
+    if (isSubmit && !assetSnapshot.ok) throw new Error('Finalize blocked — Image assets: ' + [...new Set(assetSnapshot.states.values())].filter(s => s !== 'verified').join(', ') + '. Save a Working Report or resolve these images using Image…');
+    const assetManifestHash = await ImageAssets.manifestHash(assetSnapshot.assetManifest);
     const docHashHex = await sha256Hex(markdownText);
     const documentSnapshot = {
       filename,
@@ -3729,6 +4034,8 @@ class AcademicController {
       eventLogHash: `sha256:${eventLogHashHex}`,
       finalChainHash: cutoffState.finalChainHash,
       formatVersion: 1,
+      assetProvenanceVersion: ASSET_PROVENANCE_VERSION,
+      assetManifestHash,
       pasteProvenanceVersion: PASTE_PROVENANCE_VERSION,
       inputProcessVersion: INPUT_PROCESS_VERSION,
       createdAt: this.payload.manifest?.createdAt || new Date().toISOString(),
@@ -3743,6 +4050,8 @@ class AcademicController {
     };
     const snapshotPayload = {
       ...this.payload,
+      assetManifest: assetSnapshot.assetManifest,
+      embeddedAssets: isSubmit ? assetSnapshot.embeddedAssets : [],
       document: documentSnapshot,
       summary,
       sessions,
@@ -3752,6 +4061,8 @@ class AcademicController {
       finalSignature: null,
       publicKeyId: null
     };
+    this.payload.assetManifest = assetSnapshot.assetManifest;
+    this.payload.embeddedAssets = [];
     this.payload.document = documentSnapshot;
     this.payload.summary = summary;
     this.payload.sessions = sessions;
@@ -3808,6 +4119,8 @@ class AcademicController {
     // 4. 署名をPayloadにセット（manifestは既にverifiedのまま）
     finalizedPayload.finalSignature = signatureResult.finalSignature;
     finalizedPayload.publicKeyId = signatureResult.publicKeyId;
+    this.payload.embeddedAssets = finalizedPayload.embeddedAssets;
+    this.payload.assetManifest = finalizedPayload.assetManifest;
     this.payload.manifest = finalizedPayload.manifest;
     this.payload.finalSignature = finalizedPayload.finalSignature;
     this.payload.publicKeyId = finalizedPayload.publicKeyId;
@@ -4514,7 +4827,7 @@ async function runFinalizationWithDestination(destinationHandle, native) {
   } catch (error) {
     setSubmitWorkflowBusy(false);
     console.error('Report finalization failed:', error);
-    renderSubmitModal('signature-error', t('submit.finalizeFailed'));
+    renderSubmitModal('signature-error', t('submit.finalizeFailed') + ' ' + (error?.message || ''));
     document.getElementById('submit-retry-finalize').focus();
     return { ok: false, error, finalizationFailed: true };
   } finally {
@@ -4676,7 +4989,7 @@ function recordedInsertedCharacters(event) {
 
 function isFormattingOperation(event) {
   return event?.meta?.owner === 'explicit-operation' &&
-    typeof event.meta.operation === 'string' && event.meta.operation.startsWith('format:');
+    typeof event.meta.operation === 'string' && (event.meta.operation.startsWith('format:') || event.meta.operation.startsWith('asset:'));
 }
 
 function getWritingRecordActivity(targetController) {
@@ -5148,10 +5461,10 @@ function buildWritingRecordViewModel(targetController) {
       toast(t('toast.theme', { theme: `${next[0].toUpperCase()}${next.slice(1)}` }));
     }
 
-    function setEditorText(start, end, replacement, selectionStart, selectionEnd, operation = 'editor-command') {
+    function setEditorText(start, end, replacement, selectionStart, selectionEnd, operation = 'editor-command', metadata = {}) {
       const before = editor.value;
       const claimAsExplicitOperation = !controller.typingManager.pendingPasteOperation;
-      if (claimAsExplicitOperation) controller.typingManager.beginExplicitOperation(operation);
+      if (claimAsExplicitOperation) controller.typingManager.beginExplicitOperation(operation, metadata);
       editor.focus();
       editor.setSelectionRange(start, end);
       let changedByCommand = false;
@@ -5175,6 +5488,129 @@ function buildWritingRecordViewModel(targetController) {
       scheduleUiRender();
       return true;
     }
+
+    let imageBusy = false;
+    const imageDialog = document.createElement('dialog');
+    imageDialog.className = 'modal-card image-dialog';
+    imageDialog.setAttribute('aria-label', 'Image assets');
+    imageDialog.style.maxWidth = '640px';
+    document.body.appendChild(imageDialog);
+    const imageMessage = document.createElement('p');
+    imageMessage.setAttribute('role', 'status');
+    const altInput = document.createElement('input'); altInput.placeholder = 'Alt text'; altInput.setAttribute('aria-label', 'Alt text');
+    const pathInput = document.createElement('input'); pathInput.placeholder = './images/figure.png'; pathInput.setAttribute('aria-label', 'Relative image source');
+    const assetList = document.createElement('div');
+    assetList.className = 'image-asset-list';
+    const imageButton = (label, action) => {
+      const button = document.createElement('button'); button.className = 'submit-button'; button.textContent = label;
+      button.addEventListener('click', async () => {
+        if (imageBusy) return;
+        imageBusy = true;
+        try { await action(); } catch (error) { imageMessage.textContent = error.message; }
+        finally { imageBusy = false; }
+      }); return button;
+    };
+    const folderInput = document.createElement('input'); folderInput.type = 'file'; folderInput.multiple = true; folderInput.setAttribute('webkitdirectory', ''); folderInput.hidden = true;
+    folderInput.addEventListener('change', () => {
+      if (!folderInput.files.length) return;
+      controller.assetRoot ||= ImageAssets.createRoot(); controller.assetRoot.setFiles(folderInput.files);
+      imageMessage.textContent = 'Asset Root connected (folder snapshot). Reconnect to refresh changed files.';
+      refreshImageList(); renderPreview();
+    });
+    const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/png,image/jpeg,image/webp'; fileInput.hidden = true;
+    fileInput.addEventListener('change', async () => {
+      if (!fileInput.files.length || imageBusy) return;
+      imageBusy = true;
+      try { await insertImage('embedded-base64', fileInput.files[0]); }
+      catch (error) { imageMessage.textContent = error.message; }
+      finally { imageBusy = false; }
+    });
+    function imageOperationAllowed() {
+      if (controller.typingManager.hasPendingComposition() || window.AcademicSubmitWorkflow?.isBusy?.() || window.AcademicFileWorkflow?.getState?.().busy || auxiliaryUiIsBlocking()) throw new Error('Finish the current operation before changing images.');
+    }
+    async function insertImage(sourceKind, fileOrSource, alt = altInput.value) {
+      imageOperationAllowed();
+      const before = editor.value, payload = controller.payload;
+      const start = editor.selectionStart, end = editor.selectionEnd;
+      let source, data, filename;
+      if (sourceKind === 'embedded-base64') {
+        if (fileOrSource.size > ImageAssets.LIMITS.embeddedImage) throw new Error('Image exceeds 300 KiB. Document unchanged.');
+        data = await ImageAssets.readFile(fileOrSource); filename = fileOrSource.name;
+        source = 'data:' + data.mimeType + ';base64,' + ImageAssets.encode(data.bytes);
+      } else {
+        source = String(fileOrSource); const path = ImageAssets.normalize(source);
+        if (!path) throw new Error('Use a relative path inside Asset Root with / separators.');
+        controller.assetRoot ||= ImageAssets.createRoot();
+        data = await ImageAssets.readFile(await controller.assetRoot.resolve(path)); filename = path.split('/').at(-1);
+      }
+      const safeAlt = String(alt || filename.replace(/\.[^.]*$/, '') || 'Image').replace(/[\[\]\\\r\n]/g, ' ');
+      const syntax = '![' + safeAlt + '](' + source + ')';
+      const next = before.slice(0, start) + syntax + before.slice(end);
+      const snapshot = await controller.collectImageAssets(next);
+      if (sourceKind === 'embedded-base64' && (snapshot.embeddedTotal > ImageAssets.LIMITS.embeddedTotal || [...snapshot.records.values()].some(r => r.entry.sourceKind === 'embedded-base64' && r.state === 'over-limit'))) throw new Error('Embedded images exceed the 300 KiB / 2 MiB limits. Document unchanged.');
+      const record = snapshot.records.get(source);
+      if (!record || record.state !== 'verified') throw new Error('Image is ' + (record?.state || 'unsupported') + '. Reconnect Asset Root or accept its update first.');
+      imageOperationAllowed();
+      if (before !== editor.value || payload !== controller.payload) throw new Error('Document changed while reading image. Please retry.');
+      const a = record.entry;
+      if (setEditorText(start, end, syntax, undefined, undefined, 'asset:image-insert', {
+        assetId: a.assetId, sourceKind: a.sourceKind, sourceRef: sourceKind === 'relative-file' ? source : null, mimeType: a.mimeType, byteLength: a.byteLength, sha256: a.sha256
+      })) {
+        controller.payload.assetManifest = snapshot.assetManifest; controller.assetRevision = (controller.assetRevision || 0) + 1;
+        imageDialog.close(); renderPreview();
+      }
+      return a;
+    }
+    async function acceptUpdatedImage(source) {
+      imageOperationAllowed();
+      const before = editor.value, payload = controller.payload;
+      const snapshot = await controller.collectImageAssets(before);
+      const record = snapshot.records.get(source);
+      if (!record || record.state !== 'changed') throw new Error('No changed image at this source.');
+      if (before !== editor.value || payload !== controller.payload) throw new Error('Document changed. Please retry.');
+      const a = record.entry, d = record.data;
+      controller.typingManager.flush('explicit-operation');
+      await controller._handleNewEvent({
+        id: 'evt-' + crypto.randomUUID(), sessionId: controller.sessionManager.sessionId,
+        type: 'replace', timestampClient: new Date().toISOString(), charDelta: 0, beforeSnippet: '', afterSnippet: '',
+        meta: { owner: 'explicit-operation', operation: 'asset:image-update', assetId: a.assetId, sourceRef: a.sourceRef,
+          previousHash: a.sha256, newHash: d.sha256, previousByteLength: a.byteLength, newByteLength: d.byteLength, mimeType: d.mimeType,
+          insertedCharacters: 0, removedCharacters: 0 }
+      });
+      Object.assign(a, { sha256: d.sha256, byteLength: d.byteLength, mimeType: d.mimeType });
+      controller.payload.assetManifest = snapshot.assetManifest; controller.assetRevision = (controller.assetRevision || 0) + 1;
+      window.AcademicFileWorkflow?.markDirty(); renderPreview(); await refreshImageList();
+    }
+    async function refreshImageList() {
+      const snapshot = await controller.collectImageAssets(editor.value);
+      assetList.replaceChildren();
+      for (const { entry, state } of new Set(snapshot.records.values())) {
+        const row = document.createElement('p'); row.textContent = (entry.sourceRef || 'Embedded image') + ': ' + state;
+        if (state === 'changed') row.appendChild(imageButton('Accept Updated Image', () => acceptUpdatedImage(entry.sourceRef)));
+        assetList.appendChild(row);
+      }
+    }
+    const imageTitle = document.createElement('h2'); imageTitle.textContent = 'Image…';
+    const imageNote = document.createElement('p'); imageNote.textContent = 'PNG, JPEG, WebP. Embed: 300 KiB per image / 2 MiB total. Relative images: select Asset Root, then enter a path within that folder.';
+    const altLabel = document.createElement('label'); altLabel.append('Alt text', altInput);
+    const pathLabel = document.createElement('label'); pathLabel.append('Relative image source', pathInput);
+    const actions = (...buttons) => { const row = document.createElement('div'); row.className = 'image-actions'; row.append(...buttons); return row; };
+    imageDialog.append(imageTitle, imageNote, altLabel, actions(imageButton('Embed Image', () => { fileInput.value = ''; fileInput.click(); })),
+      document.createElement('hr'), actions(imageButton('Connect Asset Root', async () => {
+        if (!window.showDirectoryPicker) { folderInput.value = ''; folderInput.click(); return; }
+        const handle = await window.showDirectoryPicker({ mode: 'read' });
+        controller.assetRoot ||= ImageAssets.createRoot(); controller.assetRoot.setDirectory(handle);
+        imageMessage.textContent = 'Asset Root connected: ' + handle.name; await refreshImageList(); renderPreview();
+      }), imageButton('Select Folder (fallback)', () => { folderInput.value = ''; folderInput.click(); })),
+      pathLabel, actions(imageButton('Relative Image', () => insertImage('relative-file', pathInput.value)),
+      imageButton('Refresh images', async () => { await refreshImageList(); renderPreview(); })),
+      imageMessage, assetList, actions(imageButton('Close', () => imageDialog.close())), folderInput, fileInput);
+    byId('image-menu-button').addEventListener('click', () => {
+      try { imageOperationAllowed(); closeMenus(); imageDialog.showModal(); refreshImageList().catch(error => { imageMessage.textContent = error.message; }); }
+      catch (error) { toast(error.message); }
+    });
+    window.AcademicImageUI = Object.freeze({ insertImage, acceptUpdatedImage, refreshImageList });
+
 
     function triggerWordImport() {
       if (window.AcademicSubmitWorkflow?.isBusy?.() || window.AcademicFileWorkflow?.getState?.().busy || isAuxiliaryWorkflowBlocking()) {
@@ -5663,7 +6099,7 @@ function buildWritingRecordViewModel(targetController) {
     }
 
     function appendInlineLine(parent, text) {
-      const ordinary = /(<(sup|sub)>[^<>\n]*<\/\2>|\*\*[^*\n]+\*\*|~~[^~\n]+~~|\*[^*\n]+\*|\[[^\]\n]+\]\([^)\n]+\))/g;
+      const ordinary = /(!\[[^\]\n]*\]\([^)\n]*\)|<(sup|sub)>[^<>\n]*<\/\2>|\*\*[^*\n]+\*\*|~~[^~\n]+~~|\*[^*\n]+\*|\[[^\]\n]+\]\([^)\n]+\))/g;
       let position = 0;
       while (position < text.length) {
         const protectedToken = nextCodeOrMathToken(text, position);
@@ -5690,7 +6126,11 @@ function buildWritingRecordViewModel(targetController) {
         }
         const value = ordinaryToken[0];
         let element;
-        if (value.startsWith('<')) {
+        if (value.startsWith('![')) {
+          const image = /^!\[([^\]]*)\]\(([^)]*)\)$/.exec(value);
+          element = ImageAssets.placeholder(image[1], image[2]);
+        }
+        else if (value.startsWith('<')) {
           const tag = ordinaryToken[2];
           element = document.createElement(tag);
           appendInlineLine(element, value.slice(tag.length + 2, -tag.length - 3));
@@ -5718,6 +6158,7 @@ function buildWritingRecordViewModel(targetController) {
     }
 
     function renderAcademicMarkdown(target, markdownText) {
+      ImageAssets.release(target);
       target.replaceChildren();
       const lines = String(markdownText).split('\n');
       let index = 0;
@@ -5827,6 +6268,7 @@ function buildWritingRecordViewModel(targetController) {
         paragraph.push(line); index += 1;
       }
       flushParagraph();
+      target.imageReady = ImageAssets.mount(target, controller.collectImageAssets(String(markdownText)));
     }
 
     function renderPreview() {
@@ -5895,16 +6337,20 @@ function buildWritingRecordViewModel(targetController) {
       ui.printPreviewFocus = null;
       ui.printPreviewOpen = false;
       byId('print-preview-modal').classList.remove('open');
+      ImageAssets.release(byId('print-preview-document'));
       byId('print-preview-document').replaceChildren();
       refreshAuxiliaryWorkflowControls();
       if (returnFocus && document.contains(returnFocus)) returnFocus.focus({ preventScroll: true });
       return true;
     }
 
-    function printCurrentPreview() {
+    async function printCurrentPreview() {
       if (!ui.printPreviewOpen || ui.printInProgress) return false;
       ui.printInProgress = true;
       try {
+        const target = byId('print-preview-document');
+        await target.imageReady;
+        await Promise.all([...target.querySelectorAll('img')].map(img => img.decode().catch(() => {})));
         window.print();
       } finally {
         setTimeout(() => { ui.printInProgress = false; }, 0);
@@ -6412,6 +6858,12 @@ function buildWritingRecordViewModel(targetController) {
     }));
 
     editor.addEventListener('input', () => { window.AcademicFileWorkflow?.markDirty(); scheduleUiRender(); updateWritingRecordUi(); scheduleEmergencyRecoverySnapshot(); });
+    editor.addEventListener('paste', event => {
+      const data = event.clipboardData;
+      if (!data?.getData('text/plain') && Array.from(data?.items || []).some(item => item.kind === 'file' && /^image\//i.test(item.type))) {
+        event.preventDefault(); toast(t('toast.imageUnavailable'));
+      }
+    });
     editor.addEventListener('dragover', event => {
       const items = Array.from(event.dataTransfer?.items || []);
       if (items.some(item => item.kind === 'file' && /^image\//i.test(item.type || ''))) event.preventDefault();
