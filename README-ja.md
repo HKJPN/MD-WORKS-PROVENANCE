@@ -8,7 +8,7 @@
 ![No Tracking](https://img.shields.io/badge/tracking-none-green)
 ![Offline First](https://img.shields.io/badge/offline--first-lightgrey)
 
-> **通常版MD//WORKSはMITですが、MD//WORKS PROVENANCEのコードはAGPL-3.0-onlyです。**  
+> [**通常版MD//WORKS](https://github.com/HKJPN/markdown-editor/tree/main)はMITですが、MD//WORKS PROVENANCEのコードはAGPL-3.0-onlyです。**  
 
 生成AI、コピペ、Wordでの編集が当たり前になった今、最終文章だけを見て「誰が、どう書いたか」を推測することは難しくなっています。 MD//WORKS PROVENANCEは、AIらしさを判定するのではなく、 **文章がどのように編集されたかという執筆過程そのものを記録し、その記録が後から変更されていないかを検証できるようにするツールです。** 
 
