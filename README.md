@@ -1039,9 +1039,9 @@ This applies especially to components such as:
 
 The `LICENSE` file, not this README, controls the exact legal obligations.
 
-### Standard MD//WORKS
+### [Standard MD//WORKS](https://github.com/HKJPN/markdown-editor/tree/main)
 
-The standard MD//WORKS project is separate and remains subject to its own MIT license.
+The [standard MD//WORKS project](https://github.com/HKJPN/markdown-editor/tree/main) is separate and remains subject to its own MIT license.
 
 Publishing the Academic edition under AGPL does not revoke or alter rights already granted under MIT for the standard edition.
 
