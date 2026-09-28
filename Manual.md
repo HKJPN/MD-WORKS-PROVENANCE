@@ -298,15 +298,8 @@ The status bar may display a percentage labeled as Unverified or Non-internal pa
 
 It is based on recorded input activity, conceptually:
 
-```text
-unverifiedPasteChars
-/
-(
-  typedChars
-  + replaceInsertedChars
-  + unverifiedPasteChars
-)
-```
+$$\frac{\text{unverifiedPasteChars}}{\text{typedChars} + \text{unverifiedPasteChars} + \text{replaceInsertedChars}}$$
+
 
 Verified Internal Paste is excluded from both numerator and denominator.
 
