@@ -72,15 +72,7 @@ Active 24m | Unverified 22% | [Input activity bar] | Anchors: 14
 
   概念的には：
 
-```text
-unverifiedPasteChars
-/
-(
-  typedChars
-  + unverifiedPasteChars
-  + replaceInsertedChars
-)
-```
+$$\frac{\text{unverifiedPasteChars}}{\text{typedChars} + \text{unverifiedPasteChars} + \text{replaceInsertedChars}}$$
 
 で計算されます。
 
