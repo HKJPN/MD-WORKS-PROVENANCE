@@ -1039,7 +1039,7 @@ This applies especially to components such as:
 
 The `LICENSE` file, not this README, controls the exact legal obligations.
 
-### [Standard MD//WORKS](https://github.com/HKJPN/markdown-editor/tree/main)
+### Standard MD//WORKS
 
 The [standard MD//WORKS project](https://github.com/HKJPN/markdown-editor/tree/main) is separate and remains subject to its own MIT license.
 
