@@ -1910,10 +1910,18 @@ function resetDetailedLogState(events) {
   buildDetailedLogFilterOptions();
 }
 
+function truncateDisplaySnippet(value) {
+  const snippet = String(value || '');
+  let cut = Math.min(500, snippet.length);
+  if (cut < snippet.length && snippet.charCodeAt(cut - 1) >= 0xD800 && snippet.charCodeAt(cut - 1) <= 0xDBFF &&
+      snippet.charCodeAt(cut) >= 0xDC00 && snippet.charCodeAt(cut) <= 0xDFFF) cut -= 1;
+  return snippet.slice(0, cut);
+}
+
 function createDetailedLogEntry(eventValue) {
   const ev = eventValue && typeof eventValue === 'object' ? eventValue : {};
-  const beforeSnippet=String(ev.beforeSnippet || '').slice(0,500);
-  const afterSnippet=String(ev.afterSnippet || '').slice(0,500);
+  const beforeSnippet=truncateDisplaySnippet(ev.beforeSnippet);
+  const afterSnippet=truncateDisplaySnippet(ev.afterSnippet);
   const snippet=afterSnippet || beforeSnippet;
   const eventMeta = ev.meta && typeof ev.meta === 'object' ? ev.meta : {};
   const isSensitive = ev.type==='delete' || ev.type==='paste' || ev.type==='replace' || ev.type==='replace-all' ||

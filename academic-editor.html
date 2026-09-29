@@ -3134,17 +3134,29 @@ class TypingBatchManager {
   }
 
   _computeDiff(before, after) {
+    const isHigh = code => code >= 0xD800 && code <= 0xDBFF;
+    const isLow = code => code >= 0xDC00 && code <= 0xDFFF;
     let start = 0;
     const minLength = Math.min(before.length, after.length);
     while (start < minLength && before.charCodeAt(start) === after.charCodeAt(start)) start += 1;
+    if (start > 0 && isHigh(before.charCodeAt(start - 1)) &&
+        (isLow(before.charCodeAt(start)) || isLow(after.charCodeAt(start)))) start -= 1;
     let beforeEnd = before.length;
     let afterEnd = after.length;
     while (beforeEnd > start && afterEnd > start && before.charCodeAt(beforeEnd - 1) === after.charCodeAt(afterEnd - 1)) { beforeEnd -= 1; afterEnd -= 1; }
+    if (beforeEnd < before.length && isLow(before.charCodeAt(beforeEnd)) &&
+        (isHigh(before.charCodeAt(beforeEnd - 1)) || isHigh(after.charCodeAt(afterEnd - 1)))) {
+      beforeEnd += 1;
+      afterEnd += 1;
+    }
     return { removedText: before.slice(start, beforeEnd), insertedText: after.slice(start, afterEnd), charDelta: after.length - before.length };
   }
 
   _computeBeforeInputDiff(candidate, after) {
     const before = candidate.beforeValue;
+    const splitsPair = (value, index) => index > 0 && index < value.length &&
+      value.charCodeAt(index - 1) >= 0xD800 && value.charCodeAt(index - 1) <= 0xDBFF &&
+      value.charCodeAt(index) >= 0xDC00 && value.charCodeAt(index) <= 0xDFFF;
     const selectionStart = Math.max(0, Math.min(before.length, candidate.selectionStart));
     const selectionEnd = Math.max(selectionStart, Math.min(before.length, candidate.selectionEnd));
     const inputType = candidate.inputType || '';
@@ -3154,6 +3166,10 @@ class TypingBatchManager {
     if (inputType === 'insertText' || inputType === 'insertLineBreak' || inputType === 'insertParagraph') {
       const insertedLength = charDelta + selectionLength;
       if (insertedLength >= 0) {
+        if (splitsPair(before, selectionStart) || splitsPair(before, selectionEnd) ||
+            splitsPair(after, selectionStart) || splitsPair(after, selectionStart + insertedLength)) {
+          return this._computeDiff(before, after);
+        }
         const removedText = before.slice(selectionStart, selectionEnd);
         const insertedText = after.slice(selectionStart, selectionStart + insertedLength);
         if (!(charDelta === 0 && removedText === insertedText)) return { removedText, insertedText, charDelta };
@@ -3167,6 +3183,9 @@ class TypingBatchManager {
         const removeStart = selectionLength > 0 ? selectionStart
           : inputType.includes('Backward') ? Math.max(0, selectionStart - removedLength)
             : selectionStart;
+        if (splitsPair(before, removeStart) || splitsPair(before, removeStart + removedLength)) {
+          return this._computeDiff(before, after);
+        }
         const removedText = before.slice(removeStart, removeStart + removedLength);
         if (removedText !== '') return { removedText, insertedText: '', charDelta };
         return { removedText: '', insertedText: '', charDelta: 0 };
@@ -3181,7 +3200,11 @@ class TypingBatchManager {
 
   _sanitizeSnippet(text) {
     const str = String(text || '');
-    return str.length <= 500 ? str : str.slice(0, 500) + `… [${str.length - 500} chars omitted]`;
+    if (str.length <= 500) return str;
+    let cut = 500;
+    if (str.charCodeAt(cut - 1) >= 0xD800 && str.charCodeAt(cut - 1) <= 0xDBFF &&
+        str.charCodeAt(cut) >= 0xDC00 && str.charCodeAt(cut) <= 0xDFFF) cut -= 1;
+    return str.slice(0, cut) + `… [${str.length - cut} chars omitted]`;
   }
 }
 
