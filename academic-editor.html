@@ -5740,7 +5740,28 @@ function buildWritingRecordViewModel(targetController) {
     function wrapSelection(mark, placeholder, operation) {
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
-      const selected = editor.value.slice(start, end);
+      const value = editor.value;
+      const selected = value.slice(start, end);
+      if (/[\r\n]/.test(selected) && ['**', '*', '~~'].includes(mark)) {
+        if (controller.typingManager.pendingComposition?.phase === 'active') return;
+        const replacement = multilineInlineReplacement(value, start, end, mark);
+        if (replacement === selected) return;
+        const direction = editor.selectionDirection;
+        const scrollTop = editor.scrollTop;
+        const scrollLeft = editor.scrollLeft;
+        try {
+          if (setEditorText(start, end, replacement, start, start + replacement.length, operation)) {
+            editor.setSelectionRange(start, start + replacement.length, direction);
+          }
+        } finally {
+          // Reuse cancellation even if the native replacement or fallback throws.
+          controller.typingManager.cancelExplicitOperation();
+          if (editor.value === value) editor.setSelectionRange(start, end, direction);
+          editor.scrollTop = scrollTop;
+          editor.scrollLeft = scrollLeft;
+        }
+        return;
+      }
       if (selected && selected.startsWith(mark) && selected.endsWith(mark) && selected.length >= mark.length * 2) {
         const inner = selected.slice(mark.length, -mark.length);
         setEditorText(start, end, inner, start, start + inner.length, operation);
@@ -5755,6 +5776,211 @@ function buildWritingRecordViewModel(targetController) {
       let slashes = 0;
       for (let position = index - 1; position >= 0 && text[position] === '\\'; position -= 1) slashes += 1;
       return slashes % 2 === 1;
+    }
+
+    // These helpers deliberately recognize a small, safe subset, not a Markdown
+    // parser. Work on original UTF-16 offsets; only the final selection is replaced.
+    function inlineStructurePrefix(line) {
+      let position = /^[^\S\r\n]*/.exec(line)[0].length;
+      while (position < line.length) {
+        const tail = line.slice(position);
+        const quote = /^>[^\S\r\n]?/.exec(tail);
+        const list = /^(?:[-+*]|\d{1,9}[.)])(?:[^\S\r\n]+|$)/.exec(tail);
+        if (quote) position += quote[0].length;
+        else if (list) {
+          position += list[0].length;
+          const task = /^\[[ xX]\](?:[^\S\r\n]+|$)/.exec(line.slice(position));
+          if (task) position += task[0].length;
+        } else break;
+        position += /^[^\S\r\n]*/.exec(line.slice(position))[0].length;
+      }
+      return position;
+    }
+
+    function inlineMarkerRuns(text) {
+      const runs = [];
+      const pattern = /\*+|~+/g;
+      let match;
+      while ((match = pattern.exec(text))) {
+        const escaped = isEscapedCharacter(text, match.index);
+        const marker = escaped ? match[0].slice(1) : match[0];
+        const at = match.index + (escaped ? 1 : 0);
+        if (marker) runs.push({ mark: marker, at,
+          canOpen: at + marker.length < text.length && !/\s/.test(text[at + marker.length]),
+          canClose: at > 0 && !/\s/.test(text[at - 1]) });
+      }
+      return runs;
+    }
+
+    function inlineProtectedRanges(text) {
+      // Match appendInlineLine's token order; reuse Preview's code/math scanner.
+      // Unlike symbol counts, these are actual complete inline token ranges.
+      const ordinary = /(!\[[^\]\n]*\]\([^)\n]*\)|<(sup|sub)>[^<>\n]*<\/\2>|\*\*[^*\n]+\*\*|~~[^~\n]+~~|\*[^*\n]+\*|\[[^\]\n]+\]\([^)\n]+\))/g;
+      const ranges = [];
+      let position = 0;
+      while (position < text.length) {
+        const protectedToken = nextCodeOrMathToken(text, position);
+        ordinary.lastIndex = position;
+        const ordinaryToken = ordinary.exec(text);
+        if (protectedToken && (!ordinaryToken || protectedToken.start <= ordinaryToken.index)) {
+          ranges.push(protectedToken);
+          position = protectedToken.end;
+        } else if (ordinaryToken) {
+          ranges.push({ start: ordinaryToken.index, end: ordinary.lastIndex,
+            type: /^(?:\*|~~)/.test(ordinaryToken[0]) ? 'format' : 'protected' });
+          position = ordinary.lastIndex;
+        } else break;
+      }
+      return ranges;
+    }
+
+    function inlineBodyDecoration(body) {
+      // Preserve complete Preview tokens within the selected body. Currency and
+      // underscores without a recognized token remain ordinary product text.
+      const plain = text => text.length > 0 && !/^[\s]|[\s]$/.test(text) &&
+        !inlineMarkerRuns(text).length && !inlineProtectedRanges(text).length &&
+        !/\\\$/.test(text) && // Preview unescapes this only outside formatted tokens.
+        !(text.endsWith('\\') && !isEscapedCharacter(text, text.length - 1));
+      if (plain(body)) return { marks: '', inner: body };
+      const pair = /^(\*{1,3}|~~)([\s\S]+)\1$/.exec(body);
+      if (!pair || isEscapedCharacter(body, body.length - pair[1].length) || !plain(pair[2])) return null;
+      return { marks: pair[1], inner: pair[2] };
+    }
+
+    function multilineInlineReplacement(value, start, end, mark) {
+      const selected = value.slice(start, end);
+      // Do not introduce markers between surrogate halves at a selection boundary.
+      const splitsPair = at => at > 0 && at < value.length &&
+        /[\uD800-\uDBFF]/.test(value[at - 1]) && /[\uDC00-\uDFFF]/.test(value[at]);
+      if (splitsPair(start) || splitsPair(end)) return selected;
+      const lines = [];
+      const pattern = /([^\r\n]*)(\r\n|\r|\n|$)/g;
+      let match;
+      while ((match = pattern.exec(value))) {
+        const text = match[1];
+        const prefix = inlineStructurePrefix(text);
+        lines.push({ text, start: match.index, separator: match[2], prefix, protected: false });
+        if (!match[2]) break;
+      }
+      let fence = null;
+      for (let index = 0; index < lines.length; index += 1) {
+        const line = lines[index];
+        const text = line.text;
+        const fenceMatch = /^\s*(`{3,}|~{3,})/.exec(text);
+        if (fence) {
+          line.protected = true;
+          if (fenceMatch && fenceMatch[1][0] === fence) fence = null;
+          continue;
+        }
+        if (fenceMatch) { line.protected = true; fence = fenceMatch[1][0]; continue; }
+        if (/^\s*\$\$(.+?)\$\$\s*$/.test(text)) { line.protected = true; continue; }
+        if (/^\s*\$\$\s*$/.test(text)) {
+          let close = index + 1;
+          while (close < lines.length && !/^\s*\$\$\s*$/.test(lines[close].text)) close += 1;
+          if (close < lines.length) {
+            for (let at = index; at <= close; at += 1) lines[at].protected = true;
+            index = close;
+            continue;
+          }
+        }
+        // Keep only block structures recognized by renderAcademicMarkdown.
+        line.protected = /^\s*<!--(?:[\s\S]*?)-->\s*$/.test(text) ||
+          /^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$/.test(text) ||
+          /^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$/.test(text);
+        if (!line.protected && !/^\s*>\s?/.test(text) && text.includes('|') && index + 1 < lines.length &&
+            /^\s*\|?\s*:?-{3,}/.test(lines[index + 1].text)) {
+          line.protected = lines[index + 1].protected = true;
+          index += 2;
+          while (index < lines.length && lines[index].text.includes('|') && lines[index].text.trim()) {
+            lines[index++].protected = true;
+          }
+          index -= 1;
+        }
+      }
+      // Retain legacy wrappers only between potential opening/closing markers.
+      // Complete local tokens cannot establish a cross-line pair. Neither $ nor
+      // _ is a cross-line decoration in the product; no parity/count inference.
+      const openings = new Map();
+      const legacyRanges = [];
+      for (let index = 0; index < lines.length; index += 1) {
+        const line = lines[index];
+        if (line.protected) continue;
+        const content = line.text.slice(line.prefix);
+        if (inlineBodyDecoration(content.trim())?.marks) continue;
+        const localRanges = inlineProtectedRanges(content);
+        for (const run of inlineMarkerRuns(content)) {
+          if (localRanges.some(range => range.start <= run.at && range.end > run.at)) continue;
+          const markers = run.mark === '***' ? ['**', '*'] : ['*', '**', '~~'].includes(run.mark) ? [run.mark] : [];
+          for (const marker of markers) {
+            const opening = openings.get(marker);
+            if (run.canClose && opening) {
+              if (opening.line < index) legacyRanges.push({ first: opening.line, last: index });
+              openings.delete(marker);
+            } else if (run.canOpen) openings.set(marker, { line: index });
+          }
+        }
+      }
+      for (const range of legacyRanges) {
+        for (let at = range.first; at <= range.last; at += 1) lines[at].protected = true;
+      }
+      const bodies = [];
+      for (const line of lines) {
+        const from = Math.max(start, line.start);
+        const to = Math.min(end, line.start + line.text.length);
+        if (from >= to || line.protected) continue;
+        const localFrom = from - line.start;
+        const localTo = to - line.start;
+        const padding = /^[^\S\r\n]*/.exec(line.text)[0].length;
+        if (localFrom > padding && localFrom < line.prefix) continue;
+        const bodyStart = Math.max(localFrom, line.prefix);
+        if (localTo <= bodyStart) continue;
+        let fullEnd = line.text.length - /[^\S\r\n]*$/.exec(line.text)[0].length;
+        // Only an unescaped terminal slash followed immediately by a newline
+        // acts as a hard break. Code/math lines were excluded above/below.
+        if (line.separator && fullEnd === line.text.length && line.text[fullEnd - 1] === '\\' &&
+            !isEscapedCharacter(line.text, fullEnd - 1)) fullEnd -= 1;
+        let left = bodyStart;
+        let right = Math.min(localTo, fullEnd);
+        while (left < right && /[^\S\r\n]/.test(line.text[left])) left += 1;
+        while (right > left && /[^\S\r\n]/.test(line.text[right - 1])) right -= 1;
+        if (left >= right) continue;
+        if (isEscapedCharacter(line.text, left)) continue;
+        const body = line.text.slice(left, right);
+        const decoration = inlineBodyDecoration(body);
+        if (!decoration) continue;
+        // Context is read only to protect overlapping tokens or an open marker;
+        // a complete independent link/code/math token outside selection is safe.
+        const content = line.text.slice(line.prefix);
+        const localRanges = inlineProtectedRanges(content);
+        if (localRanges.some(range => {
+          const from = range.start + line.prefix;
+          const to = range.end + line.prefix;
+          return from < right && to > left &&
+            !(decoration.marks && range.type === 'format' && from >= left && to <= right);
+        })) continue;
+        if (inlineMarkerRuns(content).some(run => {
+          if (localRanges.some(range => range.start <= run.at && range.end > run.at)) return false;
+          const at = run.at + line.prefix;
+          return (at < left && run.canOpen) || (at >= right && run.canClose);
+        })) continue;
+        const decorated = decoration.marks === mark ||
+          (decoration.marks === '***' && (mark === '*' || mark === '**'));
+        // Remove a requested layer from existing triples, but do not introduce
+        // new nesting that the existing Preview cannot render faithfully.
+        if (decoration.marks && !decorated) continue;
+        bodies.push({ from: line.start + left - start, to: line.start + right - start, body, decorated });
+      }
+      if (!bodies.length) return selected;
+      const remove = bodies.every(body => body.decorated);
+      let result = '';
+      let position = 0;
+      for (const body of bodies) {
+        result += selected.slice(position, body.from);
+        result += remove ? body.body.slice(mark.length, -mark.length)
+          : body.decorated ? body.body : mark + body.body + mark;
+        position = body.to;
+      }
+      return result + selected.slice(position);
     }
 
     function scanInlineMathRanges(line, lineOffset) {
